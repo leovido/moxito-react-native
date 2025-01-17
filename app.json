@@ -28,8 +28,18 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
+    "expo-font": {
+      "fonts": [
+        "node_modules/@expo-google-fonts/lato/Lato_900Black.ttf",
+        "node_modules/@expo-google-fonts/lato/Lato_400Regular.ttf",
+        "node_modules/@expo-google-fonts/lato/Lato_300Light.ttf",
+        "node_modules/@expo-google-fonts/lato/Lato_700Bold.ttf",
+        "node_modules/@expo-google-fonts/lato/Lato_900Black.ttf"
+      ]
+    },
     "experiments": {
       "typedRoutes": true
     }

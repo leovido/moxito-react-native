@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, ScrollView, Platform } from 'react-native';
+import { View, StyleSheet, Text, Image } from 'react-native';
 import { theme } from '../../src/theme';
-import { Lato_300Light, Lato_400Regular, Lato_700Bold, Lato_900Black, useFonts } from '@expo-google-fonts/lato';
 
 // Components
 const StatsCard = ({ label, value, unit }: { label: string; value: string | number; unit: string }) => (
@@ -35,25 +34,13 @@ const EarningsCard = () => (
 );
 
 export default function HomeScreen() {
-  const username = 'Disky.eth';
-
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.greeting}>
-            <Text style={[styles.greetingLight, {fontFamily: 'Lato_300Light'}]}>Hi, </Text>
-            <Text style={[styles.greetingBold, {fontFamily: 'Lato_300Light'}]}>{username}</Text>
-          </Text>
-          <Text style={[styles.lastUpdate,
-            {
-              fontFamily: Platform.select({
-                android: 'Lato_300Light',
-                ios: 'Lato-Light',
-              }),
-            },
-          ]}>Last update: 8h ago</Text>
+          <Text style={styles.greeting}>Hi, Disky.eth</Text>
+          <Text style={styles.lastUpdate}>Last update: 8h ago</Text>
         </View>
         <View style={styles.headerIcons}>
           <View style={styles.settingsIcon} />
@@ -89,7 +76,7 @@ export default function HomeScreen() {
           <Text style={styles.timeFilterText}>Month</Text>
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -107,17 +94,12 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: theme.fontSizes['2xl'],
+    fontWeight: theme.fontWeights.bold,
     color: theme.colors.black[100],
-  },
-  greetingLight: {
-    fontWeight: theme.fontWeights.light,
-  },
-  greetingBold: {
-    fontWeight: theme.fontWeights.black,
   },
   lastUpdate: {
-    fontSize: theme.fontSizes.xs,
-    color: theme.colors.black[100],
+    fontSize: theme.fontSizes.sm,
+    color: theme.colors.black[16],
   },
   headerIcons: {
     flexDirection: 'row',
@@ -143,9 +125,8 @@ const styles = StyleSheet.create({
   },
   moxieText: {
     color: theme.colors.white[100],
-    fontSize: theme.fontSizes.sm,
+    fontSize: theme.fontSizes.md,
     textAlign: 'center',
-    fontFamily: 'Lato_400Regular',
   },
   earningsCard: {
     backgroundColor: theme.colors.black[100],
