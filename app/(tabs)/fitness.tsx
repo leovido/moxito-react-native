@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, ScrollView, Platform, ImageBackground, Pressable, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, StyleSheet, Text, Image, ScrollView, Platform, ImageBackground, Pressable, TouchableOpacity, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { theme } from '../../src/theme';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -55,12 +56,14 @@ export default function HomeScreen() {
   const username = 'Disky.eth';
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <ImageBackground 
+    <ImageBackground 
       source={require('../../assets/images/app-bg2.png')}
       style={styles.container}
       resizeMode="cover"
       >
+    <SafeAreaView style={{flex: 1}}>
+      <StatusBar barStyle={'dark-content'} />
+    
         {/* Header */}
       <View style={styles.header}>
         <View>
@@ -79,9 +82,10 @@ export default function HomeScreen() {
         </View>
         <View style={styles.headerIcons}>
           <Pressable 
-            style={styles.settingsIcon}
-            onPress={() => {router.push('/(auth)')}}
-          />
+            style={styles.settingsIconContainer}
+              onPress={() => { router.push('/(auth)'); }}>
+              <Image source={require('../../assets/images/icon-settings.png')} style={styles.settingsIcon} />
+            </Pressable>
           <Pressable 
             style={styles.profileIcon}
             onPress={() => {console.log('profile')}}
@@ -104,13 +108,30 @@ export default function HomeScreen() {
 
       {/* Stats */}
       <View style={styles.statsContainer}>
-        <StatsCard label="Steps today" value="6733" unit="10k" />
+            <StatsCard label="Steps today" value="6733" unit="10k" />
+            <View
+  style={{
+    borderBottomColor: theme.colors.black[16],
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  }}
+/>
         <StatsCard label="Calories burned" value="2112" unit="kcal" />
+        <View
+  style={{
+    borderBottomColor: theme.colors.black[16],
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  }}
+/>
         <StatsCard label="Distance traveled" value="23" unit="kcal" />
+        <View
+  style={{
+     borderBottomColor: theme.colors.black[16],
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  }}
+/>
         <StatsCard label="Resting Heart Rate" value="80" unit="bpm" />
-      </View>
 
-      {/* Time Filter */}
+            {/* Time Filter */}
       <View style={styles.timeFilter}>
         <TouchableOpacity 
           style={styles.activeTimeFilter}
@@ -131,11 +152,12 @@ export default function HomeScreen() {
           <Text style={styles.timeFilterText}>Month</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
-    </ImageBackground>
+      </View>
+
       
-    </SafeAreaView>
-    
+    </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
@@ -169,11 +191,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: theme.spacing[2],
   },
-  settingsIcon: {
+  settingsIconContainer: {
     width: 40,
     height: 40,
     backgroundColor: theme.colors.white[100],
     borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  settingsIcon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
   },
   profileIcon: {
     width: 40,
