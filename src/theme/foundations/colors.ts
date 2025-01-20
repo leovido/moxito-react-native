@@ -26,6 +26,11 @@ export const colors = {
   warning: '#',
   error: '#',
   info: '#',
+  // Adding gradients
+  gradients: {
+    moxiePurple: 'linear-gradient(135deg, #A87AFF 0%, #BC99FF 100%)',
+    moxieBlack: 'linear-gradient(45deg, #1D1D1D 0%, #3D3D3D 100%)',
+  },
 } as const;
 
 export type ColorKeys = keyof typeof colors; 

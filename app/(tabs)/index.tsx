@@ -1,17 +1,32 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, ScrollView, Platform } from 'react-native';
+import { View, StyleSheet, Text, Image, ScrollView, Platform, ImageBackground } from 'react-native';
 import { theme } from '../../src/theme';
 import { Lato_300Light, Lato_400Regular, Lato_700Bold, Lato_900Black, useFonts } from '@expo-google-fonts/lato';
+import { LinearGradient } from 'expo-linear-gradient';
 
+const icons = (label: string) => {
+  switch (label) {
+    case 'Steps today':
+      return <Image source={require('../../assets/images/icon-run.png')} style={styles.statsIcon} />
+    case 'Calories burned':
+      return <Image source={require('../../assets/images/icon-calories.png')} style={styles.statsIcon} />
+    case 'Distance traveled':
+      return <Image source={require('../../assets/images/icon-run.png')} style={styles.statsIcon} />
+    case 'Resting Heart Rate':
+      return <Image source={require('../../assets/images/icon-like.png')} style={styles.statsIcon} />
+    default:
+      return null;
+  }
+}
 // Components
 const StatsCard = ({ label, value, unit }: { label: string; value: string | number; unit: string }) => (
   <View style={styles.statsRow}>
     <View style={styles.iconContainer}>
-      {/* You'll need to add proper icons here */}
-      <View  />
+      {icons(label)}
     </View>
     <View style={styles.statsTextContainer}>
-      <Text style={styles.statsLabel}>{label}</Text>
+      <Text style={styles.statsLabel} numberOfLines={2}>{label.split(' ')[0]}</Text>
+      <Text style={styles.statsLabel} numberOfLines={2}>{label.split(' ')[1]}</Text>
     </View>
     <View style={styles.valueContainer}>
       <Text style={styles.valueText}>{value}</Text>
@@ -21,25 +36,32 @@ const StatsCard = ({ label, value, unit }: { label: string; value: string | numb
 );
 
 const EarningsCard = () => (
-  <View style={styles.earningsCard}>
-    {/* <Image 
-      source={require('../../assets/images/moxie-coin.png')} 
-      style={styles.moxieCoin}
-    /> */}
+    <LinearGradient
+      colors={['#1D1D1D', '#3D3D3D']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    style={styles.earningsCard}>
+        <Image source={require('../../assets/images/icon-run-move.png')} style={[styles.moxieCoin, {width: '40%', height: '100%'}]} />
+
     <View style={styles.earningsContent}>
-      <Text style={styles.earningsLabel}>Earned from steps</Text>
+      <Text style={[styles.earningsLabel, {fontFamily: 'Lato_300Light'}]}>Earned from steps</Text>
       <Text style={styles.earningsValue}>859</Text>
       <Text style={styles.earningsSubtext}>~$ 1.23</Text>
     </View>
-  </View>
+      </LinearGradient>
 );
 
 export default function HomeScreen() {
   const username = 'Disky.eth';
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
+    // <View style={styles.container}>
+      <ImageBackground 
+      source={require('../../assets/images/app-bg2.png')}
+      style={styles.container}
+      resizeMode="cover"
+      >
+        {/* Header */}
       <View style={styles.header}>
         <View>
           <Text style={styles.greeting}>
@@ -60,11 +82,16 @@ export default function HomeScreen() {
           <View style={styles.profileIcon} />
         </View>
       </View>
-
+      <ScrollView showsVerticalScrollIndicator={false}>
       {/* Moxie Banner */}
-      <View style={styles.moxieBanner}>
-        <Text style={styles.moxieText}>You are earning Moxie while running!</Text>
-      </View>
+      <LinearGradient
+        colors={[theme.colors.primary[100], '#BC99FF']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.moxieBanner}
+      >
+        <Text style={styles.moxieText}>You are earning points while running!</Text>
+      </LinearGradient>
 
       {/* Earnings Card */}
       <EarningsCard />
@@ -90,6 +117,10 @@ export default function HomeScreen() {
         </View>
       </View>
     </ScrollView>
+    </ImageBackground>
+      
+    // </View>
+    
   );
 }
 
@@ -136,9 +167,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   moxieBanner: {
-    backgroundColor: theme.colors.primary[100],
     padding: theme.spacing[4],
-    borderRadius: 12,
+    borderRadius: 24,
     marginBottom: theme.spacing[4],
   },
   moxieText: {
@@ -148,16 +178,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Lato_400Regular',
   },
   earningsCard: {
+    flex: 1,
     backgroundColor: theme.colors.black[100],
-    borderRadius: 16,
-    padding: theme.spacing[4],
+    borderRadius: 24,
+    padding: theme.spacing[7],
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     marginBottom: theme.spacing[4],
+    gap: theme.spacing[4],
   },
   moxieCoin: {
-    width: 60,
-    height: 60,
     marginRight: theme.spacing[4],
   },
   earningsContent: {
@@ -169,12 +199,14 @@ const styles = StyleSheet.create({
   },
   earningsValue: {
     color: theme.colors.white[100],
-    fontSize: theme.fontSizes['3xl'],
+    fontSize: 54,
     fontWeight: theme.fontWeights.bold,
+    fontFamily: 'Lato_700Bold',
   },
   earningsSubtext: {
     color: theme.colors.white[50],
-    fontSize: theme.fontSizes.sm,
+    fontSize: 20,
+    fontFamily: 'Lato_300Light',
   },
   statsContainer: {
     backgroundColor: theme.colors.white[100],
@@ -185,6 +217,7 @@ const styles = StyleSheet.create({
   statsRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    padding: theme.spacing[2],
   },
   iconContainer: {
     width: 40,
@@ -192,13 +225,17 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.black[8],
     borderRadius: 20,
     marginRight: theme.spacing[3],
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   statsTextContainer: {
     flex: 1,
   },
   statsLabel: {
-    fontSize: theme.fontSizes.md,
+    fontSize: 18,
     color: theme.colors.black[100],
+    fontFamily: 'Lato_700Bold',
+    fontWeight: theme.fontWeights.bold,
   },
   valueContainer: {
     flexDirection: 'row',
@@ -206,7 +243,7 @@ const styles = StyleSheet.create({
     gap: theme.spacing[1],
   },
   valueText: {
-    fontSize: theme.fontSizes.xl,
+    fontSize: 32,
     fontWeight: theme.fontWeights.bold,
     color: theme.colors.black[100],
   },
@@ -234,5 +271,10 @@ const styles = StyleSheet.create({
   timeFilterText: {
     fontSize: theme.fontSizes.md,
     color: theme.colors.white[100],
+  },
+  statsIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
   },
 }); 
