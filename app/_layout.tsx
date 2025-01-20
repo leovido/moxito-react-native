@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import { Lato_300Light, Lato_400Regular } from '@expo-google-fonts/lato';
+import { StatusBar } from 'expo-status-bar';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -23,7 +25,11 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    Lato_400Regular: require('../assets/fonts/Lato_400Regular.ttf'),
+    Lato_300Light: require('../assets/fonts/Lato_300Light.ttf'),
+    Lato_700Bold: require('../assets/fonts/Lato_700Bold.ttf'),
+    Lato_900Black: require('../assets/fonts/Lato_900Black.ttf'),
+    Lato_100Thin: require('../assets/fonts/Lato_100Thin.ttf'),
     ...FontAwesome.font,
   });
 
@@ -50,8 +56,23 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <StatusBar style="dark" animated={true} translucent={true} backgroundColor="transparent" />
+
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="(auth)" 
+          options={{ 
+            headerShown: false,
+            headerBackVisible: false,
+            gestureEnabled: false
+          }} 
+        />
+        <Stack.Screen 
+          name="(tabs)" 
+          options={{ 
+            headerShown: false
+          }} 
+        />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>
     </ThemeProvider>
