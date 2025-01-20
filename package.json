@@ -33,7 +33,6 @@
     "react-native-screens": "~4.1.0",
     "react-native-web": "~0.19.13",
     "expo-linear-gradient": "~14.0.2",
-    "undefined": "expo-router/ui",
     "expo-secure-store": "~14.0.1"
   },
   "devDependencies": {

@@ -1,7 +1,27 @@
 // CustomTabBar.tsx
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React from "react";
-import { Image, Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, Pressable, StyleSheet, View } from "react-native";
+
+const icons = (label: string, isSelected: boolean) => {
+  const iconStyle = [
+    styles.statsIcon,
+    { tintColor: isSelected ? '#FFFFFF' : '#222222' }
+  ];
+  
+  switch (label) {
+    case 'profile':
+      return <Image source={require('../assets/images/icon-profile.png')} style={iconStyle} />
+    case 'fitness':
+      return <Image source={require('../assets/images/icon-run.png')} style={iconStyle} />
+    case 'home':
+      return <Image source={require('../assets/images/icon-home.png')} style={iconStyle} />
+    case 'search':
+      return <Image source={require('../assets/images/icon-search.png')} style={iconStyle} />
+    default:
+      return null;
+  }
+}
 
 export default function CustomTabBar({
   state,
@@ -43,15 +63,12 @@ export default function CustomTabBar({
             accessibilityLabel={options.tabBarAccessibilityLabel}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={styles.tab}
+            style={[
+              styles.tab,
+              isFocused && styles.selectedTab
+            ]}
           >
-            {options.tabBarIcon &&
-              options.tabBarIcon({
-                focused: isFocused,
-                color: isFocused ? "#673ab7" : "#222",
-                size: 24,
-              })}
-            <Image source={require('../assets/images/icon-profile.png')} />
+            {icons(route.name, isFocused)}
           </Pressable>
         );
       })}
@@ -62,17 +79,30 @@ export default function CustomTabBar({
 const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
-    height: 60,
-    backgroundColor: "#fff",
+    height: 50,
+    backgroundColor: 'transparent',
+    paddingHorizontal: 10,
   },
   tab: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    margin: 4,
+    borderRadius: 20,
+    height: 36,
+  },
+  selectedTab: {
+    backgroundColor: '#9747FF',
   },
   screen: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  statsIcon: {
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
+    tintColor: '#222222',
   },
 });

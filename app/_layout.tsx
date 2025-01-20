@@ -9,6 +9,8 @@ import 'react-native-reanimated';
 import { useColorScheme } from '@/components/useColorScheme';
 import { Lato_300Light, Lato_400Regular } from '@expo-google-fonts/lato';
 import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -56,25 +58,23 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <StatusBar style="dark" animated={true} translucent={true} backgroundColor="transparent" />
-
-      <Stack>
-        <Stack.Screen 
-          name="(auth)" 
-          options={{ 
-            headerShown: false,
-            headerBackVisible: false,
-            gestureEnabled: false
-          }} 
-        />
-        <Stack.Screen 
-          name="(tabs)" 
-          options={{ 
-            headerShown: false
-          }} 
-        />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
+        <Stack>
+          <Stack.Screen 
+            name="(auth)/index" 
+            options={{ 
+              headerShown: false,
+              headerBackVisible: false,
+              gestureEnabled: false
+            }} 
+          />
+          <Stack.Screen 
+            name="(tabs)" 
+            options={{ 
+              headerShown: false
+            }} 
+          />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        </Stack>
     </ThemeProvider>
   );
 }

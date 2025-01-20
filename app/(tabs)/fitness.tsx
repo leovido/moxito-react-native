@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image, ScrollView, Platform, ImageBackground, Pressable, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, Image, ScrollView, Platform, ImageBackground, Pressable, TouchableOpacity, SafeAreaView } from 'react-native';
 import { theme } from '../../src/theme';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -18,7 +18,7 @@ const icons = (label: string) => {
       return null;
   }
 }
-// Components
+
 const StatsCard = ({ label, value, unit }: { label: string; value: string | number; unit: string }) => (
   <View style={styles.statsRow}>
     <View style={styles.iconContainer}>
@@ -55,7 +55,7 @@ export default function HomeScreen() {
   const username = 'Disky.eth';
 
   return (
-    // <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <ImageBackground 
       source={require('../../assets/images/app-bg2.png')}
       style={styles.container}
@@ -134,7 +134,7 @@ export default function HomeScreen() {
     </ScrollView>
     </ImageBackground>
       
-    // </View>
+    </SafeAreaView>
     
   );
 }
