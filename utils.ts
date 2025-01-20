@@ -1,4 +1,4 @@
-import { SecureStore } from 'expo-secure-store';
+import { SecureStore } from "expo-secure-store";
 
 const KEY = "userInfo";
 

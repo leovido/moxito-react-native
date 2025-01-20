@@ -1,8 +1,8 @@
 export const typography = {
   fonts: {
-    heading: '', // Add your heading font family
-    body: '',    // Add your body font family
-    mono: '',    // Add your monospace font family
+    heading: "", // Add your heading font family
+    body: "", // Add your body font family
+    mono: "", // Add your monospace font family
   },
   fontSizes: {
     xs: 12,
@@ -10,24 +10,24 @@ export const typography = {
     md: 16,
     lg: 18,
     xl: 20,
-    '2xl': 24,
-    '3xl': 30,
-    '4xl': 36,
-    '5xl': 48,
+    "2xl": 24,
+    "3xl": 30,
+    "4xl": 36,
+    "5xl": 48,
   },
   fontWeights: {
-    hairline: '100',
-    thin: '200',
-    light: '300',
-    normal: '400',
-    medium: '500',
-    semibold: '600',
-    bold: '700',
-    extrabold: '800',
-    black: '900',
+    hairline: "100",
+    thin: "200",
+    light: "300",
+    normal: "400",
+    medium: "500",
+    semibold: "600",
+    bold: "700",
+    extrabold: "800",
+    black: "900",
   },
   lineHeights: {
-    normal: 'normal',
+    normal: "normal",
     none: 1,
     shorter: 1.25,
     short: 1.375,
@@ -45,4 +45,4 @@ export const typography = {
   },
 } as const;
 
-export type TypographyKeys = keyof typeof typography; 
+export type TypographyKeys = keyof typeof typography;

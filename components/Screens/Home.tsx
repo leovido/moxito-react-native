@@ -23,7 +23,6 @@ const Home: React.FC = () => {
     Keyboard.dismiss();
     if (inputValue === "") return;
     try {
-
       const response = await fetch(`${API_URL}/cast`, {
         method: "POST",
         headers: {

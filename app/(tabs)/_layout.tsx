@@ -5,12 +5,11 @@ import CustomTabBar from "@/components/CustomTabBar";
 
 export default function TabLayout() {
   return (
-      <Tabs
+    <Tabs
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
       }}
-    >
-    </Tabs>
+    />
   );
 }

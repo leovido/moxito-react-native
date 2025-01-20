@@ -6,22 +6,42 @@ import { Image, Pressable, StyleSheet, View } from "react-native";
 const icons = (label: string, isSelected: boolean) => {
   const iconStyle = [
     styles.statsIcon,
-    { tintColor: isSelected ? '#FFFFFF' : '#222222' }
+    { tintColor: isSelected ? "#FFFFFF" : "#222222" },
   ];
-  
+
   switch (label) {
-    case 'profile':
-      return <Image source={require('../assets/images/icon-profile.png')} style={iconStyle} />
-    case 'fitness':
-      return <Image source={require('../assets/images/icon-run.png')} style={iconStyle} />
-    case 'home':
-      return <Image source={require('../assets/images/icon-home.png')} style={iconStyle} />
-    case 'search':
-      return <Image source={require('../assets/images/icon-search.png')} style={iconStyle} />
+    case "profile":
+      return (
+        <Image
+          source={require("../assets/images/icon-profile.png")}
+          style={iconStyle}
+        />
+      );
+    case "fitness":
+      return (
+        <Image
+          source={require("../assets/images/icon-run.png")}
+          style={iconStyle}
+        />
+      );
+    case "home":
+      return (
+        <Image
+          source={require("../assets/images/icon-home.png")}
+          style={iconStyle}
+        />
+      );
+    case "search":
+      return (
+        <Image
+          source={require("../assets/images/icon-search.png")}
+          style={iconStyle}
+        />
+      );
     default:
       return null;
   }
-}
+};
 
 export default function CustomTabBar({
   state,
@@ -32,7 +52,6 @@ export default function CustomTabBar({
     <View style={styles.tabBar}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
-        const label = options.title !== undefined ? options.title : route.name;
 
         const isFocused = state.index === index;
 
@@ -63,10 +82,7 @@ export default function CustomTabBar({
             accessibilityLabel={options.tabBarAccessibilityLabel}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={[
-              styles.tab,
-              isFocused && styles.selectedTab
-            ]}
+            style={[styles.tab, isFocused && styles.selectedTab]}
           >
             {icons(route.name, isFocused)}
           </Pressable>
@@ -80,7 +96,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     height: 50,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
     paddingHorizontal: 10,
   },
   tab: {
@@ -92,7 +108,7 @@ const styles = StyleSheet.create({
     height: 36,
   },
   selectedTab: {
-    backgroundColor: '#9747FF',
+    backgroundColor: "#9747FF",
   },
   screen: {
     flex: 1,
@@ -102,7 +118,7 @@ const styles = StyleSheet.create({
   statsIcon: {
     width: 20,
     height: 20,
-    resizeMode: 'contain',
-    tintColor: '#222222',
+    resizeMode: "contain",
+    tintColor: "#222222",
   },
 });
