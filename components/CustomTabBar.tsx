@@ -1,5 +1,5 @@
 // CustomTabBar.tsx
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 
