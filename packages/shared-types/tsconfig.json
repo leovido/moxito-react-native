@@ -7,17 +7,10 @@
       "@/*": [
         "./*"
       ],
-      "@moxito/api": [
-        "packages/api/*"
-      ],
-      "@moxito/feature": [
-        "apps/feature/*"
-      ],
-      "@moxito/shared-types": [
-        "packages/shared-types/*"
+      "@moxito/*": [
+        "./packages/*"
       ]
-    },
-    "baseUrl": "."
+    }
   },
   "include": [
     "**/*.ts",
@@ -25,6 +18,6 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "**/*.js",
-    ".eslintrc.js",
+    ".eslintrc.js"
   ]
 }

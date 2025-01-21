@@ -1,0 +1,20 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "paths": {
+      "@moxito/api": [
+        "./src/*"
+      ]
+    },
+    "include": [
+      "**/*.ts",
+      "**/*.tsx",
+      ".expo/types/**/*.ts",
+      "expo-env.d.ts",
+      "**/*.js",
+      ".eslintrc.js"
+    ],
+  }
+}

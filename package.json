@@ -1,10 +1,16 @@
 {
   "name": "moxito-react-native",
   "main": "expo-router/entry",
+  "private": true,
   "license": "0BSD",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
+    "build": "tsc",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -55,6 +61,5 @@
     "prettier": "^3.4.2",
     "react-test-renderer": "18.3.1",
     "typescript": "~5.3.3"
-  },
-  "private": true
+  }
 }
