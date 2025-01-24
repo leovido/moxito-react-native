@@ -5,16 +5,13 @@
     "paths": {
       "@/*": [
         "./*"
-      ],
-      "@moxito/*": [
-        "./packages/*"
       ]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js",
-    ".eslintrc.js"
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
   ]
 }

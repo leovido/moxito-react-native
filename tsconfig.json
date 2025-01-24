@@ -13,6 +13,9 @@
       "@moxito/feature": [
         "apps/feature/*"
       ],
+      "@moxito/theme": [
+        "packages/theme/*"
+      ],
       "@moxito/shared-types": [
         "packages/shared-types/*"
       ]

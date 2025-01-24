@@ -16,7 +16,10 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix"
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "test:unit": "jest --coverage --verbose --detectOpenHandles --forceExit",
+    "test:unit:watch": "jest --watchAll",
+    "app:run": "cd apps/testingNew/moxito-fitness && expo start"
   },
   "jest": {
     "preset": "jest-expo"

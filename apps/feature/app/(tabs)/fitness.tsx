@@ -12,7 +12,7 @@ import {
   StatusBar,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { theme } from "@moxito/theme";
+import { theme } from "../../src/theme";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 
