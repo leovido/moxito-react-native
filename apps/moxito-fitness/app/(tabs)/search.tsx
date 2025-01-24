@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text } from "react-native";
 
-export default function TabOneScreen() {
+export default function SearchScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tab One</Text>

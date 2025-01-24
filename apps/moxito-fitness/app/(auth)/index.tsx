@@ -1,7 +1,7 @@
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 
-export default function Login() {
+export default function AuthScreen() {
   const router = useRouter();
 
   const handleLogin = () => {

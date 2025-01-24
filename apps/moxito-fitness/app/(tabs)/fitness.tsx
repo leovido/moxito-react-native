@@ -15,92 +15,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { theme } from "@moxito/theme";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { setFilterSelection } from "@/moxieSlice";
+import { StatsCard } from '../../components/StatsCard';
+import { EarningsCard } from '../../components/EarningsCard';
 
-const icons = (label: string) => {
-  switch (label) {
-    case "Steps today":
-      return (
-        <Image
-          source={require("../../assets/images/icon-run.png")}
-          style={styles.statsIcon}
-        />
-      );
-    case "Calories burned":
-      return (
-        <Image
-          source={require("../../assets/images/icon-calories.png")}
-          style={styles.statsIcon}
-        />
-      );
-    case "Distance traveled":
-      return (
-        <Image
-          source={require("../../assets/images/icon-run.png")}
-          style={styles.statsIcon}
-        />
-      );
-    case "Resting Heart Rate":
-      return (
-        <Image
-          source={require("../../assets/images/icon-like.png")}
-          style={styles.statsIcon}
-        />
-      );
-    default:
-      return null;
-  }
-};
-
-const StatsCard = ({
-  label,
-  value,
-  unit,
-}: {
-  label: string;
-  value: string | number;
-  unit: string;
-}) => (
-  <View style={styles.statsRow}>
-    <View style={styles.iconContainer}>{icons(label)}</View>
-    <View style={styles.statsTextContainer}>
-      <Text style={styles.statsLabel} numberOfLines={2}>
-        {label.split(" ")[0]}
-      </Text>
-      <Text style={styles.statsLabel} numberOfLines={2}>
-        {label.split(" ")[1]}
-      </Text>
-    </View>
-    <View style={styles.valueContainer}>
-      <Text style={styles.valueText}>{value}</Text>
-      <Text style={styles.unitText}>{unit}</Text>
-    </View>
-  </View>
-);
-
-const EarningsCard = () => (
-  <LinearGradient
-    colors={["#1D1D1D", "#3D3D3D"]}
-    start={{ x: 0, y: 0 }}
-    end={{ x: 1, y: 1 }}
-    style={styles.earningsCard}
-  >
-    <Image
-      source={require("../../assets/images/icon-run-move.png")}
-      style={[styles.moxieCoin, { width: "40%", height: "100%" }]}
-    />
-
-    <View style={styles.earningsContent}>
-      <Text style={[styles.earningsLabel, { fontFamily: "Lato_300Light" }]}>
-        Earned from steps
-      </Text>
-      <Text style={styles.earningsValue}>859</Text>
-      <Text style={styles.earningsSubtext}>~$ 1.23</Text>
-    </View>
-  </LinearGradient>
-);
-
-export default function HomeScreen() {
+export default function FitnessScreen() {
   const username = "Disky.eth";
+
+  const dispatch = useDispatch();
+  const filterSelection = useSelector((state: RootState) => state.moxie.filterSelection);
 
   return (
     <ImageBackground
@@ -204,20 +130,20 @@ export default function HomeScreen() {
             {/* Time Filter */}
             <View style={styles.timeFilter}>
               <TouchableOpacity
-                style={styles.activeTimeFilter}
-                onPress={() => console.log("Daily selected")}
+                style={[styles.activeTimeFilter, filterSelection === 0 && styles.activeTimeFilter]}
+                onPress={() => dispatch(setFilterSelection(0))}
               >
                 <Text style={styles.timeFilterText}>Daily</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.inactiveTimeFilter}
-                onPress={() => console.log("Weekly selected")}
+                style={[styles.inactiveTimeFilter, filterSelection === 1 && styles.activeTimeFilter]}
+                onPress={() => dispatch(setFilterSelection(1))}
               >
                 <Text style={styles.timeFilterText}>Weekly</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.inactiveTimeFilter}
-                onPress={() => console.log("Monthly selected")}
+                style={[styles.inactiveTimeFilter, filterSelection === 2 && styles.activeTimeFilter]}
+                onPress={() => dispatch(setFilterSelection(2))}
               >
                 <Text style={styles.timeFilterText}>Month</Text>
               </TouchableOpacity>
@@ -289,79 +215,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Lato_400Regular",
   },
-  earningsCard: {
-    flex: 1,
-    backgroundColor: theme.colors.black[100],
-    borderRadius: 24,
-    padding: theme.spacing[7],
-    flexDirection: "row",
-    alignItems: "flex-end",
-    marginBottom: theme.spacing[4],
-    gap: theme.spacing[4],
-  },
-  moxieCoin: {
-    marginRight: theme.spacing[4],
-  },
-  earningsContent: {
-    flex: 1,
-  },
-  earningsLabel: {
-    color: theme.colors.white[100],
-    fontSize: theme.fontSizes.sm,
-  },
-  earningsValue: {
-    color: theme.colors.white[100],
-    fontSize: 54,
-    fontWeight: theme.fontWeights.bold,
-    fontFamily: "Lato_700Bold",
-  },
-  earningsSubtext: {
-    color: theme.colors.white[50],
-    fontSize: 20,
-    fontFamily: "Lato_300Light",
-  },
   statsContainer: {
     backgroundColor: theme.colors.white[100],
     borderRadius: 16,
     padding: theme.spacing[4],
     gap: theme.spacing[4],
-  },
-  statsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: theme.spacing[2],
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    backgroundColor: theme.colors.black[8],
-    borderRadius: 20,
-    marginRight: theme.spacing[3],
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  statsTextContainer: {
-    flex: 1,
-  },
-  statsLabel: {
-    fontSize: 18,
-    color: theme.colors.black[100],
-    fontFamily: "Lato_700Bold",
-    fontWeight: theme.fontWeights.bold,
-  },
-  valueContainer: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    gap: theme.spacing[1],
-  },
-  valueText: {
-    fontSize: 32,
-    fontWeight: theme.fontWeights.bold,
-    color: theme.colors.black[100],
-  },
-  unitText: {
-    fontSize: theme.fontSizes.sm,
-    color: theme.colors.black[16],
   },
   timeFilter: {
     flexDirection: "row",

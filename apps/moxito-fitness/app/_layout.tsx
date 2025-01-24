@@ -11,6 +11,8 @@ import "react-native-reanimated";
 
 import { StatusBar } from "expo-status-bar";
 import { Platform } from "react-native";
+import { Provider } from "react-redux";
+import { store } from "@/store";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -55,7 +57,8 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <ThemeProvider value={DarkTheme}>
+    <Provider store={store}>
+      <ThemeProvider value={DarkTheme}>
       <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
       <Stack>
         <Stack.Screen
@@ -74,5 +77,6 @@ function RootLayoutNav() {
         />
       </Stack>
     </ThemeProvider>
+    </Provider>
   );
 }
