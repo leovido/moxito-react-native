@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -21,12 +21,31 @@ import { RootState } from "@/store";
 import { setFilterSelection } from "@/moxieSlice";
 import { StatsCard } from '../../components/StatsCard';
 import { EarningsCard } from '../../components/EarningsCard';
+// import { moxitoService } from "@moxito/api";
+import { moxieApi } from "@moxito/api";
 
 export default function FitnessScreen() {
-  const username = "Disky.eth";
+  const [username, setUsername] = useState<string>("Moxie");
+  const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const dispatch = useDispatch();
   const filterSelection = useSelector((state: RootState) => state.moxie.filterSelection);
+
+  const { data: stats, isLoading, error } = moxieApi.endpoints.getMoxieStats.useQuery({
+    fid: 203666,
+    filter: "TODAY"
+  });
+
+  useEffect(() => {
+    setUsername(stats?.socials[0].profileDisplayName || "Moxie");
+    setProfileImage(stats?.socials[0].profileImage || null);
+  }, [stats]);
+  
+  // const { data: points, isLoading, error } = moxitoService.endpoints.getAllCheckinsByUser.useQuery({
+  //   fid: 203666,
+  //   startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
+  //   endDate: new Date(new Date().setHours(23, 59, 59, 999)).toISOString()
+  // });
 
   return (
     <ImageBackground
@@ -83,7 +102,13 @@ export default function FitnessScreen() {
               onPress={() => {
                 console.log("profile");
               }}
-            />
+            >
+              <Image
+                source={profileImage ? { uri: profileImage } : require("../../assets/images/icon-profile.png")}
+                style={styles.profileIcon}
+                resizeMode="cover"
+              />
+            </Pressable>
           </View>
         </View>
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -130,7 +155,7 @@ export default function FitnessScreen() {
             {/* Time Filter */}
             <View style={styles.timeFilter}>
               <TouchableOpacity
-                style={[styles.activeTimeFilter, filterSelection === 0 && styles.activeTimeFilter]}
+                style={[styles.inactiveTimeFilter, filterSelection === 0 && styles.activeTimeFilter]}
                 onPress={() => dispatch(setFilterSelection(0))}
               >
                 <Text style={styles.timeFilterText}>Daily</Text>
