@@ -19,28 +19,47 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { setFilterSelection } from "@/moxieSlice";
-import { StatsCard } from '../../components/StatsCard';
-import { EarningsCard } from '../../components/EarningsCard';
-// import { moxitoService } from "@moxito/api";
+import { StatsCard } from "@/components/StatsCard";
+import { EarningsCard } from "@/components/EarningsCard";
 import { moxieApi } from "@moxito/api";
+import { healthKitService } from "@/components/HealthKitService";
 
 export default function FitnessScreen() {
   const [username, setUsername] = useState<string>("Moxie");
   const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const dispatch = useDispatch();
-  const filterSelection = useSelector((state: RootState) => state.moxie.filterSelection);
+  const filterSelection = useSelector(
+    (state: RootState) => state.moxie.filterSelection,
+  );
 
-  const { data: stats, isLoading, error } = moxieApi.endpoints.getMoxieStats.useQuery({
+  const {
+    data: stats,
+    isLoading,
+    error,
+  } = moxieApi.endpoints.getMoxieStats.useQuery({
     fid: 203666,
-    filter: "TODAY"
+    filter: "TODAY",
   });
+
+  const {
+    data: stepCount,
+    isLoading: stepCountLoading,
+    error: stepCountError,
+  } = healthKitService.getStepCount(
+    new Date(new Date().setHours(0, 0, 0, 0)),
+    new Date(new Date().setHours(23, 59, 59, 999)),
+  );
 
   useEffect(() => {
     setUsername(stats?.socials[0].profileDisplayName || "Moxie");
     setProfileImage(stats?.socials[0].profileImage || null);
   }, [stats]);
-  
+
+  useEffect(() => {
+    console.log(stepCount, "stepcount");
+  }, [stepCount]);
+
   // const { data: points, isLoading, error } = moxitoService.endpoints.getAllCheckinsByUser.useQuery({
   //   fid: 203666,
   //   startDate: new Date(new Date().setHours(0, 0, 0, 0)).toISOString(),
@@ -104,7 +123,11 @@ export default function FitnessScreen() {
               }}
             >
               <Image
-                source={profileImage ? { uri: profileImage } : require("../../assets/images/icon-profile.png")}
+                source={
+                  profileImage
+                    ? { uri: profileImage }
+                    : require("../../assets/images/icon-profile.png")
+                }
                 style={styles.profileIcon}
                 resizeMode="cover"
               />
@@ -155,19 +178,28 @@ export default function FitnessScreen() {
             {/* Time Filter */}
             <View style={styles.timeFilter}>
               <TouchableOpacity
-                style={[styles.inactiveTimeFilter, filterSelection === 0 && styles.activeTimeFilter]}
+                style={[
+                  styles.inactiveTimeFilter,
+                  filterSelection === 0 && styles.activeTimeFilter,
+                ]}
                 onPress={() => dispatch(setFilterSelection(0))}
               >
                 <Text style={styles.timeFilterText}>Daily</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.inactiveTimeFilter, filterSelection === 1 && styles.activeTimeFilter]}
+                style={[
+                  styles.inactiveTimeFilter,
+                  filterSelection === 1 && styles.activeTimeFilter,
+                ]}
                 onPress={() => dispatch(setFilterSelection(1))}
               >
                 <Text style={styles.timeFilterText}>Weekly</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.inactiveTimeFilter, filterSelection === 2 && styles.activeTimeFilter]}
+                style={[
+                  styles.inactiveTimeFilter,
+                  filterSelection === 2 && styles.activeTimeFilter,
+                ]}
                 onPress={() => dispatch(setFilterSelection(2))}
               >
                 <Text style={styles.timeFilterText}>Month</Text>

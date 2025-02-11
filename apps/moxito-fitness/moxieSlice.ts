@@ -1,4 +1,4 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface MoxieState {
   selectedWallet: string;
@@ -12,7 +12,7 @@ interface MoxieState {
 }
 
 const initialState: MoxieState = {
-  selectedWallet: '',
+  selectedWallet: "",
   isClaimRequested: false,
   isClaimSuccess: false,
   isClaimAlertShowing: false,
@@ -23,7 +23,7 @@ const initialState: MoxieState = {
 };
 
 export const moxieSlice = createSlice({
-  name: 'moxie',
+  name: "moxie",
   initialState,
   reducers: {
     setSelectedWallet: (state, action: PayloadAction<string>) => {

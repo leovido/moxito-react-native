@@ -10,14 +10,14 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.moxito.moxitofitness"
+      "bundleIdentifier": "com.christianleovido.Moxito"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.moxito.moxitofitness"
+      "package": "com.christianleovido.Moxito"
     },
     "web": {
       "bundler": "metro",

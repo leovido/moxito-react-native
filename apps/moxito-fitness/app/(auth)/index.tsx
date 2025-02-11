@@ -1,5 +1,6 @@
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { useRouter } from "expo-router";
+import { colors } from "@moxito/theme";
 
 export default function AuthScreen() {
   const router = useRouter();
@@ -18,7 +19,8 @@ export default function AuthScreen() {
         <View style={styles.content}>
           <Text style={styles.title}>Sign in to Moxito with Farcaster</Text>
           <Text style={styles.subtitle}>
-            Sign in to the apps to display your profile or skip this step.
+            Sign in to the apps to display your profile or skip this step. If
+            you skip this step, you will only have access to the FID search.
           </Text>
           <Pressable style={styles.signInButton} onPress={handleLogin}>
             <Text style={styles.signInButtonText}>Sign in</Text>
@@ -52,13 +54,14 @@ const styles = StyleSheet.create({
     margin: 20,
     padding: 20,
     borderRadius: 24,
-    backgroundColor: "#fff",
+    backgroundColor: colors.white[100],
   },
   title: {
     fontFamily: "Lato_700Bold",
     fontSize: 24,
     marginBottom: 20,
     textAlign: "center",
+    color: colors.primary[100],
   },
   subtitle: {
     textAlign: "center",
@@ -66,21 +69,21 @@ const styles = StyleSheet.create({
   },
   skipButtonText: {
     marginTop: 20,
-    color: "#000",
+    color: colors.black[4],
   },
   signInButtonText: {
-    color: "#fff",
+    color: colors.white[100],
     fontFamily: "Lato_700Bold",
     fontSize: 16,
   },
   signInButton: {
-    backgroundColor: "#A87AFF",
+    backgroundColor: colors.primary[100],
     padding: 10,
     borderRadius: 5,
     marginTop: 20,
   },
   skipButton: {
     marginTop: 20,
-    color: "#000",
+    color: colors.black[4],
   },
 });
