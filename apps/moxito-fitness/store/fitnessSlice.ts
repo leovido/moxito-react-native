@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { healthKitService } from "@/components/HealthKitService";
+// import { healthKitService } from "@/components/HealthKitService";
 
 interface FitnessData {
   steps: number;
@@ -16,15 +16,15 @@ interface FitnessData {
 }
 
 const initialState: FitnessData = {
-  steps: 0,
-  calories: 0,
-  distance: 0,
+  steps: 5000,
+  calories: 300,
+  distance: 4.2,
   heartRate: {
-    resting: 0,
-    average: 0,
+    resting: 65,
+    average: 72
   },
   workouts: [],
-  lastUpdated: "",
+  lastUpdated: new Date().toISOString(),
   isLoading: false,
   error: null,
 };
@@ -32,6 +32,21 @@ const initialState: FitnessData = {
 export const fetchFitnessData = createAsyncThunk(
   "fitness/fetchData",
   async () => {
+    // Return mock data instead of calling HealthKit
+    return {
+      steps: 5000,
+      calories: 300,
+      distance: 4.2,
+      heartRate: {
+        resting: 65,
+        average: 72,
+      },
+      workouts: [],
+      lastUpdated: new Date().toISOString(),
+    };
+    
+    // Comment out the HealthKit code
+    /*
     const now = new Date();
     const startOfDay = new Date(now.setHours(0, 0, 0, 0));
     const endOfDay = new Date(now.setHours(23, 59, 59, 999));
@@ -61,6 +76,7 @@ export const fetchFitnessData = createAsyncThunk(
     } catch (error) {
       throw new Error(`Failed to fetch fitness data: ${error}`);
     }
+    */
   },
 );
 

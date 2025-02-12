@@ -17,12 +17,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { RootState } from "@/store/store";
 import { setFilterSelection } from "@/moxieSlice";
 import { StatsCard } from "@/components/StatsCard";
 import { EarningsCard } from "@/components/EarningsCard";
 import { moxieApi } from "@moxito/api";
-import { healthKitService } from "@/components/HealthKitService";
+// import { healthKitService } from "@/components/HealthKitService";
 
 export default function FitnessScreen() {
   const [username, setUsername] = useState<string>("Moxie");
@@ -42,23 +42,10 @@ export default function FitnessScreen() {
     filter: "TODAY",
   });
 
-  const {
-    data: stepCount,
-    isLoading: stepCountLoading,
-    error: stepCountError,
-  } = healthKitService.getStepCount(
-    new Date(new Date().setHours(0, 0, 0, 0)),
-    new Date(new Date().setHours(23, 59, 59, 999)),
-  );
-
   useEffect(() => {
     setUsername(stats?.socials[0].profileDisplayName || "Moxie");
     setProfileImage(stats?.socials[0].profileImage || null);
   }, [stats]);
-
-  useEffect(() => {
-    console.log(stepCount, "stepcount");
-  }, [stepCount]);
 
   // const { data: points, isLoading, error } = moxitoService.endpoints.getAllCheckinsByUser.useQuery({
   //   fid: 203666,

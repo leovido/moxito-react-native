@@ -9,8 +9,8 @@ import "react-native-reanimated";
 import { StatusBar } from "expo-status-bar";
 import { Platform } from "react-native";
 import { Provider } from "react-redux";
-import { store } from "@/store";
 import { AuthProvider } from "./(auth)/AuthProvider";
+import { store } from "@/store/store";
 
 export {
 	// Catch any errors thrown by the Layout component.

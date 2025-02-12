@@ -1,3 +1,4 @@
+import React from "react";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { colors } from "@moxito/theme";
