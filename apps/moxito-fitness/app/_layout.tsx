@@ -7,10 +7,11 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { StatusBar } from "expo-status-bar";
-import { Platform } from "react-native";
+import { Platform, Linking } from "react-native";
 import { Provider } from "react-redux";
 import { AuthProvider } from "./(auth)/AuthProvider";
 import { store } from "@/store/store";
+import { router } from 'expo-router';
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -45,6 +46,35 @@ export default function RootLayout() {
 			SplashScreen.hideAsync();
 		}
 	}, [loaded]);
+
+	useEffect(() => {
+		// Handle deep links when app is already running
+		const subscription = Linking.addEventListener('url', ({ url }) => {
+			handleDeepLink(url);
+		});
+
+		// Handle deep links when app is not running
+		Linking.getInitialURL().then((url) => {
+			if (url) {
+				handleDeepLink(url);
+			}
+		});
+
+		return () => {
+			subscription.remove();
+		};
+	}, []);
+
+	const handleDeepLink = (url: string) => {
+		const parsedUrl = new URL(url);
+		
+		if (parsedUrl.pathname === '/callback') {
+			const token = new URLSearchParams(parsedUrl.search).get('token');
+			if (token) {
+				router.replace('/(tabs)');
+			}
+		}
+	};
 
 	if (!loaded) {
 		return null;

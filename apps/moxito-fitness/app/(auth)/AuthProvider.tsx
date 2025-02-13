@@ -1,6 +1,8 @@
 // AuthContext.tsx
 import { createContext, useContext, useState } from "react";
 import * as WebBrowser from "expo-web-browser";
+import * as Linking from 'expo-linking';
+import * as SecureStore from 'expo-secure-store';
 
 interface AuthContextType {
 	isAuthenticated: boolean;
@@ -15,27 +17,78 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const [url, setUrl] = useState<string | null>(null);
 	const [authError, setAuthError] = useState<string | null>(null);
+	const [fid, setFID] = useState(0);
+	const [signerToken, setSignerToken] = useState('');
+
+	const handleDeepLink = (url: string) => {
+		try {
+			const urlObj = new URL(url);
+			
+			// Check if URL matches our scheme and host
+			if (urlObj.protocol !== 'moxito:' || urlObj.hostname !== 'auth') {
+				return;
+			}
+
+			// Get query parameters
+			const params = new URLSearchParams(urlObj.search);
+			const signer64 = params.get('id');
+			const fid64 = params.get('fid');
+
+			if (!signer64 || !fid64) {
+				console.log("Required query items missing: signer or fid.");
+				return;
+			}
+
+			// Decode base64 values
+			try {
+				const decodedSigner = Buffer.from(signer64, 'base64').toString('utf8');
+				const decodedFID = Buffer.from(fid64, 'base64').toString('utf8');
+
+				// Save to secure storage
+				SecureStore.setItemAsync(
+					`com.christianleovido.Moxito-${decodedFID}`,
+					decodedSigner
+				);
+
+				// Update state/context
+				setIsAuthenticated(true);
+				// Assuming you have these state setters in your component
+				setFID(parseInt(decodedFID, 10));
+				setSignerToken(decodedSigner);
+
+			} catch (error) {
+				console.error('Failed to decode Base64 data:', error);
+			}
+		} catch (error) {
+			console.error('Error handling deep link:', error);
+		}
+	};
 
 	const startLogin = async () => {
 		try {
-			const authURL = "https://app.moxito.xyz";
+			await WebBrowser.warmUpAsync();
+			
+			const redirectUrl = Linking.createURL('auth');  // This will create moxito://auth
+			const authURL = `https://app.moxito.xyz/`;
+			
 			const result = await WebBrowser.openAuthSessionAsync(
 				authURL,
-				"moxito://", // your callback scheme
+				redirectUrl,
+				{
+					showInRecents: true,
+					preferEphemeralSession: true,
+				}
 			);
 
+			await WebBrowser.coolDownAsync();
+
 			if (result.type === "success" && result.url) {
-				setUrl(result.url);
-				setIsAuthenticated(true);
-			} else {
-				// Handle cancellation or other non-success cases
-				setAuthError("Authentication was cancelled or failed");
+				handleDeepLink(result.url);
 			}
 		} catch (error) {
-			// Log error to Sentry
-			Sentry.Native.captureException(error);
+			console.error('Auth error:', error);
 			setAuthError(
-				error instanceof Error ? error.message : "Authentication failed",
+				error instanceof Error ? error.message : "Authentication failed"
 			);
 		}
 	};

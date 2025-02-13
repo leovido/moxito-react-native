@@ -22,7 +22,7 @@ import { setFilterSelection } from "@/moxieSlice";
 import { StatsCard } from "@/components/StatsCard";
 import { EarningsCard } from "@/components/EarningsCard";
 import { moxieApi } from "@moxito/api";
-// import { healthKitService } from "@/components/HealthKitService";
+import { healthKitService } from "@/components/HealthKitService";
 
 export default function FitnessScreen() {
   const [username, setUsername] = useState<string>("Moxie");
@@ -46,6 +46,10 @@ export default function FitnessScreen() {
     setUsername(stats?.socials[0].profileDisplayName || "Moxie");
     setProfileImage(stats?.socials[0].profileImage || null);
   }, [stats]);
+
+  useEffect(() => {
+    healthKitService.requestAuthorization();
+  }, []);
 
   // const { data: points, isLoading, error } = moxitoService.endpoints.getAllCheckinsByUser.useQuery({
   //   fid: 203666,

@@ -27,6 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
+          <string>moxito</string>
           <string>com.christianleovido.Moxito</string>
         </array>
       </dict>
@@ -50,6 +51,10 @@
       <key>NSAllowsLocalNetworking</key>
       <true/>
     </dict>
+    <key>NSHealthShareUsageDescription</key>
+    <string>We need access to your health data to track your fitness progress</string>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>We need permission to update your health data</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>

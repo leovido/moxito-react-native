@@ -35,7 +35,7 @@ export default function AuthScreen() {
 					<Pressable style={styles.signInButton} onPress={handleLogin}>
 						<Text style={styles.signInButtonText}>Sign in</Text>
 					</Pressable>
-					<Pressable style={styles.skipButton} onPress={handleLogin}>
+					<Pressable style={styles.skipButton} onPress={() => router.replace("/(tabs)/fitness")}>
 						<Text style={styles.skipButtonText}>Skip this step</Text>
 					</Pressable>
 				</View>

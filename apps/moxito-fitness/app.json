@@ -4,20 +4,51 @@
     "slug": "moxito-fitness",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "moxito",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.christianleovido.Moxito"
+      "bundleIdentifier": "com.christianleovido.Moxito",
+      "associatedDomains": [
+        "applinks:app.moxito.xyz"
+      ],
+      "infoPlist": {
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": [
+              "moxito"
+            ]
+          }
+        ],
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true,
+          "NSAllowsLocalNetworking": true
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.christianleovido.Moxito"
+      "package": "com.christianleovido.Moxito",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "moxito"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -45,6 +76,9 @@
       },
       "eas": {
         "projectId": "d7541886-e8a9-47c0-84fc-0685f72d524d"
+      },
+      "developmentClient": {
+        "silentLaunch": true
       }
     }
   }
