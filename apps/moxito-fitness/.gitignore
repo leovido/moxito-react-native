@@ -9,6 +9,9 @@ dist/
 web-build/
 expo-env.d.ts
 
+# secrets
+.env
+
 # Native
 *.orig.*
 *.jks
@@ -36,3 +39,18 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+
+# iOS
+ios/Pods/
+ios/build/
+ios/*.xcarchive
+ios/Podfile.lock
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+android/*.iml
+android/app/release/

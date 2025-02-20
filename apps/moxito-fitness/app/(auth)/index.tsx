@@ -9,15 +9,15 @@ export default function AuthScreen() {
 	const router = useRouter();
 	const { startLogin, isAuthenticated, authError } = useAuth();
 
-	const handleLogin = () => {
-		startLogin();
-	};
-
 	useEffect(() => {
 		if (isAuthenticated) {
 			router.replace("/(tabs)/fitness");
 		}
 	}, [isAuthenticated, router]);
+
+	const handleLogin = () => {
+		startLogin();
+	};
 
 	return (
 		<>
@@ -28,14 +28,17 @@ export default function AuthScreen() {
 			<View style={styles.container}>
 				<View style={styles.content}>
 					<Text style={styles.title}>Sign in to Moxito with Farcaster</Text>
-					{!authError && <Text style={styles.errorText}>{authError}</Text>}
+					{authError && <Text style={styles.errorText}>{authError}</Text>}
 					<Text style={styles.subtitle}>
 						Sign in to the apps to display your profile or skip this step.
 					</Text>
 					<Pressable style={styles.signInButton} onPress={handleLogin}>
 						<Text style={styles.signInButtonText}>Sign in</Text>
 					</Pressable>
-					<Pressable style={styles.skipButton} onPress={() => router.replace("/(tabs)/fitness")}>
+					<Pressable 
+						style={styles.skipButton} 
+						onPress={() => router.replace("/(tabs)/fitness")}
+					>
 						<Text style={styles.skipButtonText}>Skip this step</Text>
 					</Pressable>
 				</View>
@@ -45,60 +48,61 @@ export default function AuthScreen() {
 }
 
 const styles = StyleSheet.create({
-	backgroundImage: {
-		position: "absolute",
-		top: 0,
-		left: 0,
-		right: 0,
-		bottom: 0,
-		width: "100%",
-		height: "100%",
-	},
 	container: {
 		flex: 1,
-		justifyContent: "flex-end",
+		alignItems: "center",
+		justifyContent: "center",
+		padding: 20,
+	},
+	backgroundImage: {
+		position: "absolute",
+		width: "100%",
+		height: "100%",
+		resizeMode: "cover",
 	},
 	content: {
-		flexDirection: "column",
+		width: "100%",
 		alignItems: "center",
-		margin: 20,
+		backgroundColor: "rgba(0,0,0,0.7)",
 		padding: 20,
-		borderRadius: 24,
-		backgroundColor: "#fff",
+		borderRadius: 10,
 	},
 	title: {
-		fontFamily: "Lato_700Bold",
 		fontSize: 24,
-		marginBottom: 20,
+		fontWeight: "bold",
+		color: colors.white[100],
+		marginBottom: 10,
 		textAlign: "center",
 	},
 	subtitle: {
-		textAlign: "center",
-		marginBottom: 10,
-	},
-	skipButtonText: {
-		marginTop: 20,
-		color: "#000",
-	},
-	signInButtonText: {
-		color: "#fff",
-		fontFamily: "Lato_700Bold",
 		fontSize: 16,
-	},
-	signInButton: {
-		backgroundColor: "#A87AFF",
-		padding: 10,
-		borderRadius: 5,
-		marginTop: 20,
-	},
-	skipButton: {
-		marginTop: 20,
-		color: "#000",
+		color: colors.white[100],
+		marginBottom: 20,
+		textAlign: "center",
 	},
 	errorText: {
-		color: "#FF4444",
+		color: colors.error,
 		marginBottom: 10,
-		textAlign: "center",
-		fontFamily: "Lato_400Regular",
+	},
+	signInButton: {
+		backgroundColor: colors.primary[100],
+		paddingHorizontal: 30,
+		paddingVertical: 15,
+		borderRadius: 25,
+		width: "100%",
+		alignItems: "center",
+		marginBottom: 10,
+	},
+	signInButtonText: {
+		color: colors.white[100],
+		fontSize: 18,
+		fontWeight: "600",
+	},
+	skipButton: {
+		paddingVertical: 15,
+	},
+	skipButtonText: {
+		color: colors.white[100],
+		fontSize: 16,
 	},
 });

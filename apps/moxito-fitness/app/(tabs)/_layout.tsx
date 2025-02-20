@@ -11,10 +11,30 @@ export default function TabLayout() {
         headerShown: false,
       }}
     >
-      <Tabs.Screen name="home" />
-      <Tabs.Screen name="fitness" />
-      <Tabs.Screen name="search" />
-      <Tabs.Screen name="profile" />
+      <Tabs.Screen 
+        name="home" 
+        options={{
+          title: "Home"
+        }}
+      />
+      <Tabs.Screen 
+        name="fitness" 
+        options={{
+          title: "Fitness"
+        }}
+      />
+      <Tabs.Screen 
+        name="search" 
+        options={{
+          title: "Search"
+        }}
+      />
+      <Tabs.Screen 
+        name="profile" 
+        options={{
+          title: "Profile"
+        }}
+      />
     </Tabs>
   );
 }

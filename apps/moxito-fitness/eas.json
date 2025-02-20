@@ -1,7 +1,8 @@
 {
   "cli": {
     "version": ">= 14.5.0",
-    "appVersionSource": "remote"
+    "appVersionSource": "remote",
+    "requireCommit": true
   },
   "build": {
     "development-simulator": {
@@ -13,10 +14,19 @@
     },
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium",
+        "simulator": false
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "developmentClient": false,
+      "channel": "preview"
     },
     "production": {
       "autoIncrement": true
@@ -24,5 +34,14 @@
   },
   "submit": {
     "production": {}
+  },
+  "credentials": {
+    "ios": {
+      "appStoreConnect": {
+        "apiKeyId": {"env": "APPSTORE_API_KEY_ID"},
+        "apiKeyIssuerId": {"env": "APPSTORE_ISSUER_ID"},
+        "apiKeyPath": {"env": "APPSTORE_API_KEY_PATH"}
+      }
+    }
   }
 }

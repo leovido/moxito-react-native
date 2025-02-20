@@ -24,7 +24,17 @@
         ],
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": true,
-          "NSAllowsLocalNetworking": true
+          "NSAllowsLocalNetworking": true,
+          "NSExceptionDomains": {
+            "localhost": {
+              "NSExceptionAllowsInsecureHTTPLoads": true,
+              "NSIncludesSubdomains": true
+            },
+            "172.20.10.3": {
+              "NSExceptionAllowsInsecureHTTPLoads": true,
+              "NSIncludesSubdomains": true
+            }
+          }
         }
       }
     },
@@ -78,7 +88,9 @@
         "projectId": "d7541886-e8a9-47c0-84fc-0685f72d524d"
       },
       "developmentClient": {
-        "silentLaunch": true
+        "silentLaunch": true,
+        "debuggerHost": "172.20.10.3:8081",
+        "bundleUrl": "http://172.20.10.3:8081"
       }
     }
   }

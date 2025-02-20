@@ -2,7 +2,6 @@
 import { createContext, useContext, useState } from "react";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from 'expo-linking';
-import * as SecureStore from 'expo-secure-store';
 
 interface AuthContextType {
 	isAuthenticated: boolean;
@@ -45,10 +44,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				const decodedFID = Buffer.from(fid64, 'base64').toString('utf8');
 
 				// Save to secure storage
-				SecureStore.setItemAsync(
-					`com.christianleovido.Moxito-${decodedFID}`,
-					decodedSigner
-				);
+				// SecureStore.setItemAsync(
+				// 	`com.christianleovido.Moxito-${decodedFID}`,
+				// 	decodedSigner
+				// );
 
 				// Update state/context
 				setIsAuthenticated(true);
