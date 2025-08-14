@@ -3,6 +3,7 @@ export default {
     name: "Moxito",
     slug: "moxito-fitness",
     scheme: "moxito",
+    plugins: ["expo-font", "expo-router"],
     ios: {
       bundleIdentifier: "com.christianleovido.Moxito",
       buildNumber: "2",
@@ -16,13 +17,13 @@ export default {
       entitlements: {
         "com.apple.developer.healthkit": true,
         "com.apple.developer.healthkit.access": ["health-records"],
-      }
+      },
     },
     android: {
       package: "com.christianleovido.Moxito",
     },
     updates: {
-      url: "https://u.expo.dev/d7541886-e8a9-47c0-84fc-0685f72d524d"
+      url: "https://u.expo.dev/d7541886-e8a9-47c0-84fc-0685f72d524d",
     },
     runtimeVersion: "1.0.0",
     extra: {

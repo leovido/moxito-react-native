@@ -1,16 +1,9 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { DarkTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-
-import { StatusBar } from "expo-status-bar";
-import { Platform } from "react-native";
-import { Provider } from "react-redux";
-import { AuthProvider } from "./(auth)/AuthProvider";
-import { store } from "@/store/store";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -50,22 +43,11 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
   return (
-    <Provider store={store}>
-      <ThemeProvider value={DarkTheme}>
-        <AuthProvider>
-          <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="(auth)" />
-            <Stack.Screen name="(tabs)" />
-          </Stack>
-        </AuthProvider>
-      </ThemeProvider>
-    </Provider>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+      <Stack.Screen name="(auth)" />
+      <Stack.Screen name="(tabs)" />
+    </Stack>
   );
 }
