@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  Pressable, 
-  ScrollView, 
+import {
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  ScrollView,
   SafeAreaView,
   StatusBar,
   ImageBackground,
-  Image 
+  Image,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -53,13 +53,19 @@ export default function ProfileScreen() {
     >
       <SafeAreaView style={styles.safeArea}>
         <StatusBar barStyle="light-content" />
-        
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+
+        <ScrollView
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
+        >
           {/* Profile Header */}
           <View style={styles.profileHeader}>
             <View style={styles.avatarContainer}>
               {userProfile.avatar ? (
-                <Image source={{ uri: userProfile.avatar }} style={styles.avatar} />
+                <Image
+                  source={{ uri: userProfile.avatar }}
+                  style={styles.avatar}
+                />
               ) : (
                 <View style={styles.avatarPlaceholder}>
                   <Text style={styles.avatarText}>
@@ -68,7 +74,7 @@ export default function ProfileScreen() {
                 </View>
               )}
             </View>
-            
+
             <Text style={styles.userName}>{userProfile.name}</Text>
             <Text style={styles.userEmail}>{userProfile.email}</Text>
             <Text style={styles.userLevel}>{userProfile.level}</Text>
@@ -139,7 +145,7 @@ const styles = StyleSheet.create({
   profileHeader: {
     paddingTop: 20,
     paddingBottom: 30,
-    alignItems: 'center',
+    alignItems: "center",
   },
   avatarContainer: {
     marginBottom: 20,
@@ -149,95 +155,95 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 4,
-    borderColor: '#9747FF',
+    borderColor: "#9747FF",
   },
   avatarPlaceholder: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#9747FF',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#9747FF",
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 4,
-    borderColor: '#9747FF',
+    borderColor: "#9747FF",
   },
   avatarText: {
     fontSize: 36,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    fontFamily: 'Lato_700Bold',
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    fontFamily: "Lato_700Bold",
   },
   userName: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF",
     marginBottom: 8,
-    fontFamily: 'Lato_700Bold',
+    fontFamily: "Lato_700Bold",
   },
   userEmail: {
     fontSize: 16,
-    color: '#E5E7EB',
+    color: "#E5E7EB",
     marginBottom: 8,
-    fontFamily: 'Lato_400Regular',
+    fontFamily: "Lato_400Regular",
   },
   userLevel: {
     fontSize: 14,
-    color: '#9747FF',
-    fontWeight: '600',
-    fontFamily: 'Lato_600SemiBold',
+    color: "#9747FF",
+    fontWeight: "600",
+    fontFamily: "Lato_700Bold",
   },
   statsOverview: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 30,
     gap: 15,
   },
   statItem: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     padding: 20,
     borderRadius: 16,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: "rgba(255, 255, 255, 0.2)",
   },
   statNumber: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#9747FF',
+    fontWeight: "bold",
+    color: "#9747FF",
     marginBottom: 4,
-    fontFamily: 'Lato_700Bold',
+    fontFamily: "Lato_700Bold",
   },
   statLabel: {
     fontSize: 12,
-    color: '#D1D5DB',
-    textAlign: 'center',
-    fontFamily: 'Lato_400Regular',
+    color: "#D1D5DB",
+    textAlign: "center",
+    fontFamily: "Lato_400Regular",
   },
   profileOptions: {
     marginBottom: 30,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF",
     marginBottom: 15,
-    fontFamily: 'Lato_700Bold',
+    fontFamily: "Lato_700Bold",
   },
   optionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     padding: 20,
     borderRadius: 16,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: "rgba(255, 255, 255, 0.2)",
   },
   optionContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   optionIcon: {
     fontSize: 20,
@@ -245,39 +251,39 @@ const styles = StyleSheet.create({
   },
   optionTitle: {
     fontSize: 16,
-    color: '#FFFFFF',
-    fontFamily: 'Lato_600SemiBold',
+    color: "#FFFFFF",
+    fontFamily: "Lato_700Bold",
   },
   optionArrow: {
     fontSize: 18,
-    color: '#9CA3AF',
-    fontFamily: 'Lato_400Regular',
+    color: "#9CA3AF",
+    fontFamily: "Lato_400Regular",
   },
   logoutSection: {
     marginBottom: 30,
   },
   logoutButton: {
-    backgroundColor: 'rgba(239, 68, 68, 0.8)',
+    backgroundColor: "rgba(239, 68, 68, 0.8)",
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 16,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: 'rgba(239, 68, 68, 0.3)',
+    borderColor: "rgba(239, 68, 68, 0.3)",
   },
   logoutButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: '600',
-    fontFamily: 'Lato_600SemiBold',
+    fontWeight: "600",
+    fontFamily: "Lato_700Bold",
   },
   versionInfo: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingBottom: 20,
   },
   versionText: {
     fontSize: 12,
-    color: '#9CA3AF',
-    fontFamily: 'Lato_400Regular',
+    color: "#9CA3AF",
+    fontFamily: "Lato_400Regular",
   },
 });
