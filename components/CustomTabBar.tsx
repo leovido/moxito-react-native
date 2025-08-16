@@ -1,7 +1,8 @@
 // CustomTabBar.tsx
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Image, Pressable, StyleSheet, View, Text, Platform } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 const icons = (label: string, isSelected: boolean) => {
   const iconStyle = [
@@ -43,61 +44,100 @@ const icons = (label: string, isSelected: boolean) => {
   }
 };
 
+const getTabLabel = (routeName: string) => {
+  switch (routeName) {
+    case "home": return "Home";
+    case "fitness": return "Fitness";
+    case "search": return "Search";
+    case "profile": return "Profile";
+    default: return routeName;
+  }
+};
+
 export default function CustomTabBar({
   state,
   descriptors,
   navigation,
 }: BottomTabBarProps) {
   return (
-    <View style={styles.tabBar}>
-      {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
+    <View style={styles.container}>
+      <LinearGradient
+        colors={['rgba(0,0,0,0.8)', 'rgba(0,0,0,0.9)']}
+        style={styles.tabBar}
+      >
+        {state.routes.map((route, index) => {
+          const { options } = descriptors[route.key];
+          const isFocused = state.index === index;
 
-        const isFocused = state.index === index;
+          const onPress = () => {
+            const event = navigation.emit({
+              type: "tabPress",
+              target: route.key,
+              canPreventDefault: true,
+            });
 
-        const onPress = () => {
-          const event = navigation.emit({
-            type: "tabPress",
-            target: route.key,
-            canPreventDefault: true,
-          });
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
 
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
-          }
-        };
+          const onLongPress = () => {
+            navigation.emit({
+              type: "tabLongPress",
+              target: route.key,
+            });
+          };
 
-        const onLongPress = () => {
-          navigation.emit({
-            type: "tabLongPress",
-            target: route.key,
-          });
-        };
-
-        return (
-          <Pressable
-            key={index}
-            accessibilityRole="button"
-            accessibilityState={isFocused ? { selected: true } : {}}
-            accessibilityLabel={options.tabBarAccessibilityLabel}
-            onPress={onPress}
-            onLongPress={onLongPress}
-            style={[styles.tab, isFocused && styles.selectedTab]}
-          >
-            {icons(route.name, isFocused)}
-          </Pressable>
-        );
-      })}
+          return (
+            <Pressable
+              key={index}
+              accessibilityRole="button"
+              accessibilityState={isFocused ? { selected: true } : {}}
+              accessibilityLabel={options.tabBarAccessibilityLabel || `${getTabLabel(route.name)} tab`}
+              onPress={onPress}
+              onLongPress={onLongPress}
+              style={[styles.tab, isFocused && styles.selectedTab]}
+            >
+              {icons(route.name, isFocused)}
+              <Text style={[
+                styles.tabLabel,
+                { color: isFocused ? "#FFFFFF" : "#222222" }
+              ]}>
+                {getTabLabel(route.name)}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </LinearGradient>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+  },
   tabBar: {
     flexDirection: "row",
-    height: 50,
-    backgroundColor: "transparent",
-    paddingHorizontal: 10,
+    height: Platform.OS === 'ios' ? 90 : 70,
+    backgroundColor: "rgba(0,0,0,0.9)",
+    paddingHorizontal: 20,
+    paddingBottom: Platform.OS === 'ios' ? 20 : 10,
+    paddingTop: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   tab: {
     flex: 1,
@@ -105,20 +145,30 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 4,
     borderRadius: 20,
-    height: 36,
+    height: 50,
+    paddingVertical: 8,
   },
   selectedTab: {
     backgroundColor: "#9747FF",
-  },
-  screen: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    shadowColor: "#9747FF",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 8,
   },
   statsIcon: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
     resizeMode: "contain",
-    tintColor: "#222222",
+    marginBottom: 4,
+  },
+  tabLabel: {
+    fontSize: 10,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 2,
   },
 });

@@ -1,0 +1,9 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+This project is a fitness app that uses Apple Health for iOS and Android's Health Connect.
+
+It allows users to track their runs and have a chance of receiving super tokens, streamed to their wallets after reaching a goal.
