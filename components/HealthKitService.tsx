@@ -1,4 +1,4 @@
-import { NativeModules } from "react-native";
+import { NativeModules } from 'react-native';
 
 const { HealthKitManager } = NativeModules;
 
@@ -21,7 +21,7 @@ export const healthKitService: HealthKitService = {
     try {
       return await HealthKitManager.requestAuthorization();
     } catch (error) {
-      console.error("HealthKit authorization failed:", error);
+      console.error('HealthKit authorization failed:', error);
       throw error;
     }
   },
@@ -30,19 +30,16 @@ export const healthKitService: HealthKitService = {
     try {
       return await HealthKitManager.getStepCount(startDate, endDate);
     } catch (error) {
-      console.error("Failed to fetch step count:", error);
+      console.error('Failed to fetch step count:', error);
       throw error;
     }
   },
 
   fetchHealthDataForDateRange: async (startDate: Date, endDate: Date) => {
     try {
-      return await HealthKitManager.fetchHealthDataForDateRange(
-        startDate,
-        endDate,
-      );
+      return await HealthKitManager.fetchHealthDataForDateRange(startDate, endDate);
     } catch (error) {
-      console.error("Failed to fetch health data:", error);
+      console.error('Failed to fetch health data:', error);
       throw error;
     }
   },
@@ -51,7 +48,7 @@ export const healthKitService: HealthKitService = {
     try {
       return await HealthKitManager.checkNoManualInput();
     } catch (error) {
-      console.error("Failed to check manual input:", error);
+      console.error('Failed to check manual input:', error);
       throw error;
     }
   },
@@ -60,19 +57,16 @@ export const healthKitService: HealthKitService = {
     try {
       return await HealthKitManager.fetchCaloriesBurned(startDate, endDate);
     } catch (error) {
-      console.error("Failed to fetch calories burned:", error);
+      console.error('Failed to fetch calories burned:', error);
       throw error;
     }
   },
 
   getRestingHeartRateForMonth: async (startDate: Date, endDate: Date) => {
     try {
-      return await HealthKitManager.getRestingHeartRateForMonth(
-        startDate,
-        endDate,
-      );
+      return await HealthKitManager.getRestingHeartRateForMonth(startDate, endDate);
     } catch (error) {
-      console.error("Failed to fetch resting heart rate:", error);
+      console.error('Failed to fetch resting heart rate:', error);
       throw error;
     }
   },
@@ -81,7 +75,7 @@ export const healthKitService: HealthKitService = {
     try {
       return await HealthKitManager.getAverageHeartRate(startDate, endDate);
     } catch (error) {
-      console.error("Failed to fetch average heart rate:", error);
+      console.error('Failed to fetch average heart rate:', error);
       throw error;
     }
   },
@@ -90,7 +84,7 @@ export const healthKitService: HealthKitService = {
     try {
       return await HealthKitManager.fetchDistance(startDate, endDate);
     } catch (error) {
-      console.error("Failed to fetch distance:", error);
+      console.error('Failed to fetch distance:', error);
       throw error;
     }
   },
@@ -108,7 +102,7 @@ export const healthKitService: HealthKitService = {
     try {
       return await HealthKitManager.fetchWorkouts(startDate, endDate);
     } catch (error) {
-      console.error("Failed to fetch workouts:", error);
+      console.error('Failed to fetch workouts:', error);
       throw error;
     }
   },
@@ -117,7 +111,7 @@ export const healthKitService: HealthKitService = {
     try {
       return await HealthKitManager.fetchAvgHRWorkouts(startDate, endDate);
     } catch (error) {
-      console.error("Failed to fetch workout heart rates:", error);
+      console.error('Failed to fetch workout heart rates:', error);
       throw error;
     }
   },

@@ -1,4 +1,5 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
 // import { healthKitService } from "@/components/HealthKitService";
 
 interface FitnessData {
@@ -21,7 +22,7 @@ const initialState: FitnessData = {
   distance: 4.2,
   heartRate: {
     resting: 65,
-    average: 72
+    average: 72,
   },
   workouts: [],
   lastUpdated: new Date().toISOString(),
@@ -29,24 +30,22 @@ const initialState: FitnessData = {
   error: null,
 };
 
-export const fetchFitnessData = createAsyncThunk(
-  "fitness/fetchData",
-  async () => {
-    // Return mock data instead of calling HealthKit
-    return {
-      steps: 5000,
-      calories: 300,
-      distance: 4.2,
-      heartRate: {
-        resting: 65,
-        average: 72,
-      },
-      workouts: [],
-      lastUpdated: new Date().toISOString(),
-    };
-    
-    // Comment out the HealthKit code
-    /*
+export const fetchFitnessData = createAsyncThunk('fitness/fetchData', async () => {
+  // Return mock data instead of calling HealthKit
+  return {
+    steps: 5000,
+    calories: 300,
+    distance: 4.2,
+    heartRate: {
+      resting: 65,
+      average: 72,
+    },
+    workouts: [],
+    lastUpdated: new Date().toISOString(),
+  };
+
+  // Comment out the HealthKit code
+  /*
     const now = new Date();
     const startOfDay = new Date(now.setHours(0, 0, 0, 0));
     const endOfDay = new Date(now.setHours(23, 59, 59, 999));
@@ -77,11 +76,10 @@ export const fetchFitnessData = createAsyncThunk(
       throw new Error(`Failed to fetch fitness data: ${error}`);
     }
     */
-  },
-);
+});
 
 const fitnessSlice = createSlice({
-  name: "fitness",
+  name: 'fitness',
   initialState,
   reducers: {
     resetFitnessData: () => {
@@ -106,7 +104,7 @@ const fitnessSlice = createSlice({
       })
       .addCase(fetchFitnessData.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message || "An error occurred";
+        state.error = action.error.message || 'An error occurred';
       });
   },
 });

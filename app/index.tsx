@@ -1,25 +1,25 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function Index() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("Index component mounted!");
+    console.log('Index component mounted!');
   }, []);
 
   const handleGoToAuth = () => {
-    console.log("Navigating to auth...");
-    router.push("/(auth)");
+    console.log('Navigating to auth...');
+    router.push('/(auth)');
   };
 
   const handleGoToTabs = () => {
-    console.log("Navigating to tabs...");
-    router.push("/(tabs)/home");
+    console.log('Navigating to tabs...');
+    router.push('/(tabs)/home');
   };
 
-  console.log("Index component rendering...");
+  console.log('Index component rendering...');
 
   return (
     <View style={styles.container}>
@@ -42,38 +42,38 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#000',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    fontWeight: 'bold',
+    color: '#FFFFFF',
     marginBottom: 16,
-    textAlign: "center",
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 18,
-    color: "#CCCCCC",
+    color: '#CCCCCC',
     marginBottom: 40,
-    textAlign: "center",
+    textAlign: 'center',
   },
   buttonContainer: {
     gap: 20,
   },
   button: {
-    backgroundColor: "#9747FF",
+    backgroundColor: '#9747FF',
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 12,
     minWidth: 200,
-    alignItems: "center",
+    alignItems: 'center',
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 });

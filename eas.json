@@ -35,13 +35,4 @@
   "submit": {
     "production": {}
   }
-  // "credentials": {
-  //   "ios": {
-  //     "appStoreConnect": {
-  //       "apiKeyId": {"env": "APPSTORE_API_KEY_ID"},
-  //       "apiKeyIssuerId": {"env": "APPSTORE_ISSUER_ID"},
-  //       "apiKeyPath": {"env": "APPSTORE_API_KEY_PATH"}
-  //     }
-  //   }
-  // }
 }

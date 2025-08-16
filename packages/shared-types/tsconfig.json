@@ -4,12 +4,8 @@
     "verbatimModuleSyntax": true,
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@moxito/*": [
-        "./packages/*"
-      ]
+      "@/*": ["./*"],
+      "@moxito/*": ["./packages/*"]
     }
   },
   "include": [

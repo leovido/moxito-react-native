@@ -1,6 +1,6 @@
-import { colors } from "./foundations/colors";
-import { typography } from "./foundations/typography";
-import { spacing } from "./foundations/spacing";
+import { colors } from './foundations/colors';
+import { spacing } from './foundations/spacing';
+import { typography } from './foundations/typography';
 
 export const theme = {
   colors,
@@ -11,6 +11,6 @@ export const theme = {
 export type Theme = typeof theme;
 
 // Export individual foundations
-export * from "./foundations/colors";
-export * from "./foundations/typography";
-export * from "./foundations/spacing";
+export * from './foundations/colors';
+export * from './foundations/spacing';
+export * from './foundations/typography';

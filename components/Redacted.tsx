@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { View, Animated, StyleSheet } from 'react-native';
+import type React from 'react';
+import { useEffect } from 'react';
+import { Animated, StyleSheet, View } from 'react-native';
 
 interface RedactedProps {
   children: React.ReactNode;
@@ -26,9 +27,11 @@ export function Redacted({ children, isLoading }: RedactedProps) {
         ])
       ).start();
     }
-  }, [isLoading]);
+  }, [isLoading, shimmerValue]);
 
-  if (!isLoading) return <>{children}</>;
+  if (!isLoading) {
+    return <>{children}</>;
+  }
 
   return (
     <View style={styles.container}>
@@ -56,4 +59,4 @@ const styles = StyleSheet.create({
   shimmer: {
     backgroundColor: '#E0E0E0',
   },
-}); 
+});

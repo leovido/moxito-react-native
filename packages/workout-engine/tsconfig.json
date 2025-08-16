@@ -6,7 +6,10 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "composite": true
+    "composite": true,
+    "paths": {
+      "@moxito/api": ["../api/src"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["build", "node_modules"]

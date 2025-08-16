@@ -1,0 +1,37 @@
+{
+  "name": "@moxito/workout-engine",
+  "version": "1.0.0",
+  "description": "Native workout tracking module for Moxito Fitness",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf build",
+    "prepare": "yarn build"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "workout",
+    "fitness",
+    "health",
+    "gps",
+    "steps"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/moxito-react-native.git",
+    "directory": "packages/workout-engine"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/moxito-react-native/issues"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "peerDependencies": {
+    "expo": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

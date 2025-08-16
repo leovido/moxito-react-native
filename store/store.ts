@@ -1,9 +1,9 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/query";
-import { baseApi, lambdaApi, moxitoApi } from "@moxito/api";
-import { moxieReducer } from "../moxieSlice";
-import { fitnessReducer } from "./fitnessSlice";
-import { logger } from "redux-logger";
+import { baseApi, lambdaApi, moxitoApi } from '@moxito/api';
+import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { logger } from 'redux-logger';
+import { moxieReducer } from '../moxieSlice';
+import { fitnessReducer } from './fitnessSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,17 +14,17 @@ export const store = configureStore({
     [moxitoApi.reducerPath]: moxitoApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    process.env.NODE_ENV === "development"
+    process.env.NODE_ENV === 'development'
       ? getDefaultMiddleware().concat(
           baseApi.middleware,
           lambdaApi.middleware,
           moxitoApi.middleware,
-          logger,
+          logger
         )
       : getDefaultMiddleware().concat(
           baseApi.middleware,
           lambdaApi.middleware,
-          moxitoApi.middleware,
+          moxitoApi.middleware
         ),
 });
 

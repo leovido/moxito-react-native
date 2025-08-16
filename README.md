@@ -2,18 +2,61 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+## Code Quality with Biome
+
+This project uses [Biome](https://biomejs.dev/) for code quality, formatting, and linting. Biome is a fast, modern alternative to ESLint + Prettier that provides:
+
+- **Unified tooling**: Combines linting, formatting, and import organization
+- **Performance**: 10-100x faster than ESLint + Prettier
+- **Zero configuration**: Works out of the box with sensible defaults
+- **TypeScript support**: Excellent support for TypeScript and React Native
+- **Modern standards**: Built with Rust for optimal performance
+
+### Biome Commands
+
+```bash
+# Check code quality (linting + formatting)
+yarn check
+
+# Fix auto-fixable issues
+yarn check:fix
+
+# Fix all issues (including unsafe fixes)
+yarn check:fix:unsafe
+
+# Format code only
+yarn format
+
+# Check formatting without changing files
+yarn format:check
+
+# Lint only
+yarn lint
+
+# Fix linting issues
+yarn lint:fix
+```
+
+### Why Biome over ESLint + Prettier?
+
+1. **Speed**: Biome processes files much faster than traditional tools
+2. **Unified**: Single tool instead of managing multiple configurations
+3. **Modern**: Built for modern JavaScript/TypeScript projects
+4. **React Native optimized**: Excellent support for React Native patterns
+5. **Zero config**: Works immediately without complex setup
+
 ## Get started
 
 1. Install dependencies
 
    ```bash
-   npm install
+   yarn install
    ```
 
 2. Start the app
 
    ```bash
-    npx expo start
+    yarn start
    ```
 
 In the output, you'll find options to open the app in a
@@ -30,7 +73,7 @@ You can start developing by editing the files inside the **app** directory. This
 When you're ready, run:
 
 ```bash
-npm run reset-project
+yarn reset-project
 ```
 
 This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.

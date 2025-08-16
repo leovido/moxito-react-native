@@ -1,6 +1,6 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign } from '@expo/vector-icons';
+import type React from 'react';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type SignOutButtonProps = {
   onPress: () => void;
@@ -17,18 +17,18 @@ const SignOutButton: React.FC<SignOutButtonProps> = ({ onPress }) => {
 
 const styles = StyleSheet.create({
   button: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: "white",
+    borderColor: 'white',
     borderRadius: 5,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
   text: {
-    color: "white",
+    color: 'white',
     marginRight: 10,
     fontSize: 16,
   },

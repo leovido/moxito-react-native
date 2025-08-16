@@ -1,19 +1,21 @@
-import SecureStore from "expo-secure-store";
+import SecureStore from 'expo-secure-store';
 
-const KEY = "userInfo";
+const KEY = 'userInfo';
 
 export const storeUser = async (data: unknown) => {
   try {
     await SecureStore.setItemAsync(KEY, JSON.stringify(data));
   } catch (error) {
-    console.log("Error storing credentials", error);
+    console.log('Error storing credentials', error);
   }
 };
 
 export const retrieveUser = async () => {
   try {
     const user = await SecureStore.getItemAsync(KEY);
-    if (!user) return null;
+    if (!user) {
+      return null;
+    }
     return JSON.parse(user) as unknown;
   } catch (error) {
     console.error(`Error retrieving ${KEY}`, error);

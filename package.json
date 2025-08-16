@@ -12,8 +12,13 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "lint": "biome lint .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --write .",
+    "check:fix:unsafe": "biome check --write --unsafe .",
+    "format:check": "biome format --check .",
     "test:unit": "jest --coverage --verbose --detectOpenHandles --forceExit",
     "test:unit:watch": "jest --watchAll"
   },
@@ -22,6 +27,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
     "@reduxjs/toolkit": "^2.2.1",
@@ -33,6 +39,8 @@
     "expo-haptics": "~14.0.1",
     "expo-linear-gradient": "~14.0.2",
     "expo-linking": "~7.0.5",
+    "expo-location": "~18.0.1",
+    "expo-modules-core": "~2.1.1",
     "expo-router": "~4.0.21",
     "expo-secure-store": "~14.0.1",
     "expo-splash-screen": "~0.29.24",

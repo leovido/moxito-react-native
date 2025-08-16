@@ -1,69 +1,55 @@
-import React, { useState } from "react";
+import { useState } from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
   Pressable,
-  ScrollView,
   SafeAreaView,
+  ScrollView,
   StatusBar,
-} from "react-native";
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 export default function HomeScreen() {
   const [workoutStarted, setWorkoutStarted] = useState(false);
 
   const handleStartWorkout = () => {
     setWorkoutStarted(true);
-    console.log("Start Workout");
+    console.log('Start Workout');
   };
 
   const handleViewStats = () => {
-    console.log("View Stats");
+    console.log('View Stats');
   };
 
   const handleViewHistory = () => {
-    console.log("View History");
+    console.log('View History');
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="light-content" />
 
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Workout Dashboard</Text>
-          <Text style={styles.subtitle}>
-            Ready to crush your fitness goals?
-          </Text>
+          <Text style={styles.subtitle}>Ready to crush your fitness goals?</Text>
         </View>
 
         {/* Quick Actions */}
         <View style={styles.quickActions}>
-          <Pressable
-            style={styles.primaryButton}
-            onPress={handleStartWorkout}
-          >
+          <Pressable style={styles.primaryButton} onPress={handleStartWorkout}>
             <Text style={styles.primaryButtonText}>
-              {workoutStarted ? "Continue Workout" : "Start Workout"}
+              {workoutStarted ? 'Continue Workout' : 'Start Workout'}
             </Text>
           </Pressable>
 
           <View style={styles.secondaryActions}>
-            <Pressable
-              style={styles.secondaryButton}
-              onPress={handleViewStats}
-            >
+            <Pressable style={styles.secondaryButton} onPress={handleViewStats}>
               <Text style={styles.secondaryButtonText}>View Stats</Text>
             </Pressable>
 
-            <Pressable
-              style={styles.secondaryButton}
-              onPress={handleViewHistory}
-            >
+            <Pressable style={styles.secondaryButton} onPress={handleViewHistory}>
               <Text style={styles.secondaryButtonText}>Workout History</Text>
             </Pressable>
           </View>
@@ -87,7 +73,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: '#000',
   },
   scrollView: {
     flex: 1,
@@ -98,70 +84,70 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    fontWeight: 'bold',
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 18,
-    color: "#CCCCCC",
+    color: '#CCCCCC',
   },
   quickActions: {
     padding: 20,
     gap: 20,
   },
   primaryButton: {
-    backgroundColor: "#9747FF",
+    backgroundColor: '#9747FF',
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 12,
-    alignItems: "center",
+    alignItems: 'center',
   },
   primaryButtonText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   secondaryActions: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 16,
   },
   secondaryButton: {
     flex: 1,
-    backgroundColor: "#333333",
+    backgroundColor: '#333333',
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
-    alignItems: "center",
+    alignItems: 'center',
   },
   secondaryButtonText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   recentActivity: {
     padding: 20,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: "600",
-    color: "#FFFFFF",
+    fontWeight: '600',
+    color: '#FFFFFF',
     marginBottom: 16,
   },
   activityCard: {
-    backgroundColor: "#333333",
+    backgroundColor: '#333333',
     padding: 20,
     borderRadius: 12,
-    alignItems: "center",
+    alignItems: 'center',
   },
   activityText: {
     fontSize: 18,
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   activitySubtext: {
     fontSize: 14,
-    color: "#CCCCCC",
-    textAlign: "center",
+    color: '#CCCCCC',
+    textAlign: 'center',
   },
 });

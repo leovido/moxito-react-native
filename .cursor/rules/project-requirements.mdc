@@ -7,3 +7,225 @@ alwaysApply: false
 This project is a fitness app that uses Apple Health for iOS and Android's Health Connect.
 
 It allows users to track their runs and have a chance of receiving super tokens, streamed to their wallets after reaching a goal.
+
+Here are the steps and features in order to have the MVP ready:
+
+0) Assumptions (so we can move fast)
+
+Expo app with EAS Build enabled (custom native modules allowed via config plugins).
+
+Goal: near-real-time running distance & steps during an active workout; per-second rewards once the user surpasses a goal; writes to Apple Health / Health Connect as summary chunks (not per-second).
+
+No 3rd-party services; rewards are local accounting (you can push to chain later).
+
+1) Architecture (at a glance)
+
+JS (React Native/Expo)
+UI + state machine (IDLE → ACTIVE → GOAL_REACHED → COMPLETE) + reward ticker (1 Hz) driven by the latest sensor totals.
+
+Native (iOS)
+
+HKWorkoutSession + HKLiveWorkoutBuilder (background-safe workout)
+
+Core Motion CMPedometer (steps)
+
+Core Location (GPS distance + route)
+
+Periodic writes to HealthKit (e.g., every 15–30 s + finalize on end)
+
+Native (Android)
+
+Foreground “workout” service
+
+Fused Location Provider (GPS distance)
+
+SensorManager TYPE_STEP_DETECTOR/COUNTER (steps)
+
+Periodic writes to Health Connect (15–30 s + finalize on end)
+
+2) Milestones, tasks, and agent prompts
+M1 — Project plumbing (½–1 day)
+
+Tasks
+
+Enable EAS Build; add config plugin scaffold and permissions.
+
+Set up TypeScript, ESLint, Prettier, and a minimal logging utility.
+
+Agent prompt (DevOps)
+
+“Add EAS Build to this Expo app. Create app.config.ts with iOS HealthKit + Location (Always & When In Use) and Motion permissions; Android with ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, FOREGROUND_SERVICE_LOCATION, ACTIVITY_RECOGNITION, and Health Connect declarations. Create a config plugin that injects iOS Info.plist keys and Android Manifest entries. Provide a PR with the changes, including README setup steps.”
+
+Acceptance
+
+eas build -p ios and -p android compile locally (no runtime code yet).
+
+App shows permission rationale strings.
+
+M2 — Cross-platform native module surface (1 day)
+
+Tasks
+
+Define a single JS interface your UI will use (below).
+
+Stub native modules (iOS Swift + Android Kotlin) returning mock data.
+
+Agent prompt (API)
+
+“Create a Native Module named WorkoutEngine (Expo Modules API). It must expose the TS interface below, stub implementations that simulate walking/running, and an event emitter.”
+
+Acceptance
+
+Calling WorkoutEngine.startWorkout() streams mock updates to JS every ~500–1000 ms.
+
+Target TS interface (copy/paste)
+
+// api/WorkoutEngine.ts
+export type WorkoutUpdate = {
+  ts: number;                 // ms since epoch
+  steps: number;              // total during session
+  distanceMeters: number;     // GPS-based, during session
+  pace?: number;              // m/s (optional live calc)
+  location?: { lat: number; lon: number; accuracy: number } | null;
+  source: 'ios' | 'android';
+};
+
+export type WorkoutPermissions = {
+  hasLocation: boolean;
+  hasMotion: boolean;
+  hasHealthWrite: boolean;
+  hasHealthRead: boolean;
+};
+
+export interface IWorkoutEngine {
+  getPermissions(): Promise<WorkoutPermissions>;
+  requestPermissions(): Promise<WorkoutPermissions>;
+  startWorkout(opts?: { activityType?: 'running' | 'walking'; highAccuracy?: boolean }): Promise<void>;
+  stopWorkout(): Promise<void>;
+  onUpdate(cb: (u: WorkoutUpdate) => void): () => void; // unsubscribe
+  getSnapshot(): Promise<WorkoutUpdate>; // last known
+  // Health store sync (batched):
+  flushSummaryChunk(): Promise<void>;    // write partial
+  finalizeAndSave(params?: { includeRoute?: boolean }): Promise<void>;
+}
+export const WorkoutEngine: IWorkoutEngine;
+
+M3 — iOS live tracking (2–3 days)
+
+Tasks
+
+Implement HKWorkoutSession + HKLiveWorkoutBuilder.
+
+Start CMPedometer updates + Core Location updates (1–2 s desired interval).
+
+Aggregate steps + GPS distance; compute pace.
+
+Implement HealthKit writes: partial every 15–30 s; finalize workout + route.
+
+Agent prompt (iOS)
+
+“In Swift using Expo Modules, implement WorkoutEngine on iOS: request HealthKit (steps/distance), Motion, and Location permissions; start a HKWorkoutSession for running; stream live updates via an event every 500–1000 ms composed of pedometer step counts and Core Location distance; write partial workout samples to HealthKit every 20 s; on finalizeAndSave, end the session, save total distance, energy if available, and attach a route. Include background modes in the plugin.”
+
+Acceptance
+
+Real device: lock screen 10+ minutes; updates continue.
+
+Distance closely matches Apple Workout for a 1–2 km test (+/− 3–5%).
+
+Health app shows a saved workout with distance and route after finalize.
+
+M4 — Android live tracking (2–3 days)
+
+Tasks
+
+Foreground service with Fused Location updates (1–2 s).
+
+SensorManager step detector/counter.
+
+Expose updates via event emitter to JS.
+
+Health Connect writes: partial every 15–30 s; finalize workout + route.
+
+Agent prompt (Android)
+
+“In Kotlin using Expo Modules, implement WorkoutEngine on Android: request Location (foreground + background if needed) and ACTIVITY_RECOGNITION; start a persistent foreground service (notification required) that uses Fused Location with a fastest interval ~1 s; combine with step counter; emit updates every 500–1000 ms; batch-write partial session data to Health Connect every 20 s; on finalize, save workout + route if supported. Handle doze/app standby. Provide a config plugin to add the service and required permissions.”
+
+Acceptance
+
+Real device walk/run: app in background 10+ minutes; updates keep coming.
+
+Distance within 3–7% of a reference app over 1–2 km.
+
+Health Connect shows the recorded session on finalize.
+
+M5 — Reward ticker & goal logic (1 day)
+
+Tasks
+
+Add a useWorkout hook that:
+
+Subscribes to WorkoutEngine.onUpdate.
+
+Tracks steps, distanceMeters, and goalMeters.
+
+When distanceMeters > goalMeters, start a 1 Hz ticker that increments a rewardBalance according to surplus distance (e.g., X tokens per km * (surplusMeters / 1000) / elapsedSeconds).
+
+Persist checkpoints every 5–15 s.
+
+Agent prompt (JS)
+
+“Implement useWorkout with a 1 Hz reward ticker that only pays for surplus distance beyond the goal. It must be robust to bursty sensor updates and app backgrounding; no double-counting across pauses/resumes.”
+
+Acceptance
+
+Simulated bursty updates still yield a smooth per-second reward stream once the goal is crossed.
+
+Pause/resume doesn’t lose or duplicate rewards.
+
+M6 — Anti-cheat, smoothing, and safety (1–2 days)
+
+Tasks
+
+Reject samples when: accuracy > 50 m, speed > 8 m/s (~28.8 km/h), or sudden teleports.
+
+Smooth distance with a short median/EMA filter; snap to 0 when stationary.
+
+Optional: cadence plausibility (steps ↔ pace).
+
+Add “Low GPS” banner in UI when accuracy is poor.
+
+Acceptance
+
+Simulated GPS jumps don’t inflate rewards.
+
+Indoor walking without GPS doesn’t cause distance spikes.
+
+M7 — Persistence & reconciliation (1 day)
+
+Tasks
+
+Local store (SQLite/WatermelonDB/AsyncStorage) of session timeline: updates, partial writes, reward checkpoints.
+
+On crash/restart, reconstruct session from timeline.
+
+On finalize, persist a canonical session record (totals + reward).
+
+Acceptance
+
+Kill the app mid-run → reopen → resume session without losing progress.
+
+Final totals match reconstructed totals.
+
+M8 — UX polish & permissions flows (1 day)
+
+Tasks
+
+First-run permission flows with clear rationale (Health + Motion + Location).
+
+Workout screens: big Start/Stop, goal input, reward ticker, GPS quality.
+
+Error toasts when partial writes fail (retry with backoff).
+
+Acceptance
+
+Users can complete a run from install → permissions → run → save → see rewards.

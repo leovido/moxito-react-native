@@ -1,24 +1,21 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import { LinearGradient } from "expo-linear-gradient";
-import { theme } from "@moxito/theme";
+import { theme } from '@moxito/theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 export const EarningsCard = () => (
   <LinearGradient
-    colors={["#1D1D1D", "#3D3D3D"]}
+    colors={['#1D1D1D', '#3D3D3D']}
     start={{ x: 0, y: 0 }}
     end={{ x: 1, y: 1 }}
     style={styles.earningsCard}
   >
     <Image
-      source={require("../assets/images/icon-run-move.png")}
-      style={[styles.moxieCoin, { width: "40%", height: "100%" }]}
+      source={require('../assets/images/icon-run-move.png')}
+      style={[styles.moxieCoin, { width: '40%', height: '100%' }]}
     />
 
     <View style={styles.earningsContent}>
-      <Text style={[styles.earningsLabel, { fontFamily: "Lato_300Light" }]}>
-        Earned from steps
-      </Text>
+      <Text style={[styles.earningsLabel, { fontFamily: 'Lato_300Light' }]}>Earned from steps</Text>
       <Text style={styles.earningsValue}>859</Text>
       <Text style={styles.earningsSubtext}>~$ 1.23</Text>
     </View>
@@ -31,8 +28,8 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.black[100],
     borderRadius: 24,
     padding: theme.spacing[7],
-    flexDirection: "row",
-    alignItems: "flex-end",
+    flexDirection: 'row',
+    alignItems: 'flex-end',
     marginBottom: theme.spacing[4],
     gap: theme.spacing[4],
   },
@@ -50,11 +47,11 @@ const styles = StyleSheet.create({
     color: theme.colors.white[100],
     fontSize: 54,
     fontWeight: theme.fontWeights.bold,
-    fontFamily: "Lato_700Bold",
+    fontFamily: 'Lato_700Bold',
   },
   earningsSubtext: {
     color: theme.colors.white[50],
     fontSize: 20,
-    fontFamily: "Lato_300Light",
+    fontFamily: 'Lato_300Light',
   },
-}); 
+});
