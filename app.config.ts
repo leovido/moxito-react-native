@@ -3,7 +3,7 @@ export default {
     name: "Moxito",
     slug: "moxito-fitness",
     scheme: "moxito",
-    entryPoint: ".apps/moxito-fitness/app/index.tsx",
+    entryPoint: "./app/index.tsx",
     plugins: ["expo-font", "expo-router"],
     ios: {
       bundleIdentifier: "com.christianleovido.Moxito",
