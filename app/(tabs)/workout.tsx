@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, SafeAreaView } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 // Temporary mock types for testing
 type WorkoutUpdate = {
@@ -22,16 +22,16 @@ export default function WorkoutScreen() {
     setIsWorkoutActive(true);
     setStepCount(0);
     setDistance(0);
-    
+
     // Start mock workout updates
     const interval = setInterval(() => {
-      setStepCount(prev => prev + Math.floor(Math.random() * 3) + 2);
-      setDistance(prev => prev + (Math.random() * 2) + 2);
-      
+      setStepCount((prev) => prev + Math.floor(Math.random() * 3) + 2);
+      setDistance((prev) => prev + Math.random() * 2 + 2);
+
       const update: WorkoutUpdate = {
         ts: Date.now(),
         steps: stepCount + Math.floor(Math.random() * 3) + 2,
-        distanceMeters: distance + (Math.random() * 2) + 2,
+        distanceMeters: distance + Math.random() * 2 + 2,
         pace: 3.5, // Mock pace
         location: {
           lat: 37.7749 + (Math.random() - 0.5) * 0.001,
@@ -40,10 +40,10 @@ export default function WorkoutScreen() {
         },
         source: 'ios',
       };
-      
+
       setWorkoutData(update);
     }, 1000);
-    
+
     setWorkoutInterval(interval);
   };
 
@@ -67,7 +67,7 @@ export default function WorkoutScreen() {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Workout Tracking</Text>
-        
+
         {/* Workout Controls */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Workout Controls</Text>
@@ -90,7 +90,9 @@ export default function WorkoutScreen() {
           <View style={styles.dataGrid}>
             <Text style={styles.dataItem}>👟 Steps: {stepCount}</Text>
             <Text style={styles.dataItem}>📏 Distance: {distance.toFixed(2)}m</Text>
-            <Text style={styles.dataItem}>⏱️ Duration: {isWorkoutActive ? 'Active' : 'Stopped'}</Text>
+            <Text style={styles.dataItem}>
+              ⏱️ Duration: {isWorkoutActive ? 'Active' : 'Stopped'}
+            </Text>
           </View>
         </View>
 
@@ -99,15 +101,20 @@ export default function WorkoutScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Last Update</Text>
             <View style={styles.dataGrid}>
-              <Text style={styles.dataItem}>⏰ Time: {new Date(workoutData.ts).toLocaleTimeString()}</Text>
+              <Text style={styles.dataItem}>
+                ⏰ Time: {new Date(workoutData.ts).toLocaleTimeString()}
+              </Text>
               <Text style={styles.dataItem}>👟 Steps: {workoutData.steps}</Text>
-              <Text style={styles.dataItem}>📏 Distance: {workoutData.distanceMeters.toFixed(2)}m</Text>
+              <Text style={styles.dataItem}>
+                📏 Distance: {workoutData.distanceMeters.toFixed(2)}m
+              </Text>
               {workoutData.pace && (
                 <Text style={styles.dataItem}>🏃 Pace: {workoutData.pace.toFixed(2)} m/s</Text>
               )}
               {workoutData.location && (
                 <Text style={styles.dataItem}>
-                  📍 Location: {workoutData.location.lat.toFixed(6)}, {workoutData.location.lon.toFixed(6)}
+                  📍 Location: {workoutData.location.lat.toFixed(6)},{' '}
+                  {workoutData.location.lon.toFixed(6)}
                 </Text>
               )}
               <Text style={styles.dataItem}>📱 Source: {workoutData.source}</Text>

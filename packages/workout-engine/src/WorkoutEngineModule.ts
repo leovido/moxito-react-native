@@ -1,15 +1,15 @@
-import { WorkoutUpdate, WorkoutPermissions, IWorkoutEngine } from '@moxito/api';
+import type { IWorkoutEngine, WorkoutPermissions, WorkoutUpdate } from '@moxito/api';
 
 // Simple event emitter for development
 class SimpleEventEmitter {
-  private listeners: Map<string, Function[]> = new Map();
+  private listeners: Map<string, ((data: unknown) => void)[]> = new Map();
 
-  addListener(event: string, callback: Function) {
+  addListener(event: string, callback: (data: unknown) => void) {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, []);
     }
-    this.listeners.get(event)!.push(callback);
-    
+    this.listeners.get(event)?.push(callback);
+
     return {
       remove: () => {
         const eventListeners = this.listeners.get(event);
@@ -19,14 +19,16 @@ class SimpleEventEmitter {
             eventListeners.splice(index, 1);
           }
         }
-      }
+      },
     };
   }
 
-  emit(event: string, data: any) {
+  emit(event: string, data: unknown) {
     const eventListeners = this.listeners.get(event);
     if (eventListeners) {
-      eventListeners.forEach(callback => callback(data));
+      eventListeners.forEach((callback) => {
+        callback(data);
+      });
     }
   }
 }
@@ -69,16 +71,19 @@ export class WorkoutEngineModule implements IWorkoutEngine {
     };
   }
 
-  async startWorkout(opts?: { activityType?: 'running' | 'walking'; highAccuracy?: boolean }): Promise<void> {
+  async startWorkout(opts?: {
+    activityType?: 'running' | 'walking';
+    highAccuracy?: boolean;
+  }): Promise<void> {
     if (this.isWorkoutActive) {
       throw new Error('Workout already active');
     }
 
     this.isWorkoutActive = true;
-    
+
     // Start mock data generation for development
     this.startMockUpdates(opts?.activityType || 'running');
-    
+
     console.log('Workout started:', opts);
   }
 
@@ -88,19 +93,19 @@ export class WorkoutEngineModule implements IWorkoutEngine {
     }
 
     this.isWorkoutActive = false;
-    
+
     // Stop mock updates
     if (this.mockInterval) {
       clearInterval(this.mockInterval);
       this.mockInterval = null;
     }
-    
+
     console.log('Workout stopped');
   }
 
   onUpdate(cb: (u: WorkoutUpdate) => void): () => void {
     const subscription = this.eventEmitter.addListener('workoutUpdate', cb);
-    
+
     return () => {
       subscription.remove();
     };
@@ -126,22 +131,24 @@ export class WorkoutEngineModule implements IWorkoutEngine {
   private startMockUpdates(activityType: 'running' | 'walking') {
     let stepCount = 0;
     let distance = 0;
-    let startTime = Date.now();
+    const startTime = Date.now();
 
     this.mockInterval = setInterval(() => {
-      if (!this.isWorkoutActive) return;
+      if (!this.isWorkoutActive) {
+        return;
+      }
 
       // Simulate realistic workout data
       const elapsed = (Date.now() - startTime) / 1000; // seconds
-      
+
       if (activityType === 'running') {
         // Running: ~150-180 steps/min, ~3-4 m/s pace
         stepCount += Math.floor(Math.random() * 3) + 2; // 2-4 steps per update
-        distance += (Math.random() * 2) + 2; // 2-4 meters per update
+        distance += Math.random() * 2 + 2; // 2-4 meters per update
       } else {
         // Walking: ~100-120 steps/min, ~1.2-1.5 m/s pace
         stepCount += Math.floor(Math.random() * 2) + 1; // 1-2 steps per update
-        distance += (Math.random() * 1) + 1; // 1-2 meters per update
+        distance += Math.random() * 1 + 1; // 1-2 meters per update
       }
 
       const update: WorkoutUpdate = {
@@ -162,7 +169,7 @@ export class WorkoutEngineModule implements IWorkoutEngine {
     // Generate mock GPS coordinates around a central point
     const baseLat = 37.7749; // San Francisco
     const baseLon = -122.4194;
-    
+
     return {
       lat: baseLat + (Math.random() - 0.5) * 0.001, // ±0.0005 degrees
       lon: baseLon + (Math.random() - 0.5) * 0.001,

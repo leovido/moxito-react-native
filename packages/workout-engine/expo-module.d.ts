@@ -1,11 +1,11 @@
-import { ExpoConfig, ConfigPlugin } from '@expo/config-plugins';
+import type { ConfigPlugin } from '@expo/config-plugins';
 
 declare module '@expo/config-plugins' {
   interface ExpoConfig {
     workoutEngine?: {
       ios?: {
         backgroundModes?: string[];
-        infoPlist?: Record<string, any>;
+        infoPlist?: Record<string, unknown>;
       };
       android?: {
         permissions?: string[];
@@ -18,7 +18,7 @@ declare module '@expo/config-plugins' {
 export interface WorkoutEngineConfig {
   ios?: {
     backgroundModes?: string[];
-    infoPlist?: Record<string, any>;
+    infoPlist?: Record<string, unknown>;
   };
   android?: {
     permissions?: string[];

@@ -1,59 +1,22 @@
-import { WorkoutUpdate } from '../workout';
-
-// Mock workout data generation utilities
-export const generateMockWorkoutUpdate = (baseData: Partial<WorkoutUpdate> = {}): WorkoutUpdate => {
-  const now = Date.now();
-  return {
-    ts: baseData.ts || now,
-    steps: baseData.steps || Math.floor(Math.random() * 100) + 1,
-    distanceMeters: baseData.distanceMeters || Math.floor(Math.random() * 1000) + 1,
-    pace: baseData.pace || Math.random() * 5 + 1,
-    location: baseData.location || {
-      lat: 37.7749 + (Math.random() - 0.5) * 0.001,
-      lon: -122.4194 + (Math.random() - 0.5) * 0.001,
-      accuracy: Math.random() * 10 + 5,
-    },
-    source: baseData.source || 'ios',
-  };
-};
-
-export const calculatePace = (distanceMeters: number, elapsedSeconds: number): number => {
-  if (elapsedSeconds === 0) return 0;
-  return distanceMeters / elapsedSeconds;
-};
-
-export const validateWorkoutUpdate = (update: WorkoutUpdate): boolean => {
-  return (
-    typeof update.ts === 'number' &&
-    update.ts > 0 &&
-    typeof update.steps === 'number' &&
-    update.steps >= 0 &&
-    typeof update.distanceMeters === 'number' &&
-    update.distanceMeters >= 0 &&
-    (update.pace === undefined || (typeof update.pace === 'number' && update.pace >= 0)) &&
-    (update.location === null || (
-      update.location &&
-      typeof update.location.lat === 'number' &&
-      typeof update.location.lon === 'number' &&
-      typeof update.location.accuracy === 'number' &&
-      update.location.accuracy > 0
-    )) &&
-    (update.source === 'ios' || update.source === 'android')
-  );
-};
+import type { WorkoutUpdate } from '../workout';
+import {
+  calculatePace,
+  generateMockWorkoutUpdate,
+  validateWorkoutUpdate,
+} from './workout-utils-helpers';
 
 describe('Workout Utilities', () => {
   describe('generateMockWorkoutUpdate', () => {
     it('generates valid workout update with default values', () => {
       const update = generateMockWorkoutUpdate();
-      
+
       expect(update).toHaveProperty('ts');
       expect(update).toHaveProperty('steps');
       expect(update).toHaveProperty('distanceMeters');
       expect(update).toHaveProperty('pace');
       expect(update).toHaveProperty('location');
       expect(update).toHaveProperty('source');
-      
+
       expect(update.ts).toBeGreaterThan(0);
       expect(update.steps).toBeGreaterThan(0);
       expect(update.distanceMeters).toBeGreaterThan(0);
@@ -68,9 +31,9 @@ describe('Workout Utilities', () => {
         distanceMeters: 1000,
         source: 'android' as const,
       };
-      
+
       const update = generateMockWorkoutUpdate(customData);
-      
+
       expect(update.steps).toBe(500);
       expect(update.distanceMeters).toBe(1000);
       expect(update.source).toBe('android');
@@ -78,7 +41,7 @@ describe('Workout Utilities', () => {
 
     it('generates realistic GPS coordinates', () => {
       const update = generateMockWorkoutUpdate();
-      
+
       expect(update.location).toBeTruthy();
       if (update.location) {
         // Should be around San Francisco
@@ -123,7 +86,7 @@ describe('Workout Utilities', () => {
         },
         source: 'ios',
       };
-      
+
       expect(validateWorkoutUpdate(validUpdate)).toBe(true);
     });
 
@@ -134,7 +97,7 @@ describe('Workout Utilities', () => {
         distanceMeters: 500,
         source: 'ios',
       };
-      
+
       expect(validateWorkoutUpdate(invalidUpdate)).toBe(false);
     });
 
@@ -145,7 +108,7 @@ describe('Workout Utilities', () => {
         distanceMeters: 500,
         source: 'ios',
       };
-      
+
       expect(validateWorkoutUpdate(invalidUpdate)).toBe(false);
     });
 
@@ -156,7 +119,7 @@ describe('Workout Utilities', () => {
         distanceMeters: -100,
         source: 'ios',
       };
-      
+
       expect(validateWorkoutUpdate(invalidUpdate)).toBe(false);
     });
 
@@ -165,9 +128,9 @@ describe('Workout Utilities', () => {
         ts: Date.now(),
         steps: 100,
         distanceMeters: 500,
-        source: 'invalid' as any,
+        source: 'invalid' as 'ios' | 'android',
       };
-      
+
       const result = validateWorkoutUpdate(invalidUpdate);
       expect(result).toBe(false);
     });
@@ -180,7 +143,7 @@ describe('Workout Utilities', () => {
         location: null,
         source: 'ios',
       };
-      
+
       expect(validateWorkoutUpdate(validUpdate)).toBe(true);
     });
 
@@ -190,13 +153,13 @@ describe('Workout Utilities', () => {
         steps: 100,
         distanceMeters: 500,
         location: {
-          lat: 'invalid' as any,
+          lat: 'invalid' as number,
           lon: -122.4194,
           accuracy: 10,
         },
         source: 'ios',
       };
-      
+
       expect(validateWorkoutUpdate(invalidUpdate)).toBe(false);
     });
   });
@@ -204,7 +167,7 @@ describe('Workout Utilities', () => {
   describe('Workout Data Consistency', () => {
     it('maintains data consistency across multiple updates', () => {
       const updates: WorkoutUpdate[] = [];
-      
+
       // Generate 10 consecutive updates with increasing values
       for (let i = 0; i < 10; i++) {
         const update = generateMockWorkoutUpdate({
@@ -213,12 +176,12 @@ describe('Workout Utilities', () => {
         });
         updates.push(update);
       }
-      
+
       // All updates should be valid
-      updates.forEach(update => {
+      updates.forEach((update) => {
         expect(validateWorkoutUpdate(update)).toBe(true);
       });
-      
+
       // Steps should increase
       for (let i = 1; i < updates.length; i++) {
         expect(updates[i].steps).toBeGreaterThan(updates[i - 1].steps);
@@ -229,21 +192,21 @@ describe('Workout Utilities', () => {
     it('generates realistic workout progression', () => {
       const startTime = Date.now();
       const updates: WorkoutUpdate[] = [];
-      
+
       // Simulate 5 minutes of workout
       for (let i = 0; i < 5; i++) {
         const update = generateMockWorkoutUpdate({
-          ts: startTime + (i * 60 * 1000), // Each minute
+          ts: startTime + i * 60 * 1000, // Each minute
           steps: (i + 1) * 120, // 120 steps per minute (walking pace), start from 1
           distanceMeters: (i + 1) * 100, // 100 meters per minute, start from 1
         });
         updates.push(update);
       }
-      
+
       // Check realistic progression
       expect(updates[4].steps).toBe(600); // 5 * 120
       expect(updates[4].distanceMeters).toBe(500); // 5 * 100
-      
+
       // Time progression - ensure we have different timestamps
       expect(updates[4].ts).toBeGreaterThan(updates[0].ts);
       expect(updates[4].ts - updates[0].ts).toBe(4 * 60 * 1000); // 4 minutes
