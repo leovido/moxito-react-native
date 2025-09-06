@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const urlObj = new URL(url);
 
       // Check if URL matches our scheme and host
-      if (urlObj.protocol !== 'moxito:' || urlObj.hostname !== 'auth') {
+      if (urlObj.protocol !== "moxito:" || urlObj.hostname !== "auth") {
         return;
       }
 
@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const fid64 = params.get('fid');
 
       if (!signer64 || !fid64) {
-        console.log('Required query items missing: signer or fid.');
+        console.log("Required query items missing: signer or fid.");
         return;
       }
 
