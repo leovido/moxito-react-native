@@ -1,15 +1,15 @@
 module.exports = {
-  preset: 'react-native',
+  preset: 'jest-expo',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jsdom',
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  testMatch: ['<rootDir>/__tests__/**/*.test.(ts|tsx|js|jsx)'],
+  testMatch: ['<rootDir>/app/(tabs)/__tests__/**/*.test.(ts|tsx|js|jsx)'],
   collectCoverageFrom: [
-    '<rootDir>/**/*.(ts|tsx)',
-    '!<rootDir>/__tests__/**',
+    '<rootDir>/app/(tabs)/**/*.(ts|tsx)',
+    '!<rootDir>/app/(tabs)/__tests__/**',
     '!<rootDir>/node_modules/**',
   ],
   coverageThreshold: {
@@ -21,6 +21,6 @@ module.exports = {
     },
   },
   moduleNameMapping: {
-    '^@/(.*)$': '<rootDir>/../$1',
+    '^@/(.*)$': '<rootDir>/$1',
   },
 };

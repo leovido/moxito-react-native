@@ -1,9 +1,9 @@
-import type { WorkoutUpdate } from '../workout';
 import {
   calculatePace,
   generateMockWorkoutUpdate,
   validateWorkoutUpdate,
-} from './workout-utils-helpers';
+} from '../utils/workout-utils-helpers';
+import type { WorkoutUpdate } from '../workout';
 
 describe('Workout Utilities', () => {
   describe('generateMockWorkoutUpdate', () => {

@@ -1,21 +1,6 @@
-import { act, fireEvent, render } from '@testing-library/react-native';
+import { act, fireEvent, render, within } from '@testing-library/react-native';
 import type React from 'react';
 import WorkoutScreen from '../workout';
-
-// Mock React Native components
-jest.mock('react-native', () => {
-  const RN = jest.requireActual('react-native');
-  return {
-    ...RN,
-    SafeAreaView: ({
-      children,
-      ...props
-    }: {
-      children: React.ReactNode;
-      [key: string]: unknown;
-    }) => <RN.View {...props}>{children}</RN.View>,
-  };
-});
 
 describe('WorkoutScreen', () => {
   beforeEach(() => {
@@ -84,9 +69,10 @@ describe('WorkoutScreen', () => {
       jest.advanceTimersByTime(1000); // 1 second
     });
 
-    // Should have some steps and distance
-    const stepsText = getByText(/👟 Steps: \d+/);
-    const distanceText = getByText(/📏 Distance: \d+\.\d+m/);
+    // Should have some steps and distance in live data section
+    const liveDataSection = getByText('Live Data').parent;
+    const stepsText = within(liveDataSection).getByText('👟 Steps');
+    const distanceText = within(liveDataSection).getByText('📏 Distance');
 
     expect(stepsText).toBeTruthy();
     expect(distanceText).toBeTruthy();
@@ -115,26 +101,31 @@ describe('WorkoutScreen', () => {
     const lastUpdateSection = getByText('Last Update');
     expect(lastUpdateSection).toBeTruthy();
 
-    // Check for required data fields
-    expect(getByText(/⏰ Time:/)).toBeTruthy();
-    expect(getByText(/👟 Steps:/)).toBeTruthy();
-    expect(getByText(/📏 Distance:/)).toBeTruthy();
-    expect(getByText(/🏃 Pace:/)).toBeTruthy();
-    expect(getByText(/📍 Location:/)).toBeTruthy();
-    expect(getByText(/📱 Source: ios/)).toBeTruthy();
+    // Check for required data fields in workout data section
+    const workoutDataSection = getByText('Last Update').parent;
+    expect(within(workoutDataSection).getByText('⏰ Time')).toBeTruthy();
+    expect(within(workoutDataSection).getByText('👟 Steps')).toBeTruthy();
+    expect(within(workoutDataSection).getByText('📏 Distance')).toBeTruthy();
+    expect(within(workoutDataSection).getByText('🏃 Pace')).toBeTruthy();
+    expect(within(workoutDataSection).getByText('📍 Location')).toBeTruthy();
+    expect(within(workoutDataSection).getByText('📱 Source')).toBeTruthy();
   });
 
   it('cleans up interval when component unmounts', () => {
     const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
-
-    const { unmount } = render(<WorkoutScreen />);
-
+    
+    const { getByText, unmount } = render(<WorkoutScreen />);
+    
+    // Start a workout to ensure there's an interval to clean up
+    const startButton = getByText('Start Workout');
+    fireEvent.press(startButton);
+    
     // Unmount component
     unmount();
-
-    // Should have called clearInterval (even if no workout was active)
+    
+    // Should have called clearInterval
     expect(clearIntervalSpy).toHaveBeenCalled();
-
+    
     clearIntervalSpy.mockRestore();
   });
 

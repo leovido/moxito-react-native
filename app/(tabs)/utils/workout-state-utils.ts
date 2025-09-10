@@ -41,7 +41,7 @@ export const startWorkout = (state: WorkoutState): WorkoutState => ({
 export const stopWorkout = (state: WorkoutState): WorkoutState => ({
   ...state,
   isActive: false,
-  startTime: null,
+  // Keep startTime for stats calculation
 });
 
 export const addWorkoutUpdate = (state: WorkoutState, update: WorkoutUpdate): WorkoutState => {

@@ -1,11 +1,11 @@
-import type { WorkoutUpdate } from '../workout';
 import {
   addWorkoutUpdate,
   calculateWorkoutStats,
   createInitialWorkoutState,
   startWorkout,
   stopWorkout,
-} from './workout-state-utils';
+} from '../utils/workout-state-utils';
+import type { WorkoutUpdate } from '../workout';
 
 describe('Workout State Management', () => {
   describe('createInitialWorkoutState', () => {
@@ -64,7 +64,7 @@ describe('Workout State Management', () => {
       const newState = stopWorkout(activeState);
 
       expect(newState.isActive).toBe(false);
-      expect(newState.startTime).toBeNull();
+      expect(newState.startTime).toBeTruthy(); // Keep startTime for stats
     });
 
     it('preserves workout data when stopping', () => {
@@ -257,7 +257,7 @@ describe('Workout State Management', () => {
       // Stop workout
       state = stopWorkout(state);
       expect(state.isActive).toBe(false);
-      expect(state.startTime).toBeNull();
+      expect(state.startTime).toBeTruthy(); // Keep startTime for stats
 
       // Stats should be preserved
       const stats = calculateWorkoutStats(state);
