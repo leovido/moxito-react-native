@@ -129,19 +129,19 @@ describe('WorkoutScreen', () => {
 
   it('cleans up interval when component unmounts', () => {
     const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
-    
+
     const { getByText, unmount } = render(<WorkoutScreen />);
-    
+
     // Start a workout to ensure there's an interval to clean up
     const startButton = getByText('Start Workout');
     pressButton(startButton);
-    
+
     // Unmount component
     unmount();
-    
+
     // Should have called clearInterval
     expect(clearIntervalSpy).toHaveBeenCalled();
-    
+
     clearIntervalSpy.mockRestore();
   });
 

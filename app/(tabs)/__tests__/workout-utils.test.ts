@@ -3,7 +3,7 @@ import {
   generateMockWorkoutUpdate,
   validateWorkoutUpdate,
 } from '../utils/workout-utils-helpers';
-import type { WorkoutUpdate } from '../workout';
+import type { WorkoutUpdate } from '../WorkoutScreen';
 
 describe('Workout Utilities', () => {
   describe('generateMockWorkoutUpdate', () => {
