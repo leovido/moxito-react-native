@@ -6,8 +6,8 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { PrivyProvider } from '@privy-io/expo';
 import { PrivyElements } from '@privy-io/expo/ui';
-
 import { useFonts } from 'expo-font';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '../Context/AuthProvider';
 
 export { ErrorBoundary } from 'expo-router';
@@ -52,15 +52,17 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <PrivyProvider appId={privyAppId} clientId={privyClientId}>
-        <PrivyElements />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-      </PrivyProvider>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <PrivyProvider appId={privyAppId} clientId={privyClientId}>
+          <PrivyElements />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+        </PrivyProvider>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }

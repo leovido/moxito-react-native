@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
     height: Platform.OS === 'ios' ? 90 : 70,
-    backgroundColor: 'rgba(0,0,0,0.9)',
+    backgroundColor: '#9747FF',
     paddingHorizontal: 20,
     paddingBottom: Platform.OS === 'ios' ? 20 : 10,
     paddingTop: 10,

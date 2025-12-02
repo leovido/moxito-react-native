@@ -1,8 +1,7 @@
 import { useLoginWithFarcaster, usePrivy } from '@privy-io/expo';
-import * as Application from 'expo-application';
 import * as Linking from 'expo-linking';
-import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function AuthScreen() {
@@ -18,22 +17,14 @@ export default function AuthScreen() {
     },
   });
 
-  // Log app identifier for debugging
-  useEffect(() => {
-    const appId = Application.applicationId;
-    console.log('Current app identifier:', appId);
-    console.log('iOS bundle identifier:', Application.getIosIdForVendorAsync?.() || 'N/A');
-  }, []);
-
   const handleLogin = async () => {
     try {
-      const redirectUrl = Linking.createURL('auth');
-      // relyingParty is optional - only include if you have MFA configured
-      // If you need it, it must be a valid URL origin (e.g., https://app.moxito.xyz)
-      // and must match what's configured in your Privy dashboard
+      // Use auth route path - iOS requires exact route matching
+      // The onSuccess callback will handle navigation to tabs
+      const redirectUrl = Linking.createURL('/(auth)');
+      console.log('Redirect URL:', redirectUrl);
       await loginWithFarcaster({
         redirectUrl,
-        // Only uncomment if you have relyingParty configured in Privy dashboard:
         relyingParty: process.env.EXPO_PUBLIC_RELYING_PARTY,
       });
     } catch (error) {
@@ -41,9 +32,45 @@ export default function AuthScreen() {
     }
   };
 
+  // Handle deep link redirects from Farcaster login
+  // Privy will automatically process the deep link, but we listen for it to log
+  useFocusEffect(
+    useCallback(() => {
+      const handleDeepLink = async () => {
+        const url = await Linking.getInitialURL();
+        if (url) {
+          console.log('Deep link received on auth screen:', url);
+          // Privy will process this automatically
+          // We'll wait for the user state to update via the useEffect above
+        }
+      };
+      handleDeepLink();
+
+      // Listen for incoming links while app is running
+      const subscription = Linking.addEventListener('url', (event) => {
+        console.log('Incoming deep link on auth screen:', event.url);
+        // Privy will process this automatically
+        // The onSuccess callback or user state update will handle navigation
+      });
+
+      return () => {
+        subscription.remove();
+      };
+    }, [])
+  );
+
+  // Wait for Privy to process authentication after deep link redirect
   useEffect(() => {
+    console.log(`Auth state - isReady: ${isReady}, user:`, user ? 'exists' : 'null');
+
+    // Give Privy time to process the authentication token from the deep link
     if (isReady && user) {
-      router.replace('/(tabs)/fitness');
+      console.log('User authenticated, redirecting to tabs');
+      // Small delay to ensure state is fully updated
+      const timer = setTimeout(() => {
+        router.replace('/(tabs)/fitness');
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [isReady, user, router]);
 
