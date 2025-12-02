@@ -2,7 +2,7 @@ import {
   calculatePace,
   generateMockWorkoutUpdate,
   validateWorkoutUpdate,
-} from '../utils/workout-utils-helpers';
+} from '../../utils/workout-utils-helpers';
 import type { WorkoutUpdate } from '../WorkoutScreen';
 
 describe('Workout Utilities', () => {

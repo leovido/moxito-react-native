@@ -1,21 +1,51 @@
+import { useLoginWithFarcaster, usePrivy } from '@privy-io/expo';
+import * as Application from 'expo-application';
+import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useAuth } from '../../Context/AuthProvider';
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function AuthScreen() {
   const router = useRouter();
-  const { startLogin, isAuthenticated, authError } = useAuth();
+  const { user, isReady } = usePrivy();
+  const { loginWithFarcaster, state } = useLoginWithFarcaster({
+    onSuccess: (user) => {
+      console.log('Farcaster login successful:', user);
+      router.replace('/(tabs)/fitness');
+    },
+    onError: (error) => {
+      console.error('Farcaster login error:', error);
+    },
+  });
 
-  const handleLogin = () => {
-    startLogin();
+  // Log app identifier for debugging
+  useEffect(() => {
+    const appId = Application.applicationId;
+    console.log('Current app identifier:', appId);
+    console.log('iOS bundle identifier:', Application.getIosIdForVendorAsync?.() || 'N/A');
+  }, []);
+
+  const handleLogin = async () => {
+    try {
+      const redirectUrl = Linking.createURL('auth');
+      // relyingParty is optional - only include if you have MFA configured
+      // If you need it, it must be a valid URL origin (e.g., https://app.moxito.xyz)
+      // and must match what's configured in your Privy dashboard
+      await loginWithFarcaster({
+        redirectUrl,
+        // Only uncomment if you have relyingParty configured in Privy dashboard:
+        relyingParty: process.env.EXPO_PUBLIC_RELYING_PARTY,
+      });
+    } catch (error) {
+      console.error('Farcaster login error:', error);
+    }
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isReady && user) {
       router.replace('/(tabs)/fitness');
     }
-  }, [isAuthenticated, router]);
+  }, [isReady, user, router]);
 
   return (
     <>
@@ -23,12 +53,22 @@ export default function AuthScreen() {
       <View style={styles.container}>
         <View style={styles.content}>
           <Text style={styles.title}>Sign in to Moxito with Farcaster</Text>
-          {authError && <Text style={styles.errorText}>{authError}</Text>}
+          {state.status === 'error' && state.error && (
+            <Text style={styles.errorText}>{state.error.message}</Text>
+          )}
           <Text style={styles.subtitle}>
             Sign in to the apps to display your profile or skip this step.
           </Text>
-          <Pressable style={styles.signInButton} onPress={handleLogin}>
-            <Text style={styles.signInButtonText}>Sign in</Text>
+          <Pressable
+            style={[styles.signInButton, state.status !== 'initial' && styles.signInButtonDisabled]}
+            onPress={handleLogin}
+            disabled={state.status !== 'initial'}
+          >
+            {state.status !== 'initial' ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.signInButtonText}>Sign in with Farcaster</Text>
+            )}
           </Pressable>
           <Pressable style={styles.skipButton} onPress={() => router.replace('/(tabs)/fitness')}>
             <Text style={styles.skipButtonText}>Skip this step</Text>
@@ -85,6 +125,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 20,
+    minWidth: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  signInButtonDisabled: {
+    opacity: 0.6,
   },
   skipButton: {
     marginTop: 20,

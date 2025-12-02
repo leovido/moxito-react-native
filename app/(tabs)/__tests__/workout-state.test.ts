@@ -4,7 +4,7 @@ import {
   createInitialWorkoutState,
   startWorkout,
   stopWorkout,
-} from '../utils/workout-state-utils';
+} from '../../utils/workout-state-utils';
 import type { WorkoutUpdate } from '../WorkoutScreen';
 
 describe('Workout State Management', () => {
