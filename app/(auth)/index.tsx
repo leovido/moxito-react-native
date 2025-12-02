@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useAuth } from './AuthProvider';
+import { useAuth } from '../../Context/AuthProvider';
 
 export default function AuthScreen() {
   const router = useRouter();
