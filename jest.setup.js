@@ -1,30 +1,56 @@
-// Mock React Native before any imports
-jest.mock('react-native', () => {
-  const RN = jest.requireActual('react-native');
-  return {
-    ...RN,
-    SafeAreaView: ({ children, ...props }) => <RN.View {...props}>{children}</RN.View>,
-    NativeModules: {
-      ...RN.NativeModules,
-      SettingsManager: {
-        get: jest.fn(),
-        set: jest.fn(),
-        watchKeys: jest.fn(),
-        clearWatch: jest.fn(),
-        _getConstants: jest.fn(() => ({})),
+const React = require('react');
+
+if (!process.env.EXPO_OS) {
+  process.env.EXPO_OS = 'ios';
+}
+
+// Mock TurboModuleRegistry before React Native initializes
+jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
+  const mockModule = {
+    get: jest.fn(),
+    set: jest.fn(),
+    watchKeys: jest.fn(),
+    clearWatch: jest.fn(),
+    getConstants: jest.fn(() => ({
+      Dimensions: {
+        window: {
+          width: 375,
+          height: 667,
+          scale: 2,
+          fontScale: 2,
+        },
+        screen: {
+          width: 375,
+          height: 667,
+          scale: 2,
+          fontScale: 2,
+        },
       },
-    },
-    TurboModuleRegistry: {
-      getEnforcing: jest.fn(() => ({
-        get: jest.fn(),
-        set: jest.fn(),
-        watchKeys: jest.fn(),
-        clearWatch: jest.fn(),
-        _getConstants: jest.fn(() => ({})),
-      })),
-    },
+    })),
+    _getConstants: jest.fn(() => ({})),
+    addListener: jest.fn(),
+    removeListeners: jest.fn(),
+    playTouchSound: jest.fn(),
+  };
+
+  return {
+    get: jest.fn(() => mockModule),
+    getEnforcing: jest.fn(() => mockModule),
   };
 });
+
+const ReactNative = require('react-native');
+
+ReactNative.SafeAreaView = ({ children, ...props }) => <ReactNative.View {...props}>{children}</ReactNative.View>;
+
+ReactNative.NativeModules.SettingsManager = {
+  ...(ReactNative.NativeModules.SettingsManager ?? {}),
+  get: jest.fn(),
+  set: jest.fn(),
+  watchKeys: jest.fn(),
+  clearWatch: jest.fn(),
+  _getConstants: jest.fn(() => ({})),
+};
 
 // Mock global functions
 global.clearInterval = jest.fn();

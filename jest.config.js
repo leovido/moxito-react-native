@@ -1,15 +1,24 @@
 module.exports = {
   preset: 'jest-expo',
+  setupFiles: ['<rootDir>/jest.env.js'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jsdom',
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  testMatch: ['<rootDir>/app/(tabs)/__tests__/**/*.test.(ts|tsx|js|jsx)'],
+  testMatch: [
+    '<rootDir>/app/(tabs)/__tests__/**/*.test.(ts|tsx|js|jsx)',
+    '<rootDir>/app/(auth)/__tests__/**/*.test.(ts|tsx|js|jsx)',
+    '<rootDir>/Context/__tests__/**/*.test.(ts|tsx|js|jsx)',
+  ],
   collectCoverageFrom: [
     '<rootDir>/app/(tabs)/**/*.(ts|tsx)',
+    '<rootDir>/app/(auth)/**/*.(ts|tsx)',
+    '<rootDir>/Context/**/*.(ts|tsx)',
     '!<rootDir>/app/(tabs)/__tests__/**',
+    '!<rootDir>/app/(auth)/__tests__/**',
+    '!<rootDir>/Context/__tests__/**',
     '!<rootDir>/node_modules/**',
   ],
   coverageThreshold: {
@@ -20,7 +29,7 @@ module.exports = {
       statements: 80,
     },
   },
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
 };
