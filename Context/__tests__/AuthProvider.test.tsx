@@ -1,8 +1,7 @@
-import React from 'react';
 import { act, render, waitFor } from '@testing-library/react-native';
 import * as Linking from 'expo-linking';
 import * as WebBrowser from 'expo-web-browser';
-import { AuthProvider, useAuth } from '../../app/(auth)/AuthProvider';
+import { AuthProvider, useAuth } from '../AuthProvider';
 
 jest.mock('expo-linking', () => ({
   createURL: jest.fn(),
@@ -30,11 +29,15 @@ const buildDeepLink = (signer: string, fid: string) => {
 
 describe('AuthProvider', () => {
   const mockCreateURL = Linking.createURL as jest.MockedFunction<typeof Linking.createURL>;
-  const mockWarmUpAsync = WebBrowser.warmUpAsync as jest.MockedFunction<typeof WebBrowser.warmUpAsync>;
+  const mockWarmUpAsync = WebBrowser.warmUpAsync as jest.MockedFunction<
+    typeof WebBrowser.warmUpAsync
+  >;
   const mockOpenAuthSessionAsync = WebBrowser.openAuthSessionAsync as jest.MockedFunction<
     typeof WebBrowser.openAuthSessionAsync
   >;
-  const mockCoolDownAsync = WebBrowser.coolDownAsync as jest.MockedFunction<typeof WebBrowser.coolDownAsync>;
+  const mockCoolDownAsync = WebBrowser.coolDownAsync as jest.MockedFunction<
+    typeof WebBrowser.coolDownAsync
+  >;
 
   let latestContext: AuthContextShape | undefined;
 
@@ -46,7 +49,7 @@ describe('AuthProvider', () => {
     render(
       <AuthProvider>
         <ContextProbe onValue={handleValue} />
-      </AuthProvider>,
+      </AuthProvider>
     );
   };
 
@@ -54,8 +57,8 @@ describe('AuthProvider', () => {
     jest.clearAllMocks();
     latestContext = undefined;
     mockCreateURL.mockReturnValue('moxito://auth');
-    mockWarmUpAsync.mockResolvedValue(undefined);
-    mockCoolDownAsync.mockResolvedValue(undefined);
+    // mockWarmUpAsync.mockResolvedValue(undefined);
+    // mockCoolDownAsync.mockResolvedValue(undefined);
   });
 
   it('provides default auth state values', () => {
@@ -78,7 +81,7 @@ describe('AuthProvider', () => {
     expect(latestContext).toBeDefined();
 
     await act(async () => {
-      await latestContext!.startLogin();
+      await latestContext?.startLogin();
     });
 
     await waitFor(() => {
@@ -93,7 +96,7 @@ describe('AuthProvider', () => {
       expect.objectContaining({
         preferEphemeralSession: true,
         showInRecents: true,
-      }),
+      })
     );
     expect(mockCoolDownAsync).toHaveBeenCalledTimes(1);
   });
@@ -108,7 +111,7 @@ describe('AuthProvider', () => {
     expect(latestContext).toBeDefined();
 
     await act(async () => {
-      await latestContext!.startLogin();
+      await latestContext?.startLogin();
     });
 
     await waitFor(() => {
@@ -126,7 +129,7 @@ describe('AuthProvider', () => {
     expect(latestContext).toBeDefined();
 
     await act(async () => {
-      await latestContext!.startLogin();
+      await latestContext?.startLogin();
     });
 
     await waitFor(() => {
@@ -142,7 +145,7 @@ describe('AuthProvider', () => {
     expect(latestContext).toBeDefined();
 
     await act(async () => {
-      await latestContext!.startLogin();
+      await latestContext?.startLogin();
     });
 
     await waitFor(() => {

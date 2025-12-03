@@ -1,7 +1,17 @@
-import React from 'react';
 import { render } from '@testing-library/react-native';
 import { Text } from 'react-native';
-import { AuthProvider, useAuth } from '../../app/(auth)/AuthProvider';
+import { AuthProvider, useAuth } from '../AuthProvider';
+
+// Mock Expo modules that require native functionality
+jest.mock('expo-linking', () => ({
+  createURL: jest.fn(),
+}));
+
+jest.mock('expo-web-browser', () => ({
+  warmUpAsync: jest.fn(),
+  openAuthSessionAsync: jest.fn(),
+  coolDownAsync: jest.fn(),
+}));
 
 function HookConsumer() {
   const { isAuthenticated, startLogin } = useAuth();
@@ -19,7 +29,7 @@ describe('useAuth hook', () => {
     const { getByTestId } = render(
       <AuthProvider>
         <HookConsumer />
-      </AuthProvider>,
+      </AuthProvider>
     );
 
     expect(getByTestId('auth-state').props.children).toBe('isAuthenticated:false');
