@@ -4,6 +4,7 @@
     "verbatimModuleSyntax": true,
     "strict": true,
     "baseUrl": ".",
+    "moduleResolution": "Bundler",
     "paths": {
       "@/*": ["./*"],
       "@moxito/theme": ["packages/theme/src"],

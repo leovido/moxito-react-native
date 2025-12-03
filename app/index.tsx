@@ -1,13 +1,18 @@
+import { usePrivy } from '@privy-io/expo';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function Index() {
   const router = useRouter();
+  const { user, isReady } = usePrivy();
 
+  // If user is authenticated, redirect to tabs (handles Farcaster login redirect)
   useEffect(() => {
-    console.log('Index component mounted!');
-  }, []);
+    if (isReady && user) {
+      router.replace('/(tabs)/fitness');
+    }
+  }, [isReady, user, router]);
 
   const handleGoToAuth = () => {
     console.log('Navigating to auth...');

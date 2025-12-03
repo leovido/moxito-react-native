@@ -1,4 +1,5 @@
 import type { IWorkoutEngine, WorkoutPermissions, WorkoutUpdate } from '@moxito/api';
+import { secureRandom } from './crypto-utils';
 
 // Simple event emitter for development
 class SimpleEventEmitter {
@@ -143,12 +144,12 @@ export class WorkoutEngineModule implements IWorkoutEngine {
 
       if (activityType === 'running') {
         // Running: ~150-180 steps/min, ~3-4 m/s pace
-        stepCount += Math.floor(Math.random() * 3) + 2; // 2-4 steps per update
-        distance += Math.random() * 2 + 2; // 2-4 meters per update
+        stepCount += Math.floor(secureRandom() * 3) + 2; // 2-4 steps per update
+        distance += secureRandom() * 2 + 2; // 2-4 meters per update
       } else {
         // Walking: ~100-120 steps/min, ~1.2-1.5 m/s pace
-        stepCount += Math.floor(Math.random() * 2) + 1; // 1-2 steps per update
-        distance += Math.random() * 1 + 1; // 1-2 meters per update
+        stepCount += Math.floor(secureRandom() * 2) + 1; // 1-2 steps per update
+        distance += secureRandom() * 1 + 1; // 1-2 meters per update
       }
 
       const update: WorkoutUpdate = {
@@ -171,9 +172,9 @@ export class WorkoutEngineModule implements IWorkoutEngine {
     const baseLon = -122.4194;
 
     return {
-      lat: baseLat + (Math.random() - 0.5) * 0.001, // ±0.0005 degrees
-      lon: baseLon + (Math.random() - 0.5) * 0.001,
-      accuracy: Math.random() * 10 + 5, // 5-15 meters accuracy
+      lat: baseLat + (secureRandom() - 0.5) * 0.001, // ±0.0005 degrees
+      lon: baseLon + (secureRandom() - 0.5) * 0.001,
+      accuracy: secureRandom() * 10 + 5, // 5-15 meters accuracy
     };
   }
 }

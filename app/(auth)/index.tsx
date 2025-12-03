@@ -1,21 +1,78 @@
-import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useAuth } from './AuthProvider';
+import { useLoginWithFarcaster, usePrivy } from '@privy-io/expo';
+import * as Linking from 'expo-linking';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect } from 'react';
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function AuthScreen() {
   const router = useRouter();
-  const { startLogin, isAuthenticated, authError } = useAuth();
+  const { user, isReady } = usePrivy();
+  const { loginWithFarcaster, state } = useLoginWithFarcaster({
+    onSuccess: (user) => {
+      console.log('Farcaster login successful:', user);
+      router.replace('/(tabs)/fitness');
+    },
+    onError: (error) => {
+      console.error('Farcaster login error:', error);
+    },
+  });
 
-  const handleLogin = () => {
-    startLogin();
+  const handleLogin = async () => {
+    try {
+      // Use auth route path - iOS requires exact route matching
+      // The onSuccess callback will handle navigation to tabs
+      const redirectUrl = Linking.createURL('/(auth)');
+      console.log('Redirect URL:', redirectUrl);
+      await loginWithFarcaster({
+        redirectUrl,
+        relyingParty: process.env.EXPO_PUBLIC_RELYING_PARTY,
+      });
+    } catch (error) {
+      console.error('Farcaster login error:', error);
+    }
   };
 
+  // Handle deep link redirects from Farcaster login
+  // Privy will automatically process the deep link, but we listen for it to log
+  useFocusEffect(
+    useCallback(() => {
+      const handleDeepLink = async () => {
+        const url = await Linking.getInitialURL();
+        if (url) {
+          console.log('Deep link received on auth screen:', url);
+          // Privy will process this automatically
+          // We'll wait for the user state to update via the useEffect above
+        }
+      };
+      handleDeepLink();
+
+      // Listen for incoming links while app is running
+      const subscription = Linking.addEventListener('url', (event) => {
+        console.log('Incoming deep link on auth screen:', event.url);
+        // Privy will process this automatically
+        // The onSuccess callback or user state update will handle navigation
+      });
+
+      return () => {
+        subscription.remove();
+      };
+    }, [])
+  );
+
+  // Wait for Privy to process authentication after deep link redirect
   useEffect(() => {
-    if (isAuthenticated) {
-      router.replace('/(tabs)/fitness');
+    console.log(`Auth state - isReady: ${isReady}, user:`, user ? 'exists' : 'null');
+
+    // Give Privy time to process the authentication token from the deep link
+    if (isReady && user) {
+      console.log('User authenticated, redirecting to tabs');
+      // Small delay to ensure state is fully updated
+      const timer = setTimeout(() => {
+        router.replace('/(tabs)/fitness');
+      }, 100);
+      return () => clearTimeout(timer);
     }
-  }, [isAuthenticated, router]);
+  }, [isReady, user, router]);
 
   return (
     <>
@@ -23,12 +80,30 @@ export default function AuthScreen() {
       <View style={styles.container}>
         <View style={styles.content}>
           <Text style={styles.title}>Sign in to Moxito with Farcaster</Text>
-          {authError && <Text style={styles.errorText}>{authError}</Text>}
+          {state.status === 'error' && state.error && (
+            <Text style={styles.errorText}>{state.error.message}</Text>
+          )}
           <Text style={styles.subtitle}>
             Sign in to the apps to display your profile or skip this step.
           </Text>
-          <Pressable style={styles.signInButton} onPress={handleLogin}>
-            <Text style={styles.signInButtonText}>Sign in</Text>
+          <Pressable
+            style={[
+              styles.signInButton,
+              state.status !== 'initial' &&
+                state.status !== 'error' &&
+                state.status !== 'done' &&
+                styles.signInButtonDisabled,
+            ]}
+            onPress={handleLogin}
+            disabled={
+              state.status !== 'initial' && state.status !== 'error' && state.status !== 'done'
+            }
+          >
+            {state.status !== 'initial' && state.status !== 'error' && state.status !== 'done' ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.signInButtonText}>Sign in with Farcaster</Text>
+            )}
           </Pressable>
           <Pressable style={styles.skipButton} onPress={() => router.replace('/(tabs)/fitness')}>
             <Text style={styles.skipButtonText}>Skip this step</Text>
@@ -85,6 +160,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 20,
+    minWidth: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  signInButtonDisabled: {
+    opacity: 0.6,
   },
   skipButton: {
     marginTop: 20,

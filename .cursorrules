@@ -1,4 +1,3 @@
-
 You are an expert in TypeScript, React Native, Expo, and Mobile UI development.
 
 Code Style and Structure
@@ -18,6 +17,7 @@ TypeScript Usage
 - Avoid enums; use maps instead.
 - Use functional components with TypeScript interfaces.
 - Use strict mode in TypeScript for better type safety.
+- Always prefer `unknown` over `any`.
 
 Syntax and Formatting
 - Use the "function" keyword for pure functions.
@@ -85,6 +85,31 @@ Internationalization (i18n)
 - Support multiple languages and RTL layouts.
 - Ensure text scaling and font adjustments for accessibility.
 
+Git Workflow and Version Control
+- Follow trunk-based development practices:
+  - Commit directly to main/trunk or use short-lived feature branches (1-2 days max).
+  - Make small, incremental commits that are easy to review and revert if needed.
+  - Create smaller, focused PRs that address a single concern or feature.
+  - Integrate changes frequently to minimize merge conflicts.
+- Use Conventional Commits for all commit messages:
+  - Format: `type(scope): description`
+  - Types: feat, fix, docs, style, refactor, perf, test, chore, ci, build
+  - Example: `feat(auth): add biometric login support`
+  - Example: `fix(navigation): resolve deep linking issue on Android`
+  - Keep commit messages clear and descriptive for semantic-release automation.
+- Lefthook Git Hooks:
+  - **Pre-commit**: Runs fast checks for immediate feedback
+    - Linting (ESLint)
+    - Code formatting (Prettier)
+    - Staged file validation
+  - **Pre-push**: Runs comprehensive checks before pushing to remote
+    - TypeScript compilation (`tsc --noEmit`)
+    - Unit tests
+    - Build validation
+  - If any hook fails, fix all reported issues before proceeding.
+  - Do not bypass hooks; they ensure code quality and consistency.
+  - TSC checks must pass with zero errors before pushing code.
+
 Key Conventions
 1. Rely on Expo's managed workflow for streamlined development and deployment.
 2. Prioritize Mobile Web Vitals (Load Time, Jank, and Responsiveness).
@@ -98,12 +123,7 @@ API Documentation
 - Use Expo's official documentation for setting up and configuring your projects: https://docs.expo.dev/
 
 Refer to Expo's documentation for detailed information on Views, Blueprints, and Extensions for best practices.
-<<<<<<< Updated upstream
-
-Always prefer `unknown` over `any`
 
 // Moxito project
 This project is a monorepo mobile app built with Expo and React Native.
-=======
-  
->>>>>>> Stashed changes
+Remember that this project uses `yarn`, not `npm`.
