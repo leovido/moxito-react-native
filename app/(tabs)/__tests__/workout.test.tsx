@@ -1,6 +1,9 @@
 import { act, fireEvent, render } from '@testing-library/react-native';
 import WorkoutScreen from '../workout';
 
+type GetByText = ReturnType<typeof render>['getByText'];
+type QueryByText = ReturnType<typeof render>['queryByText'];
+
 function pressButton(target: Parameters<typeof fireEvent.press>[0]) {
   act(() => {
     fireEvent.press(target);
@@ -11,6 +14,18 @@ function advanceTimers(ms: number) {
   act(() => {
     jest.advanceTimersByTime(ms);
   });
+}
+
+function expectWorkoutActive(getByText: GetByText, queryByText: QueryByText) {
+  expect(queryByText('Start Workout')).toBeFalsy();
+  expect(getByText('Stop Workout')).toBeTruthy();
+  expect(getByText('Workout: 🟢 Active')).toBeTruthy();
+}
+
+function expectWorkoutInactive(getByText: GetByText, queryByText: QueryByText) {
+  expect(queryByText('Stop Workout')).toBeFalsy();
+  expect(getByText('Start Workout')).toBeTruthy();
+  expect(getByText('Workout: 🔴 Inactive')).toBeTruthy();
 }
 
 describe('WorkoutScreen', () => {
@@ -47,10 +62,7 @@ describe('WorkoutScreen', () => {
     const startButton = getByText('Start Workout');
     pressButton(startButton);
 
-    // Should show stop button and active status
-    expect(queryByText('Start Workout')).toBeFalsy();
-    expect(getByText('Stop Workout')).toBeTruthy();
-    expect(getByText('Workout: 🟢 Active')).toBeTruthy();
+    expectWorkoutActive(getByText, queryByText);
   });
 
   it('stops workout when stop button is pressed', async () => {
@@ -64,10 +76,7 @@ describe('WorkoutScreen', () => {
     const stopButton = getByText('Stop Workout');
     pressButton(stopButton);
 
-    // Should show start button and inactive status
-    expect(queryByText('Stop Workout')).toBeFalsy();
-    expect(getByText('Start Workout')).toBeTruthy();
-    expect(getByText('Workout: 🔴 Inactive')).toBeTruthy();
+    expectWorkoutInactive(getByText, queryByText);
   });
 
   it('updates step count and distance during active workout', async () => {
@@ -165,15 +174,13 @@ describe('WorkoutScreen', () => {
     // Rapid start/stop sequence
     const startButton = getByText('Start Workout');
     pressButton(startButton);
+    expectWorkoutActive(getByText, queryByText);
 
     // Immediately stop
     const stopButton = getByText('Stop Workout');
     pressButton(stopButton);
 
-    // Should be back to inactive state
-    expect(queryByText('Stop Workout')).toBeFalsy();
-    expect(getByText('Start Workout')).toBeTruthy();
-    expect(getByText('Workout: 🔴 Inactive')).toBeTruthy();
+    expectWorkoutInactive(getByText, queryByText);
   });
 
   it('displays correct duration status', () => {
