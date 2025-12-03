@@ -1,14 +1,7 @@
+import type { WorkoutUpdate } from '@moxito/api';
 import { secureRandom } from './crypto-utils';
 
 // Mock workout data generation utilities
-export interface WorkoutUpdate {
-  ts: number;
-  steps: number;
-  distanceMeters: number;
-  pace?: number;
-  location?: { lat: number; lon: number; accuracy: number } | null;
-  source: 'ios' | 'android';
-}
 
 export const generateMockWorkoutUpdate = (baseData: Partial<WorkoutUpdate> = {}): WorkoutUpdate => {
   const now = Date.now();

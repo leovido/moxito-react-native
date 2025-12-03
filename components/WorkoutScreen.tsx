@@ -1,3 +1,4 @@
+import type { WorkoutUpdate } from '@moxito/api';
 import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -18,16 +19,6 @@ import {
   Typography,
 } from '../../constants/DesignSystem';
 import { secureRandom } from '../app/utils/crypto-utils';
-
-// Temporary mock types for testing
-export type WorkoutUpdate = {
-  ts: number;
-  steps: number;
-  distanceMeters: number;
-  pace?: number;
-  location?: { lat: number; lon: number; accuracy: number } | null;
-  source: 'ios' | 'android';
-};
 
 export const WorkoutScreen = () => {
   const [isWorkoutActive, setIsWorkoutActive] = useState(false);

@@ -1,3 +1,4 @@
+import type { WorkoutUpdate } from '@moxito/api';
 import {
   addWorkoutUpdate,
   calculateWorkoutStats,
@@ -5,7 +6,6 @@ import {
   startWorkout,
   stopWorkout,
 } from '../../utils/workout-state-utils';
-import type { WorkoutUpdate } from '../WorkoutScreen';
 
 describe('Workout State Management', () => {
   describe('createInitialWorkoutState', () => {

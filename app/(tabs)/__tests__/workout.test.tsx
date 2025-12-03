@@ -1,5 +1,5 @@
 import { act, fireEvent, render } from '@testing-library/react-native';
-import WorkoutScreen from '../workout';
+import { WorkoutScreen } from '../../../components/WorkoutScreen';
 
 type GetByText = ReturnType<typeof render>['getByText'];
 type QueryByText = ReturnType<typeof render>['queryByText'];
