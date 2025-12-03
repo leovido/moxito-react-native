@@ -1,4 +1,4 @@
-const React = require('react');
+const _React = require('react');
 
 if (!process.env.EXPO_OS) {
   process.env.EXPO_OS = 'ios';
@@ -41,7 +41,9 @@ jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
 
 const ReactNative = require('react-native');
 
-ReactNative.SafeAreaView = ({ children, ...props }) => <ReactNative.View {...props}>{children}</ReactNative.View>;
+ReactNative.SafeAreaView = ({ children, ...props }) => (
+  <ReactNative.View {...props}>{children}</ReactNative.View>
+);
 
 ReactNative.NativeModules.SettingsManager = {
   ...(ReactNative.NativeModules.SettingsManager ?? {}),
