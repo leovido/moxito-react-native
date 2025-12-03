@@ -153,7 +153,7 @@ describe('Workout Utilities', () => {
         steps: 100,
         distanceMeters: 500,
         location: {
-          lat: 'invalid' as number,
+          lat: 'invalid' as unknown as number,
           lon: -122.4194,
           accuracy: 10,
         },

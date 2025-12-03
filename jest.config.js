@@ -6,10 +6,10 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  testMatch: ['<rootDir>/app/(tabs)/__tests__/**/*.test.(ts|tsx|js|jsx)'],
+  testMatch: ['<rootDir>/app/**/__tests__/**/*.test.{ts,tsx,js,jsx}'],
   collectCoverageFrom: [
-    '<rootDir>/app/(tabs)/**/*.(ts|tsx)',
-    '!<rootDir>/app/(tabs)/__tests__/**',
+    '<rootDir>/app/**/utils/**/*.{ts,tsx}',
+    '!<rootDir>/app/**/__tests__/**',
     '!<rootDir>/node_modules/**',
   ],
   coverageThreshold: {
@@ -20,7 +20,7 @@ module.exports = {
       statements: 80,
     },
   },
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
 };

@@ -3,8 +3,11 @@
   "compilerOptions": {
     "verbatimModuleSyntax": true,
     "strict": true,
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@moxito/theme": ["packages/theme/src"],
+      "@moxito/api": ["packages/api/src"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"]
