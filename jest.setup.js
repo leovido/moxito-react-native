@@ -1,30 +1,11 @@
-// Mock React Native before any imports
-jest.mock('react-native', () => {
-  const RN = jest.requireActual('react-native');
-  return {
-    ...RN,
-    SafeAreaView: ({ children, ...props }) => <RN.View {...props}>{children}</RN.View>,
-    NativeModules: {
-      ...RN.NativeModules,
-      SettingsManager: {
-        get: jest.fn(),
-        set: jest.fn(),
-        watchKeys: jest.fn(),
-        clearWatch: jest.fn(),
-        _getConstants: jest.fn(() => ({})),
-      },
-    },
-    TurboModuleRegistry: {
-      getEnforcing: jest.fn(() => ({
-        get: jest.fn(),
-        set: jest.fn(),
-        watchKeys: jest.fn(),
-        clearWatch: jest.fn(),
-        _getConstants: jest.fn(() => ({})),
-      })),
-    },
-  };
-});
+// Mock @react-native/js-polyfills before any imports
+jest.mock('@react-native/js-polyfills/error-guard', () => ({
+  ErrorUtils: {
+    setGlobalHandler: jest.fn(),
+    getGlobalHandler: jest.fn(),
+    reportFatalError: jest.fn(),
+  },
+}));
 
 // Mock global functions
 global.clearInterval = jest.fn();

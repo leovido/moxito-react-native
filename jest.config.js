@@ -6,7 +6,7 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  testMatch: ['<rootDir>/app/(tabs)/__tests__/**/*.test.(ts|tsx|js|jsx)'],
+  testMatch: ['**/__tests__/**/*.test.(ts|tsx|js|jsx)', '**/*.test.(ts|tsx|js|jsx)'],
   collectCoverageFrom: [
     '<rootDir>/app/(tabs)/**/*.(ts|tsx)',
     '!<rootDir>/app/(tabs)/__tests__/**',
@@ -20,7 +20,11 @@ module.exports = {
       statements: 80,
     },
   },
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
+    '^@react-native/js-polyfills/error-guard$': '<rootDir>/__mocks__/@react-native/js-polyfills/error-guard.js',
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?|@react-native/.*|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg))',
+  ],
 };
