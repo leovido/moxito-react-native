@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Pressable,
@@ -36,11 +36,16 @@ export const WorkoutScreen = () => {
   const [workoutInterval, setWorkoutInterval] = useState<NodeJS.Timeout | null>(null);
   const [pulseAnim] = useState(new Animated.Value(1));
   const [fadeAnim] = useState(new Animated.Value(0));
+  // Use refs to track current values for use in interval callback
+  const stepCountRef = useRef(0);
+  const distanceRef = useRef(0);
 
   const startWorkout = () => {
     setIsWorkoutActive(true);
     setStepCount(0);
     setDistance(0);
+    stepCountRef.current = 0;
+    distanceRef.current = 0;
 
     // Start pulse animation
     const pulseAnimation = Animated.loop(
@@ -68,23 +73,34 @@ export const WorkoutScreen = () => {
 
     // Start mock workout updates
     const interval = setInterval(() => {
-      setStepCount((prev) => prev + Math.floor(Math.random() * 3) + 2);
-      setDistance((prev) => prev + Math.random() * 2 + 2);
+      // Calculate new values using functional updates
+      setStepCount((prev) => {
+        const newSteps = prev + Math.floor(Math.random() * 3) + 2;
+        stepCountRef.current = newSteps;
+        return newSteps;
+      });
 
-      const update: WorkoutUpdate = {
-        ts: Date.now(),
-        steps: stepCount + Math.floor(Math.random() * 3) + 2,
-        distanceMeters: distance + Math.random() * 2 + 2,
-        pace: 3.5, // Mock pace
-        location: {
-          lat: 37.7749 + (Math.random() - 0.5) * 0.001,
-          lon: -122.4194 + (Math.random() - 0.5) * 0.001,
-          accuracy: Math.random() * 10 + 5,
-        },
-        source: 'ios',
-      };
+      setDistance((prev) => {
+        const newDistance = prev + Math.random() * 2 + 2;
+        distanceRef.current = newDistance;
 
-      setWorkoutData(update);
+        // Create workout update with current ref values (always up-to-date)
+        const update: WorkoutUpdate = {
+          ts: Date.now(),
+          steps: stepCountRef.current,
+          distanceMeters: distanceRef.current,
+          pace: 3.5, // Mock pace
+          location: {
+            lat: 37.7749 + (Math.random() - 0.5) * 0.001,
+            lon: -122.4194 + (Math.random() - 0.5) * 0.001,
+            accuracy: Math.random() * 10 + 5,
+          },
+          source: 'ios',
+        };
+
+        setWorkoutData(update);
+        return newDistance;
+      });
     }, 1000);
 
     setWorkoutInterval(interval);
