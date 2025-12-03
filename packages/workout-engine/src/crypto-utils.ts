@@ -14,7 +14,8 @@ export function secureRandom(): number {
   const byte1 = bytes[1] ?? 0;
   const byte2 = bytes[2] ?? 0;
   const byte3 = bytes[3] ?? 0;
-  const uint32 = (byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3;
+  // Use >>> 0 to force unsigned 32-bit interpretation, preventing negative values
+  const uint32 = ((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3) >>> 0;
   return uint32 / 0xffffffff;
 }
 
