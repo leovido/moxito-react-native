@@ -10,6 +10,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { secureRandom } from '../app/utils/crypto-utils';
 import {
   Accessibility,
   BorderRadius,
@@ -17,8 +18,7 @@ import {
   Shadows,
   Spacing,
   Typography,
-} from '../../constants/DesignSystem';
-import { secureRandom } from '../app/utils/crypto-utils';
+} from '../constants/DesignSystem';
 
 export const WorkoutScreen = () => {
   const [isWorkoutActive, setIsWorkoutActive] = useState(false);

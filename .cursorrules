@@ -126,3 +126,4 @@ Refer to Expo's documentation for detailed information on Views, Blueprints, and
 
 // Moxito project
 This project is a monorepo mobile app built with Expo and React Native.
+Remember that this project uses `yarn`, not `npm`.
