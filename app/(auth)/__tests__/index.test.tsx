@@ -1,8 +1,7 @@
-import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { type Router, useRouter } from 'expo-router';
+import { useAuth } from '../../../Context/AuthProvider';
 import AuthScreen from '../index';
-import { useAuth } from '../AuthProvider';
-import { useRouter } from 'expo-router';
 
 jest.mock('../AuthProvider', () => ({
   useAuth: jest.fn(),
@@ -21,6 +20,7 @@ const renderAuthScreen = (overrides: Partial<AuthContextShape> = {}) => {
   const authState: AuthContextShape = {
     startLogin: jest.fn<Promise<void>, []>(),
     isAuthenticated: false,
+    url: null,
     authError: null,
     ...overrides,
   };
@@ -38,7 +38,7 @@ describe('AuthScreen', () => {
     mockReplace = jest.fn();
     mockedUseRouter.mockReturnValue({
       replace: mockReplace,
-    });
+    } as Partial<Router> as Router);
   });
 
   it('renders expected instructional content', () => {
