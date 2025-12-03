@@ -2,9 +2,9 @@ import type { IWorkoutEngine, WorkoutPermissions, WorkoutUpdate } from '@moxito/
 
 // Simple event emitter for development
 class SimpleEventEmitter {
-  private listeners: Map<string, ((data: unknown) => void)[]> = new Map();
+  private listeners: Map<string, ((data: WorkoutUpdate) => void)[]> = new Map();
 
-  addListener(event: string, callback: (data: unknown) => void) {
+  addListener(event: string, callback: (data: WorkoutUpdate) => void) {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, []);
     }
@@ -23,7 +23,7 @@ class SimpleEventEmitter {
     };
   }
 
-  emit(event: string, data: unknown) {
+  emit(event: string, data: WorkoutUpdate) {
     const eventListeners = this.listeners.get(event);
     if (eventListeners) {
       eventListeners.forEach((callback) => {

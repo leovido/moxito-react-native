@@ -1,34 +1,17 @@
-// Mock React Native before any imports
-jest.mock('react-native', () => {
-  const RN = jest.requireActual('react-native');
-  return {
-    ...RN,
-    SafeAreaView: ({ children, ...props }) => <RN.View {...props}>{children}</RN.View>,
-    NativeModules: {
-      ...RN.NativeModules,
-      SettingsManager: {
-        get: jest.fn(),
-        set: jest.fn(),
-        watchKeys: jest.fn(),
-        clearWatch: jest.fn(),
-        _getConstants: jest.fn(() => ({})),
-      },
-    },
-    TurboModuleRegistry: {
-      getEnforcing: jest.fn(() => ({
-        get: jest.fn(),
-        set: jest.fn(),
-        watchKeys: jest.fn(),
-        clearWatch: jest.fn(),
-        _getConstants: jest.fn(() => ({})),
-      })),
-    },
-  };
-});
+const mockSettingsManager = {
+  get: jest.fn(),
+  set: jest.fn(),
+  watchKeys: jest.fn(),
+  clearWatch: jest.fn(),
+  getConstants: jest.fn(() => ({})),
+  _getConstants: jest.fn(() => ({})),
+};
 
-// Mock global functions
-global.clearInterval = jest.fn();
-global.setInterval = jest.fn();
+jest.mock('react-native/Libraries/Settings/NativeSettingsManager', () => mockSettingsManager);
+
+const ReactNative = require('react-native');
+
+ReactNative.NativeModules.SettingsManager = mockSettingsManager;
 
 // Suppress console warnings for cleaner test output
 const originalWarn = console.warn;

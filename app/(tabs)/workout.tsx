@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 // Temporary mock types for testing
-type WorkoutUpdate = {
+export type WorkoutUpdate = {
   ts: number;
   steps: number;
   distanceMeters: number;
@@ -88,10 +88,12 @@ export default function WorkoutScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Live Data</Text>
           <View style={styles.dataGrid}>
-            <Text style={styles.dataItem}>👟 Steps: {stepCount}</Text>
-            <Text style={styles.dataItem}>📏 Distance: {distance.toFixed(2)}m</Text>
-            <Text style={styles.dataItem}>
-              ⏱️ Duration: {isWorkoutActive ? 'Active' : 'Stopped'}
+            <Text testID="live-data-steps" style={styles.dataItem}>{`👟 Steps: ${stepCount}`}</Text>
+            <Text testID="live-data-distance" style={styles.dataItem}>
+              {`📏 Distance: ${distance.toFixed(2)}m`}
+            </Text>
+            <Text testID="live-data-duration" style={styles.dataItem}>
+              {`⏱️ Duration: ${isWorkoutActive ? 'Active' : 'Stopped'}`}
             </Text>
           </View>
         </View>
@@ -101,23 +103,28 @@ export default function WorkoutScreen() {
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Last Update</Text>
             <View style={styles.dataGrid}>
-              <Text style={styles.dataItem}>
-                ⏰ Time: {new Date(workoutData.ts).toLocaleTimeString()}
+              <Text testID="last-update-time" style={styles.dataItem}>
+                {`⏰ Time: ${new Date(workoutData.ts).toLocaleTimeString()}`}
               </Text>
-              <Text style={styles.dataItem}>👟 Steps: {workoutData.steps}</Text>
-              <Text style={styles.dataItem}>
-                📏 Distance: {workoutData.distanceMeters.toFixed(2)}m
+              <Text testID="last-update-steps" style={styles.dataItem}>{`👟 Steps: ${workoutData.steps}`}</Text>
+              <Text testID="last-update-distance" style={styles.dataItem}>
+                {`📏 Distance: ${workoutData.distanceMeters.toFixed(2)}m`}
               </Text>
               {workoutData.pace && (
-                <Text style={styles.dataItem}>🏃 Pace: {workoutData.pace.toFixed(2)} m/s</Text>
-              )}
-              {workoutData.location && (
-                <Text style={styles.dataItem}>
-                  📍 Location: {workoutData.location.lat.toFixed(6)},{' '}
-                  {workoutData.location.lon.toFixed(6)}
+                <Text testID="last-update-pace" style={styles.dataItem}>
+                  {`🏃 Pace: ${workoutData.pace.toFixed(2)} m/s`}
                 </Text>
               )}
-              <Text style={styles.dataItem}>📱 Source: {workoutData.source}</Text>
+              {workoutData.location && (
+                <Text testID="last-update-location" style={styles.dataItem}>
+                  {`📍 Location: ${workoutData.location.lat.toFixed(6)}, ${workoutData.location.lon.toFixed(
+                    6,
+                  )}`}
+                </Text>
+              )}
+              <Text testID="last-update-source" style={styles.dataItem}>
+                {`📱 Source: ${workoutData.source}`}
+              </Text>
             </View>
           </View>
         )}
@@ -126,7 +133,7 @@ export default function WorkoutScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Status</Text>
           <Text style={styles.statusText}>
-            Workout: {isWorkoutActive ? '🟢 Active' : '🔴 Inactive'}
+            {`Workout: ${isWorkoutActive ? '🟢 Active' : '🔴 Inactive'}`}
           </Text>
         </View>
       </View>
