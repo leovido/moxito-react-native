@@ -3,7 +3,7 @@ import { type Router, useRouter } from 'expo-router';
 import { useAuth } from '../../../Context/AuthProvider';
 import AuthScreen from '../index';
 
-jest.mock('../AuthProvider', () => ({
+jest.mock('../..Context/AuthProvider', () => ({
   useAuth: jest.fn(),
 }));
 
