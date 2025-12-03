@@ -11,6 +11,18 @@ jest.mock('react-native/Libraries/Settings/NativeSettingsManager', () => mockSet
 
 const ReactNative = require('react-native');
 
+if (typeof globalThis.setImmediate === 'undefined') {
+  globalThis.setImmediate = (callback, ...args) => {
+    return setTimeout(callback, 0, ...args);
+  };
+}
+
+if (typeof globalThis.clearImmediate === 'undefined') {
+  globalThis.clearImmediate = (handle) => {
+    clearTimeout(handle);
+  };
+}
+
 ReactNative.NativeModules.SettingsManager = mockSettingsManager;
 
 // Suppress console warnings for cleaner test output

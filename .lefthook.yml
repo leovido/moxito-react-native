@@ -1,0 +1,13 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome_check_staged:
+      run: npx biome check --write --staged
+      stage_fixed: true
+
+pre-push:
+  commands:
+    biome_full:
+      run: npx biome check .
+    test_unit:
+      run: yarn test:unit

@@ -79,6 +79,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@biomejs/biome": "^2.2.3",
+    "@evilmartians/lefthook": "^2.0.7",
     "@expo/ngrok": "~4.1.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "@testing-library/jest-native": "^5.4.3",

@@ -53,10 +53,16 @@ yarn lint:fix
    yarn install
    ```
 
-2. Start the app
+2. Install the Git hooks
 
    ```bash
-    yarn start
+   npx lefthook install
+   ```
+
+3. Start the app
+
+   ```bash
+   yarn start
    ```
 
 In the output, you'll find options to open the app in a

@@ -3,7 +3,7 @@ import * as Crypto from 'expo-crypto';
 /**
  * Generates a cryptographically secure random number between 0 and 1
  * Replaces Math.random() for security compliance
- * 
+ *
  * @returns A random number between 0 (inclusive) and 1 (exclusive), similar to Math.random()
  */
 export function secureRandom(): number {
@@ -18,4 +18,3 @@ export function secureRandom(): number {
   const uint32 = ((byte0 << 24) | (byte1 << 16) | (byte2 << 8) | byte3) >>> 0;
   return uint32 / 0xffffffff;
 }
-
