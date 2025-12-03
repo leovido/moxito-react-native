@@ -13,6 +13,8 @@ module.exports = {
     '<rootDir>/Context/__tests__/**/*.test.(ts|tsx|js|jsx)',
   ],
   collectCoverageFrom: [
+    '<rootDir>/app/**/utils/**/*.{ts,tsx}',
+    '!<rootDir>/app/**/__tests__/**',
     '<rootDir>/app/(tabs)/**/*.(ts|tsx)',
     '<rootDir>/app/(auth)/**/*.(ts|tsx)',
     '<rootDir>/Context/**/*.(ts|tsx)',

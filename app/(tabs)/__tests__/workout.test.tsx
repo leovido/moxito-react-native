@@ -1,6 +1,32 @@
-import { act, fireEvent, render, within } from '@testing-library/react-native';
-import type React from 'react';
-import WorkoutScreen from '../workout';
+import { act, fireEvent, render } from '@testing-library/react-native';
+import { WorkoutScreen } from '../../../components/WorkoutScreen';
+
+type GetByText = ReturnType<typeof render>['getByText'];
+type QueryByText = ReturnType<typeof render>['queryByText'];
+
+function pressButton(target: Parameters<typeof fireEvent.press>[0]) {
+  act(() => {
+    fireEvent.press(target);
+  });
+}
+
+function advanceTimers(ms: number) {
+  act(() => {
+    jest.advanceTimersByTime(ms);
+  });
+}
+
+function expectWorkoutActive(getByText: GetByText, queryByText: QueryByText) {
+  expect(queryByText('Start Workout')).toBeFalsy();
+  expect(getByText('Stop Workout')).toBeTruthy();
+  expect(getByText('Workout: 🟢 Active')).toBeTruthy();
+}
+
+function expectWorkoutInactive(getByText: GetByText, queryByText: QueryByText) {
+  expect(queryByText('Stop Workout')).toBeFalsy();
+  expect(getByText('Start Workout')).toBeTruthy();
+  expect(getByText('Workout: 🔴 Inactive')).toBeTruthy();
+}
 
 describe('WorkoutScreen', () => {
   beforeEach(() => {
@@ -9,7 +35,9 @@ describe('WorkoutScreen', () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
     jest.useRealTimers();
   });
 
@@ -32,12 +60,9 @@ describe('WorkoutScreen', () => {
     const { getByText, queryByText } = render(<WorkoutScreen />);
 
     const startButton = getByText('Start Workout');
-    fireEvent.press(startButton);
+    pressButton(startButton);
 
-    // Should show stop button and active status
-    expect(queryByText('Start Workout')).toBeFalsy();
-    expect(getByText('Stop Workout')).toBeTruthy();
-    expect(getByText('Workout: 🟢 Active')).toBeTruthy();
+    expectWorkoutActive(getByText, queryByText);
   });
 
   it('stops workout when stop button is pressed', async () => {
@@ -45,34 +70,28 @@ describe('WorkoutScreen', () => {
 
     // Start workout first
     const startButton = getByText('Start Workout');
-    fireEvent.press(startButton);
+    pressButton(startButton);
 
     // Then stop it
     const stopButton = getByText('Stop Workout');
-    fireEvent.press(stopButton);
+    pressButton(stopButton);
 
-    // Should show start button and inactive status
-    expect(queryByText('Stop Workout')).toBeFalsy();
-    expect(getByText('Start Workout')).toBeTruthy();
-    expect(getByText('Workout: 🔴 Inactive')).toBeTruthy();
+    expectWorkoutInactive(getByText, queryByText);
   });
 
   it('updates step count and distance during active workout', async () => {
-    const { getByText } = render(<WorkoutScreen />);
+    const { getByText, getByTestId } = render(<WorkoutScreen />);
 
     // Start workout
     const startButton = getByText('Start Workout');
-    fireEvent.press(startButton);
+    pressButton(startButton);
 
     // Fast-forward time to trigger updates
-    act(() => {
-      jest.advanceTimersByTime(1000); // 1 second
-    });
+    advanceTimers(1000);
 
     // Should have some steps and distance in live data section
-    const liveDataSection = getByText('Live Data').parent;
-    const stepsText = within(liveDataSection).getByText('👟 Steps');
-    const distanceText = within(liveDataSection).getByText('📏 Distance');
+    const stepsText = getByTestId('live-data-steps');
+    const distanceText = getByTestId('live-data-distance');
 
     expect(stepsText).toBeTruthy();
     expect(distanceText).toBeTruthy();
@@ -86,46 +105,43 @@ describe('WorkoutScreen', () => {
   });
 
   it('generates workout updates with correct data structure', async () => {
-    const { getByText } = render(<WorkoutScreen />);
+    const { getByText, getByTestId } = render(<WorkoutScreen />);
 
     // Start workout
     const startButton = getByText('Start Workout');
-    fireEvent.press(startButton);
+    pressButton(startButton);
 
     // Fast-forward time to trigger updates
-    act(() => {
-      jest.advanceTimersByTime(1000);
-    });
+    advanceTimers(1000);
 
     // Should show workout data section
     const lastUpdateSection = getByText('Last Update');
     expect(lastUpdateSection).toBeTruthy();
 
     // Check for required data fields in workout data section
-    const workoutDataSection = getByText('Last Update').parent;
-    expect(within(workoutDataSection).getByText('⏰ Time')).toBeTruthy();
-    expect(within(workoutDataSection).getByText('👟 Steps')).toBeTruthy();
-    expect(within(workoutDataSection).getByText('📏 Distance')).toBeTruthy();
-    expect(within(workoutDataSection).getByText('🏃 Pace')).toBeTruthy();
-    expect(within(workoutDataSection).getByText('📍 Location')).toBeTruthy();
-    expect(within(workoutDataSection).getByText('📱 Source')).toBeTruthy();
+    expect(getByTestId('last-update-time')).toBeTruthy();
+    expect(getByTestId('last-update-steps')).toBeTruthy();
+    expect(getByTestId('last-update-distance')).toBeTruthy();
+    expect(getByTestId('last-update-pace')).toBeTruthy();
+    expect(getByTestId('last-update-location')).toBeTruthy();
+    expect(getByTestId('last-update-source')).toBeTruthy();
   });
 
   it('cleans up interval when component unmounts', () => {
     const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
-    
+
     const { getByText, unmount } = render(<WorkoutScreen />);
-    
+
     // Start a workout to ensure there's an interval to clean up
     const startButton = getByText('Start Workout');
-    fireEvent.press(startButton);
-    
+    pressButton(startButton);
+
     // Unmount component
     unmount();
-    
+
     // Should have called clearInterval
     expect(clearIntervalSpy).toHaveBeenCalled();
-    
+
     clearIntervalSpy.mockRestore();
   });
 
@@ -134,20 +150,18 @@ describe('WorkoutScreen', () => {
 
     // Start workout
     const startButton = getByText('Start Workout');
-    fireEvent.press(startButton);
+    pressButton(startButton);
 
     // Let it run for a bit
-    act(() => {
-      jest.advanceTimersByTime(2000);
-    });
+    advanceTimers(2000);
 
     // Stop workout
     const stopButton = getByText('Stop Workout');
-    fireEvent.press(stopButton);
+    pressButton(stopButton);
 
     // Start new workout
     const newStartButton = getByText('Start Workout');
-    fireEvent.press(newStartButton);
+    pressButton(newStartButton);
 
     // Should reset to 0
     expect(getByText('👟 Steps: 0')).toBeTruthy();
@@ -159,16 +173,14 @@ describe('WorkoutScreen', () => {
 
     // Rapid start/stop sequence
     const startButton = getByText('Start Workout');
-    fireEvent.press(startButton);
+    pressButton(startButton);
+    expectWorkoutActive(getByText, queryByText);
 
     // Immediately stop
     const stopButton = getByText('Stop Workout');
-    fireEvent.press(stopButton);
+    pressButton(stopButton);
 
-    // Should be back to inactive state
-    expect(queryByText('Stop Workout')).toBeFalsy();
-    expect(getByText('Start Workout')).toBeTruthy();
-    expect(getByText('Workout: 🔴 Inactive')).toBeTruthy();
+    expectWorkoutInactive(getByText, queryByText);
   });
 
   it('displays correct duration status', () => {
@@ -179,14 +191,14 @@ describe('WorkoutScreen', () => {
 
     // Start workout
     const startButton = getByText('Start Workout');
-    fireEvent.press(startButton);
+    pressButton(startButton);
 
     // Should show active
     expect(getByText('⏱️ Duration: Active')).toBeTruthy();
 
     // Stop workout
     const stopButton = getByText('Stop Workout');
-    fireEvent.press(stopButton);
+    pressButton(stopButton);
 
     // Should show stopped again
     expect(getByText('⏱️ Duration: Stopped')).toBeTruthy();

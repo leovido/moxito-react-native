@@ -1,3 +1,5 @@
+import type { WorkoutUpdate } from '@moxito/api';
+
 // Workout state management utilities
 export interface WorkoutState {
   isActive: boolean;
@@ -7,15 +9,6 @@ export interface WorkoutState {
   goalDistance: number;
   updates: WorkoutUpdate[];
   isGoalReached: boolean;
-}
-
-export interface WorkoutUpdate {
-  ts: number;
-  steps: number;
-  distanceMeters: number;
-  pace?: number;
-  location?: { lat: number; lon: number; accuracy: number } | null;
-  source: 'ios' | 'android';
 }
 
 export const createInitialWorkoutState = (goalDistance: number = 1000): WorkoutState => ({

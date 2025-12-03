@@ -1,9 +1,9 @@
+import type { WorkoutUpdate } from '@moxito/api';
 import {
   calculatePace,
   generateMockWorkoutUpdate,
   validateWorkoutUpdate,
-} from '../utils/workout-utils-helpers';
-import type { WorkoutUpdate } from '../workout';
+} from '../../utils/workout-utils-helpers';
 
 describe('Workout Utilities', () => {
   describe('generateMockWorkoutUpdate', () => {
@@ -153,7 +153,7 @@ describe('Workout Utilities', () => {
         steps: 100,
         distanceMeters: 500,
         location: {
-          lat: 'invalid' as number,
+          lat: 'invalid' as unknown as number,
           lon: -122.4194,
           accuracy: 10,
         },

@@ -4,7 +4,7 @@ export default {
     slug: 'moxito-fitness',
     scheme: 'moxito',
     entryPoint: './app/index.tsx',
-    plugins: ['expo-font', 'expo-router'],
+    plugins: ['expo-font', 'expo-router', 'expo-secure-store', 'expo-web-browser'],
     ios: {
       bundleIdentifier: 'com.christianleovido.Moxito',
       buildNumber: '2',

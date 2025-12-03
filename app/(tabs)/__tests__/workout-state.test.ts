@@ -1,11 +1,11 @@
+import type { WorkoutUpdate } from '@moxito/api';
 import {
   addWorkoutUpdate,
   calculateWorkoutStats,
   createInitialWorkoutState,
   startWorkout,
   stopWorkout,
-} from '../utils/workout-state-utils';
-import type { WorkoutUpdate } from '../workout';
+} from '../../utils/workout-state-utils';
 
 describe('Workout State Management', () => {
   describe('createInitialWorkoutState', () => {

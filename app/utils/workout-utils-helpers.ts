@@ -1,24 +1,19 @@
+import type { WorkoutUpdate } from '@moxito/api';
+import { secureRandom } from './crypto-utils';
+
 // Mock workout data generation utilities
-export interface WorkoutUpdate {
-  ts: number;
-  steps: number;
-  distanceMeters: number;
-  pace?: number;
-  location?: { lat: number; lon: number; accuracy: number } | null;
-  source: 'ios' | 'android';
-}
 
 export const generateMockWorkoutUpdate = (baseData: Partial<WorkoutUpdate> = {}): WorkoutUpdate => {
   const now = Date.now();
   return {
     ts: baseData.ts || now,
-    steps: baseData.steps || Math.floor(Math.random() * 100) + 50,
-    distanceMeters: baseData.distanceMeters || Math.random() * 200 + 50,
-    pace: baseData.pace || Math.random() * 2 + 1,
+    steps: baseData.steps || Math.floor(secureRandom() * 100) + 50,
+    distanceMeters: baseData.distanceMeters || secureRandom() * 200 + 50,
+    pace: baseData.pace || secureRandom() * 2 + 1,
     location: baseData.location || {
-      lat: 37.7749 + (Math.random() - 0.5) * 0.001,
-      lon: -122.4194 + (Math.random() - 0.5) * 0.001,
-      accuracy: Math.random() * 10 + 5,
+      lat: 37.7749 + (secureRandom() - 0.5) * 0.001,
+      lon: -122.4194 + (secureRandom() - 0.5) * 0.001,
+      accuracy: secureRandom() * 10 + 5,
     },
     source: baseData.source || 'ios',
   };
