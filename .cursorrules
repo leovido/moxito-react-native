@@ -98,10 +98,17 @@ Git Workflow and Version Control
   - Example: `fix(navigation): resolve deep linking issue on Android`
   - Keep commit messages clear and descriptive for semantic-release automation.
 - Lefthook Git Hooks:
-  - Pre-commit and pre-push hooks are configured via Lefthook.
-  - If hooks fail, fix all reported issues before proceeding with the commit or push.
+  - **Pre-commit**: Runs fast checks for immediate feedback
+    - Linting (ESLint)
+    - Code formatting (Prettier)
+    - Staged file validation
+  - **Pre-push**: Runs comprehensive checks before pushing to remote
+    - TypeScript compilation (`tsc --noEmit`)
+    - Unit tests
+    - Build validation
+  - If any hook fails, fix all reported issues before proceeding.
   - Do not bypass hooks; they ensure code quality and consistency.
-  - Common checks include: linting, type checking, formatting, and tests.
+  - TSC checks must pass with zero errors before pushing code.
 
 Key Conventions
 1. Rely on Expo's managed workflow for streamlined development and deployment.
