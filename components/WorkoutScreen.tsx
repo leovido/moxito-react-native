@@ -17,6 +17,7 @@ import {
   Spacing,
   Typography,
 } from '../../constants/DesignSystem';
+import { secureRandom } from '../app/utils/crypto-utils';
 
 // Temporary mock types for testing
 export type WorkoutUpdate = {
@@ -75,13 +76,13 @@ export const WorkoutScreen = () => {
     const interval = setInterval(() => {
       // Calculate new values using functional updates
       setStepCount((prev) => {
-        const newSteps = prev + Math.floor(Math.random() * 3) + 2;
+        const newSteps = prev + Math.floor(secureRandom() * 3) + 2;
         stepCountRef.current = newSteps;
         return newSteps;
       });
 
       setDistance((prev) => {
-        const newDistance = prev + Math.random() * 2 + 2;
+        const newDistance = prev + secureRandom() * 2 + 2;
         distanceRef.current = newDistance;
 
         // Create workout update with current ref values (always up-to-date)
@@ -91,9 +92,9 @@ export const WorkoutScreen = () => {
           distanceMeters: distanceRef.current,
           pace: 3.5, // Mock pace
           location: {
-            lat: 37.7749 + (Math.random() - 0.5) * 0.001,
-            lon: -122.4194 + (Math.random() - 0.5) * 0.001,
-            accuracy: Math.random() * 10 + 5,
+            lat: 37.7749 + (secureRandom() - 0.5) * 0.001,
+            lon: -122.4194 + (secureRandom() - 0.5) * 0.001,
+            accuracy: secureRandom() * 10 + 5,
           },
           source: 'ios',
         };
