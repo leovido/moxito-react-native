@@ -87,11 +87,19 @@ export default function AuthScreen() {
             Sign in to the apps to display your profile or skip this step.
           </Text>
           <Pressable
-            style={[styles.signInButton, state.status !== 'initial' && styles.signInButtonDisabled]}
+            style={[
+              styles.signInButton,
+              state.status !== 'initial' &&
+                state.status !== 'error' &&
+                state.status !== 'done' &&
+                styles.signInButtonDisabled,
+            ]}
             onPress={handleLogin}
-            disabled={state.status !== 'initial'}
+            disabled={
+              state.status !== 'initial' && state.status !== 'error' && state.status !== 'done'
+            }
           >
-            {state.status !== 'initial' ? (
+            {state.status !== 'initial' && state.status !== 'error' && state.status !== 'done' ? (
               <ActivityIndicator color="#fff" />
             ) : (
               <Text style={styles.signInButtonText}>Sign in with Farcaster</Text>
