@@ -57,8 +57,6 @@ describe('AuthProvider', () => {
     jest.clearAllMocks();
     latestContext = undefined;
     mockCreateURL.mockReturnValue('moxito://auth');
-    // mockWarmUpAsync.mockResolvedValue(undefined);
-    // mockCoolDownAsync.mockResolvedValue(undefined);
   });
 
   it('provides default auth state values', () => {

@@ -1,7 +1,7 @@
 {
-  "name": "@moxito/workout-engine",
+  "name": "@moxito/api",
   "version": "1.0.0",
-  "description": "Native workout tracking module for Moxito Fitness",
+  "description": "Shared RTK Query API definitions for Moxito Fitness",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
@@ -12,16 +12,14 @@
   "keywords": [
     "react-native",
     "expo",
-    "workout",
-    "fitness",
-    "health",
-    "gps",
-    "steps"
+    "redux",
+    "rtk-query",
+    "moxito"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/leovido/moxito-react-native.git",
-    "directory": "packages/workout-engine"
+    "directory": "packages/api"
   },
   "bugs": {
     "url": "https://github.com/leovido/moxito-react-native/issues"
@@ -29,12 +27,10 @@
   "author": "Leovido",
   "license": "MIT",
   "peerDependencies": {
-    "expo": "*"
-  },
-  "dependencies": {
-    "@moxito/api": "file:../api"
+    "@reduxjs/toolkit": "^2.2.1"
   },
   "devDependencies": {
+    "@reduxjs/toolkit": "^2.2.1",
     "typescript": "^5.3.3"
   }
 }

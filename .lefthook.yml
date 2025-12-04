@@ -1,0 +1,17 @@
+pre-commit:
+  parallel: true
+  commands:
+    biome_check_staged:
+      run: npx biome check --write --staged
+      stage_fixed: true
+
+pre-push:
+  commands:
+    biome_full:
+      run: npx biome check .
+    typescript_check:
+      run: yarn tsc --noEmit --pretty false
+    dependencies_check:
+      run: npx expo install --check
+    test_unit:
+      run: yarn test:unit

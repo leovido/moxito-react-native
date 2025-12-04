@@ -143,6 +143,7 @@ export const WorkoutScreen = () => {
             onPress={isWorkoutActive ? stopWorkout : startWorkout}
             accessibilityLabel={isWorkoutActive ? 'Stop workout' : 'Start workout'}
             accessibilityRole="button"
+            testID="workout-toggle-button"
           >
             <Text style={styles.claimButtonText}>{isWorkoutActive ? 'Stop' : 'Start'}</Text>
           </Pressable>
@@ -185,36 +186,44 @@ export const WorkoutScreen = () => {
 
         {/* Live Data Cards */}
         <View style={styles.cardsContainer}>
-          <View style={styles.dataCard}>
+          <View style={styles.dataCard} testID="live-data-steps">
             <View style={styles.cardIconContainer}>
               <Text style={styles.cardIcon}>👟</Text>
             </View>
             <View style={styles.cardContent}>
               <Text style={styles.cardLabel}>Steps</Text>
-              <Text style={styles.cardNumber}>{stepCount}</Text>
+              <Text style={styles.cardNumber} testID="steps-value">
+                {stepCount}
+              </Text>
               <Text style={styles.cardUnit}>steps</Text>
             </View>
           </View>
 
-          <View style={styles.dataCard}>
+          <View style={styles.dataCard} testID="live-data-distance">
             <View style={styles.cardIconContainer}>
               <Text style={styles.cardIcon}>📏</Text>
             </View>
             <View style={styles.cardContent}>
               <Text style={styles.cardLabel}>Distance</Text>
-              <Text style={styles.cardNumber}>{distance.toFixed(1)}</Text>
+              <Text style={styles.cardNumber} testID="distance-value">
+                {distance.toFixed(1)}
+              </Text>
               <Text style={styles.cardUnit}>meters</Text>
             </View>
           </View>
 
-          <View style={styles.dataCard}>
+          <View style={styles.dataCard} testID="live-data-duration">
             <View style={styles.cardIconContainer}>
               <Text style={styles.cardIcon}>⏱️</Text>
             </View>
             <View style={styles.cardContent}>
               <Text style={styles.cardLabel}>Duration</Text>
-              <Text style={styles.cardNumber}>{isWorkoutActive ? 'Live' : '0'}</Text>
-              <Text style={styles.cardUnit}>{isWorkoutActive ? 'active' : 'minutes'}</Text>
+              <Text style={styles.cardNumber} testID="duration-value">
+                {isWorkoutActive ? 'Live' : '0'}
+              </Text>
+              <Text style={styles.cardUnit} testID="duration-unit">
+                {isWorkoutActive ? 'active' : 'minutes'}
+              </Text>
             </View>
           </View>
         </View>
@@ -227,7 +236,7 @@ export const WorkoutScreen = () => {
               <View style={styles.detailItem}>
                 <Text style={styles.detailIcon}>⏰</Text>
                 <Text style={styles.detailLabel}>Time</Text>
-                <Text style={styles.detailValue}>
+                <Text style={styles.detailValue} testID="last-update-time">
                   {new Date(workoutData.ts).toLocaleTimeString()}
                 </Text>
               </View>
@@ -235,20 +244,26 @@ export const WorkoutScreen = () => {
               <View style={styles.detailItem}>
                 <Text style={styles.detailIcon}>👟</Text>
                 <Text style={styles.detailLabel}>Steps</Text>
-                <Text style={styles.detailValue}>{workoutData.steps}</Text>
+                <Text style={styles.detailValue} testID="last-update-steps">
+                  {workoutData.steps}
+                </Text>
               </View>
 
               <View style={styles.detailItem}>
                 <Text style={styles.detailIcon}>📏</Text>
                 <Text style={styles.detailLabel}>Distance</Text>
-                <Text style={styles.detailValue}>{workoutData.distanceMeters.toFixed(2)}m</Text>
+                <Text style={styles.detailValue} testID="last-update-distance">
+                  {workoutData.distanceMeters.toFixed(2)}m
+                </Text>
               </View>
 
               {workoutData.pace && (
                 <View style={styles.detailItem}>
                   <Text style={styles.detailIcon}>🏃</Text>
                   <Text style={styles.detailLabel}>Pace</Text>
-                  <Text style={styles.detailValue}>{workoutData.pace.toFixed(2)} m/s</Text>
+                  <Text style={styles.detailValue} testID="last-update-pace">
+                    {workoutData.pace.toFixed(2)} m/s
+                  </Text>
                 </View>
               )}
 
@@ -256,7 +271,7 @@ export const WorkoutScreen = () => {
                 <View style={styles.detailItem}>
                   <Text style={styles.detailIcon}>📍</Text>
                   <Text style={styles.detailLabel}>Location</Text>
-                  <Text style={styles.detailValue}>
+                  <Text style={styles.detailValue} testID="last-update-location">
                     {workoutData.location.lat.toFixed(4)}, {workoutData.location.lon.toFixed(4)}
                   </Text>
                 </View>
@@ -265,7 +280,9 @@ export const WorkoutScreen = () => {
               <View style={styles.detailItem}>
                 <Text style={styles.detailIcon}>📱</Text>
                 <Text style={styles.detailLabel}>Source</Text>
-                <Text style={styles.detailValue}>{workoutData.source}</Text>
+                <Text style={styles.detailValue} testID="last-update-source">
+                  {workoutData.source}
+                </Text>
               </View>
             </View>
           </View>

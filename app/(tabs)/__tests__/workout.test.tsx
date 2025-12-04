@@ -1,8 +1,12 @@
 import { act, fireEvent, render } from '@testing-library/react-native';
+import type { ReactTestInstance } from 'react-test-renderer';
 import { WorkoutScreen } from '../../../components/WorkoutScreen';
 
-type GetByText = ReturnType<typeof render>['getByText'];
-type QueryByText = ReturnType<typeof render>['queryByText'];
+type RenderAPI = ReturnType<typeof render>;
+type GetByText = RenderAPI['getByText'];
+type GetByLabelText = RenderAPI['getByLabelText'];
+
+type NodeQuery = (testID: string) => ReactTestInstance;
 
 function pressButton(target: Parameters<typeof fireEvent.press>[0]) {
   act(() => {
@@ -13,19 +17,32 @@ function pressButton(target: Parameters<typeof fireEvent.press>[0]) {
 function advanceTimers(ms: number) {
   act(() => {
     jest.advanceTimersByTime(ms);
+    jest.runOnlyPendingTimers();
   });
 }
 
-function expectWorkoutActive(getByText: GetByText, queryByText: QueryByText) {
-  expect(queryByText('Start Workout')).toBeFalsy();
-  expect(getByText('Stop Workout')).toBeTruthy();
-  expect(getByText('Workout: 🟢 Active')).toBeTruthy();
+function getNodeText(node: ReactTestInstance): string {
+  const { children } = node.props;
+
+  if (Array.isArray(children)) {
+    return children.join('');
+  }
+
+  if (typeof children === 'number') {
+    return String(children);
+  }
+
+  return children ?? '';
 }
 
-function expectWorkoutInactive(getByText: GetByText, queryByText: QueryByText) {
-  expect(queryByText('Stop Workout')).toBeFalsy();
-  expect(getByText('Start Workout')).toBeTruthy();
-  expect(getByText('Workout: 🔴 Inactive')).toBeTruthy();
+function expectWorkoutActive(getByText: GetByText, getByLabelText: GetByLabelText) {
+  expect(getByLabelText('Stop workout')).toBeTruthy();
+  expect(getByText('Workout is currently active')).toBeTruthy();
+}
+
+function expectWorkoutInactive(getByText: GetByText, getByLabelText: GetByLabelText) {
+  expect(getByLabelText('Start workout')).toBeTruthy();
+  expect(getByText('Workout is not active')).toBeTruthy();
 }
 
 describe('WorkoutScreen', () => {
@@ -41,84 +58,58 @@ describe('WorkoutScreen', () => {
     jest.useRealTimers();
   });
 
-  it('renders correctly with initial state', () => {
-    const { getByText } = render(<WorkoutScreen />);
+  it('renders initial state with default metrics', () => {
+    const { getByText, getByLabelText, getByTestId } = render(<WorkoutScreen />);
 
-    expect(getByText('Workout Tracking')).toBeTruthy();
-    expect(getByText('Workout Controls')).toBeTruthy();
-    expect(getByText('Start Workout')).toBeTruthy();
-    expect(getByText('Live Data')).toBeTruthy();
-    expect(getByText('Status')).toBeTruthy();
-    expect(getByText('Workout: 🔴 Inactive')).toBeTruthy();
+    expect(getByText('Hello, Leovido')).toBeTruthy();
+    expect(getByText('Last update: Never')).toBeTruthy();
+    expectWorkoutInactive(getByText, getByLabelText);
 
-    // Initial data should show 0
-    expect(getByText('👟 Steps: 0')).toBeTruthy();
-    expect(getByText('📏 Distance: 0.00m')).toBeTruthy();
+    expect(Number(getNodeText(getByTestId('steps-value')))).toBe(0);
+    expect(Number(getNodeText(getByTestId('distance-value')))).toBe(0);
+    expect(getNodeText(getByTestId('duration-value'))).toBe('0');
+    expect(getNodeText(getByTestId('duration-unit'))).toBe('minutes');
   });
 
-  it('starts workout when start button is pressed', async () => {
-    const { getByText, queryByText } = render(<WorkoutScreen />);
+  it('starts workout when the action button is pressed', () => {
+    const { getByLabelText, getByText, getByTestId } = render(<WorkoutScreen />);
 
-    const startButton = getByText('Start Workout');
-    pressButton(startButton);
+    pressButton(getByLabelText('Start workout'));
 
-    expectWorkoutActive(getByText, queryByText);
+    expectWorkoutActive(getByText, getByLabelText);
+    expect(getNodeText(getByTestId('duration-value'))).toBe('Live');
+    expect(getNodeText(getByTestId('duration-unit'))).toBe('active');
   });
 
-  it('stops workout when stop button is pressed', async () => {
-    const { getByText, queryByText } = render(<WorkoutScreen />);
+  it('stops workout when the action button is pressed again', () => {
+    const { getByLabelText, getByText, getByTestId } = render(<WorkoutScreen />);
 
-    // Start workout first
-    const startButton = getByText('Start Workout');
-    pressButton(startButton);
+    pressButton(getByLabelText('Start workout'));
+    pressButton(getByLabelText('Stop workout'));
 
-    // Then stop it
-    const stopButton = getByText('Stop Workout');
-    pressButton(stopButton);
-
-    expectWorkoutInactive(getByText, queryByText);
+    expectWorkoutInactive(getByText, getByLabelText);
+    expect(getNodeText(getByTestId('duration-value'))).toBe('0');
+    expect(getNodeText(getByTestId('duration-unit'))).toBe('minutes');
   });
 
-  it('updates step count and distance during active workout', async () => {
-    const { getByText, getByTestId } = render(<WorkoutScreen />);
+  it('updates live data metrics during an active workout', () => {
+    const { getByLabelText, getByText, getByTestId } = render(<WorkoutScreen />);
 
-    // Start workout
-    const startButton = getByText('Start Workout');
-    pressButton(startButton);
+    pressButton(getByLabelText('Start workout'));
+    advanceTimers(2000);
 
-    // Fast-forward time to trigger updates
-    advanceTimers(1000);
-
-    // Should have some steps and distance in live data section
-    const stepsText = getByTestId('live-data-steps');
-    const distanceText = getByTestId('live-data-distance');
-
-    expect(stepsText).toBeTruthy();
-    expect(distanceText).toBeTruthy();
-
-    // Values should be greater than 0
-    const stepsMatch = stepsText.props.children.match(/👟 Steps: (\d+)/);
-    const distanceMatch = distanceText.props.children.match(/📏 Distance: ([\d.]+)m/);
-
-    expect(parseInt(stepsMatch[1], 10)).toBeGreaterThan(0);
-    expect(parseFloat(distanceMatch[1])).toBeGreaterThan(0);
+    expect(Number(getNodeText(getByTestId('steps-value')))).toBeGreaterThan(0);
+    expect(Number(getNodeText(getByTestId('distance-value')))).toBeGreaterThan(0);
+    expect(getByText('Last update: Just now')).toBeTruthy();
   });
 
-  it('generates workout updates with correct data structure', async () => {
-    const { getByText, getByTestId } = render(<WorkoutScreen />);
+  it('shows last update details after data is generated', () => {
+    const { getByLabelText, getByText, getByTestId } = render(<WorkoutScreen />);
 
-    // Start workout
-    const startButton = getByText('Start Workout');
-    pressButton(startButton);
+    pressButton(getByLabelText('Start workout'));
+    advanceTimers(1500);
 
-    // Fast-forward time to trigger updates
-    advanceTimers(1000);
-
-    // Should show workout data section
-    const lastUpdateSection = getByText('Last Update');
-    expect(lastUpdateSection).toBeTruthy();
-
-    // Check for required data fields in workout data section
+    expect(getByText('Last Update Details')).toBeTruthy();
     expect(getByTestId('last-update-time')).toBeTruthy();
     expect(getByTestId('last-update-steps')).toBeTruthy();
     expect(getByTestId('last-update-distance')).toBeTruthy();
@@ -127,80 +118,53 @@ describe('WorkoutScreen', () => {
     expect(getByTestId('last-update-source')).toBeTruthy();
   });
 
-  it('cleans up interval when component unmounts', () => {
+  it('cleans up the workout interval on unmount', () => {
     const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
+    const { getByLabelText, unmount } = render(<WorkoutScreen />);
 
-    const { getByText, unmount } = render(<WorkoutScreen />);
-
-    // Start a workout to ensure there's an interval to clean up
-    const startButton = getByText('Start Workout');
-    pressButton(startButton);
-
-    // Unmount component
+    pressButton(getByLabelText('Start workout'));
     unmount();
 
-    // Should have called clearInterval
     expect(clearIntervalSpy).toHaveBeenCalled();
-
     clearIntervalSpy.mockRestore();
   });
 
-  it('resets workout data when starting new workout', async () => {
-    const { getByText } = render(<WorkoutScreen />);
+  it('resets metrics when starting a new workout session', () => {
+    const { getByLabelText, getByTestId } = render(<WorkoutScreen />);
 
-    // Start workout
-    const startButton = getByText('Start Workout');
-    pressButton(startButton);
-
-    // Let it run for a bit
+    pressButton(getByLabelText('Start workout'));
     advanceTimers(2000);
+    pressButton(getByLabelText('Stop workout'));
+    pressButton(getByLabelText('Start workout'));
 
-    // Stop workout
-    const stopButton = getByText('Stop Workout');
-    pressButton(stopButton);
-
-    // Start new workout
-    const newStartButton = getByText('Start Workout');
-    pressButton(newStartButton);
-
-    // Should reset to 0
-    expect(getByText('👟 Steps: 0')).toBeTruthy();
-    expect(getByText('📏 Distance: 0.00m')).toBeTruthy();
+    expect(Number(getNodeText(getByTestId('steps-value')))).toBe(0);
+    expect(Number(getNodeText(getByTestId('distance-value')))).toBe(0);
   });
 
-  it('maintains workout state during rapid start/stop actions', async () => {
-    const { getByText, queryByText } = render(<WorkoutScreen />);
+  it('maintains state during rapid start and stop actions', () => {
+    const { getByLabelText, getByText } = render(<WorkoutScreen />);
 
-    // Rapid start/stop sequence
-    const startButton = getByText('Start Workout');
-    pressButton(startButton);
-    expectWorkoutActive(getByText, queryByText);
+    pressButton(getByLabelText('Start workout'));
+    expectWorkoutActive(getByText, getByLabelText);
 
-    // Immediately stop
-    const stopButton = getByText('Stop Workout');
-    pressButton(stopButton);
-
-    expectWorkoutInactive(getByText, queryByText);
+    pressButton(getByLabelText('Stop workout'));
+    expectWorkoutInactive(getByText, getByLabelText);
   });
 
-  it('displays correct duration status', () => {
-    const { getByText } = render(<WorkoutScreen />);
+  it('updates duration indicators based on workout state', () => {
+    const { getByLabelText, getByTestId } = render(<WorkoutScreen />);
 
-    // Initially should show stopped
-    expect(getByText('⏱️ Duration: Stopped')).toBeTruthy();
+    const durationValue: NodeQuery = (testID) => getByTestId(testID);
 
-    // Start workout
-    const startButton = getByText('Start Workout');
-    pressButton(startButton);
+    expect(getNodeText(durationValue('duration-value'))).toBe('0');
+    expect(getNodeText(durationValue('duration-unit'))).toBe('minutes');
 
-    // Should show active
-    expect(getByText('⏱️ Duration: Active')).toBeTruthy();
+    pressButton(getByLabelText('Start workout'));
+    expect(getNodeText(durationValue('duration-value'))).toBe('Live');
+    expect(getNodeText(durationValue('duration-unit'))).toBe('active');
 
-    // Stop workout
-    const stopButton = getByText('Stop Workout');
-    pressButton(stopButton);
-
-    // Should show stopped again
-    expect(getByText('⏱️ Duration: Stopped')).toBeTruthy();
+    pressButton(getByLabelText('Stop workout'));
+    expect(getNodeText(durationValue('duration-value'))).toBe('0');
+    expect(getNodeText(durationValue('duration-unit'))).toBe('minutes');
   });
 });
