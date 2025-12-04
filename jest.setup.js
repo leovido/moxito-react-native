@@ -41,10 +41,6 @@ jest.mock('react-native/Libraries/TurboModule/TurboModuleRegistry', () => {
 
 const ReactNative = require('react-native');
 
-ReactNative.SafeAreaView = ({ children, ...props }) => (
-  <ReactNative.View {...props}>{children}</ReactNative.View>
-);
-
 ReactNative.NativeModules.SettingsManager = {
   ...(ReactNative.NativeModules.SettingsManager ?? {}),
   get: jest.fn(),
@@ -53,10 +49,6 @@ ReactNative.NativeModules.SettingsManager = {
   clearWatch: jest.fn(),
   _getConstants: jest.fn(() => ({})),
 };
-
-jest.mock('react-native/Libraries/Settings/NativeSettingsManager', () => mockSettingsManager);
-
-const ReactNative = require('react-native');
 
 if (typeof globalThis.setImmediate === 'undefined') {
   globalThis.setImmediate = (callback, ...args) => {
@@ -69,8 +61,6 @@ if (typeof globalThis.clearImmediate === 'undefined') {
     clearTimeout(handle);
   };
 }
-
-ReactNative.NativeModules.SettingsManager = mockSettingsManager;
 
 // Mock global functions
 global.clearInterval = jest.fn();

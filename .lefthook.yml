@@ -9,5 +9,9 @@ pre-push:
   commands:
     biome_full:
       run: npx biome check .
+    typescript_check:
+      run: yarn tsc --noEmit --pretty false
+    dependencies_check:
+      run: npx expo install --check
     test_unit:
       run: yarn test:unit

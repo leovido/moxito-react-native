@@ -35,8 +35,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const fid64 = params.get('fid');
 
       if (!signer64 || !fid64) {
-        console.log('Required query items missing: signer or fid.');
-        return;
+        throw Error('Required query items missing: signer or fid.');
       }
 
       // Decode base64 values
