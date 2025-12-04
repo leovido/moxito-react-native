@@ -13,5 +13,7 @@ pre-push:
       run: yarn tsc --noEmit --pretty false
     dependencies_check:
       run: npx expo install --check
+    expo:
+      run: npx expo-doctor
     test_unit:
       run: yarn test:unit
