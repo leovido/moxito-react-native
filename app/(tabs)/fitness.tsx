@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatsCard } from '@/components/StatsCard';
-import { usePrivyWallet } from '../../hooks/usePrivyWallet';
+import { usePrivyWallet } from '../hooks/usePrivyWallet';
 import type { Address } from 'viem';
 
 type LoadState = 'loading' | 'ready' | 'error';
