@@ -5,26 +5,33 @@ import { getFitnessIcon } from '@/constants/icons';
 interface StatsCardProps {
   label: string;
   value: string | number;
-  unit: string;
+  unit?: string;
 }
 
-export const StatsCard = ({ label, value, unit }: StatsCardProps) => (
-  <View style={styles.statsRow}>
-    <View style={styles.iconContainer}>{getFitnessIcon(label)}</View>
-    <View style={styles.statsTextContainer}>
-      <Text style={styles.statsLabel} numberOfLines={2}>
-        {label.split(' ')[0]}
-      </Text>
-      <Text style={styles.statsLabel} numberOfLines={2}>
-        {label.split(' ')[1]}
-      </Text>
+export const StatsCard = ({ label, value, unit }: StatsCardProps) => {
+  const [primaryLabel, ...rest] = label.trim().split(' ');
+  const secondaryLabel = rest.join(' ');
+
+  return (
+    <View style={styles.statsRow}>
+      <View style={styles.iconContainer}>{getFitnessIcon(label)}</View>
+      <View style={styles.statsTextContainer}>
+        <Text style={styles.statsLabel} numberOfLines={2}>
+          {primaryLabel}
+        </Text>
+        {secondaryLabel ? (
+          <Text style={styles.statsLabel} numberOfLines={2}>
+            {secondaryLabel}
+          </Text>
+        ) : null}
+      </View>
+      <View style={styles.valueContainer}>
+        <Text style={styles.valueText}>{value}</Text>
+        {unit ? <Text style={styles.unitText}>{unit}</Text> : null}
+      </View>
     </View>
-    <View style={styles.valueContainer}>
-      <Text style={styles.valueText}>{value}</Text>
-      <Text style={styles.unitText}>{unit}</Text>
-    </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   statsRow: {

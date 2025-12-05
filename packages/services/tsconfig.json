@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@moxito/services": ["./src/*"]
+    },
+    "module": "ESNext",
+    "moduleResolution": "node"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

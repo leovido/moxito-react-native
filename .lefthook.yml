@@ -12,7 +12,7 @@ pre-push:
     typescript_check:
       run: yarn tsc --noEmit --pretty false
     dependencies_check:
-      run: npx expo install --check
+      run: bash scripts/check-expo-deps.sh    
     expo:
       run: npx expo-doctor
     test_unit:
