@@ -21,6 +21,7 @@ config.resolver.alias = {
   '@moxito/theme': path.resolve(__dirname, 'packages/theme/src/index.ts'),
   '@moxito/api': path.resolve(__dirname, 'packages/api/src/index.ts'),
   '@moxito/shared-types': path.resolve(__dirname, 'packages/shared-types/src/types.ts'),
+  '@moxito/services': path.resolve(__dirname, 'packages/services/src/index.ts'),
   // Add TypeScript path aliases
   '@/*': path.resolve(__dirname, './*'),
 };

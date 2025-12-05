@@ -42,5 +42,6 @@ module.exports = {
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
+    '^@moxito/services$': '<rootDir>/packages/services/src/index.ts',
   },
 };
