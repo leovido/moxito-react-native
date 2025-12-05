@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-output=$(CI=1 npx expo install --check --non-interactive 2>&1 || true)
+output=$(CI=1 npx expo install --check 2>&1 || true)
 echo "$output"
 
 if ! grep -q "All dependencies are compatible" <<<"$output"; then
