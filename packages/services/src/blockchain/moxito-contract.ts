@@ -4,7 +4,6 @@ import { createPublicClient, http, type Chain, type PublicClient } from 'viem';
 export const scrollSepolia: Chain = {
   id: 534351,
   name: 'Scroll Sepolia',
-  network: 'scroll-sepolia',
   nativeCurrency: {
     decimals: 18,
     name: 'Ether',
@@ -40,7 +39,7 @@ function createUserReadFunction(name: string) {
         type: 'address' as const,
       },
     ],
-    name: name as const,
+    name,
     outputs: [
       {
         internalType: 'uint256' as const,

@@ -3,6 +3,7 @@ import {
   MOXITO_CONTRACT_ADDRESS,
   MOXITO_CONTRACT_ABI,
   createPublicClientForContract,
+  scrollSepolia,
 } from './moxito-contract';
 import type { Achievement, ContractResponse, UserAchievementData } from './types';
 
@@ -89,7 +90,7 @@ export class ContractService {
 
       return {
         data: {
-          id: achievement.id,
+          id: Number(achievement.id),
           name: achievement.name,
           description: achievement.description,
           unlockedAt: achievement.unlockedAt,
@@ -167,6 +168,7 @@ export class ContractService {
 
       const hash = await walletClient.writeContract({
         account,
+        chain: scrollSepolia,
         address: MOXITO_CONTRACT_ADDRESS,
         abi: MOXITO_CONTRACT_ABI,
         functionName: 'recordCheckIn',
@@ -199,6 +201,7 @@ export class ContractService {
 
       const hash = await walletClient.writeContract({
         account,
+        chain: scrollSepolia,
         address: MOXITO_CONTRACT_ADDRESS,
         abi: MOXITO_CONTRACT_ABI,
         functionName: 'recordSteps',
