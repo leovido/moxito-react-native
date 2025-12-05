@@ -30,6 +30,29 @@ export const scrollSepolia: Chain = {
 // Contract address
 export const MOXITO_CONTRACT_ADDRESS = '0x917e5C305aD17996E8c5F409bd7D29202245d215' as const;
 
+// Helper to create read functions that take an address and return uint256
+function createUserReadFunction(name: string) {
+  return {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'user',
+        type: 'address',
+      },
+    ],
+    name,
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  } as const;
+}
+
 // Contract ABI - includes all functions we need
 export const MOXITO_CONTRACT_ABI = [
   {
@@ -52,63 +75,9 @@ export const MOXITO_CONTRACT_ABI = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'user',
-        type: 'address',
-      },
-    ],
-    name: 'getUserCheckInCount',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'user',
-        type: 'address',
-      },
-    ],
-    name: 'getUserSteps10KCount',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'user',
-        type: 'address',
-      },
-    ],
-    name: 'getUserAchievementCount',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
+  createUserReadFunction('getUserCheckInCount'),
+  createUserReadFunction('getUserSteps10KCount'),
+  createUserReadFunction('getUserAchievementCount'),
   {
     inputs: [
       {
