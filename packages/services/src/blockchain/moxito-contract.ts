@@ -35,22 +35,22 @@ function createUserReadFunction(name: string) {
   return {
     inputs: [
       {
-        internalType: 'address',
-        name: 'user',
-        type: 'address',
+        internalType: 'address' as const,
+        name: 'user' as const,
+        type: 'address' as const,
       },
     ],
-    name,
+    name: name as const,
     outputs: [
       {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
+        internalType: 'uint256' as const,
+        name: '' as const,
+        type: 'uint256' as const,
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
-  } as const;
+    stateMutability: 'view' as const,
+    type: 'function' as const,
+  };
 }
 
 // Contract ABI - includes all functions we need
