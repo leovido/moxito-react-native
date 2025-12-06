@@ -2,6 +2,83 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
+// Task to patch React Native graphicsConversions.h to use folly::sformat instead of std::format
+task patchReactNativeFormat {
+    doLast {
+        def userHome = System.getProperty('user.home')
+        def cacheDirs = [
+            file("${userHome}/.gradle/caches/8.13/transforms"),
+            file("${userHome}/.gradle/caches/modules-2/files-2.1/com.facebook.react/react-android")
+        ]
+        
+        def patchedCount = 0
+        
+        cacheDirs.each { cacheDir ->
+            if (!cacheDir.exists()) {
+                return
+            }
+            
+            // Find all graphicsConversions.h files recursively
+            cacheDir.eachFileRecurse { file ->
+                if (file.name == "graphicsConversions.h" && file.isFile()) {
+                    try {
+                        def content = file.text
+                        if (content.contains('std::format("{}%", dimension.value)')) {
+                            // Add folly/Format.h include if not present
+                            if (!content.contains('#include <folly/Format.h>')) {
+                                // Find the right place to insert (after other includes, before glog)
+                                if (content.contains('#include <glog/logging.h>')) {
+                                    content = content.replace(
+                                        '#include <glog/logging.h>',
+                                        '#include <folly/Format.h>\n#include <glog/logging.h>'
+                                    )
+                                } else if (content.contains('#include <array>')) {
+                                    content = content.replace(
+                                        '#include <array>',
+                                        '#include <array>\n#include <folly/Format.h>'
+                                    )
+                                }
+                            }
+                            // Replace std::format with folly::sformat
+                            content = content.replace(
+                                'return std::format("{}%", dimension.value);',
+                                'return folly::sformat("{}%", dimension.value);'
+                            )
+                            file.text = content
+                            println "✓ Patched: ${file.absolutePath}"
+                            patchedCount++
+                        }
+                    } catch (Exception e) {
+                        println "Warning: Could not patch ${file.absolutePath}: ${e.message}"
+                    }
+                }
+            }
+        }
+        
+        if (patchedCount > 0) {
+            println "Successfully patched ${patchedCount} file(s)"
+        } else {
+            println "No files needed patching (they may not be extracted yet)"
+        }
+    }
+}
+
+// Make sure patching happens before any C++ compilation
+tasks.whenTaskAdded { task ->
+    if (task.name.contains('configureCMake') || 
+        task.name.contains('externalNativeBuild') || 
+        task.name.contains('generateJsonModel')) {
+        task.dependsOn patchReactNativeFormat
+    }
+}
+
+// Also run patching before prefab tasks
+afterEvaluate {
+    tasks.matching { it.name.contains('prefab') }.configureEach {
+        it.dependsOn patchReactNativeFormat
+    }
+}
+
 def projectRoot = rootDir.getAbsoluteFile().getParentFile().getAbsolutePath()
 
 /**

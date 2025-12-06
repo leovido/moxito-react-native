@@ -76,11 +76,17 @@ class HealthConnectManagerModule(reactContext: ReactApplicationContext) :
     // Use Main thread to ensure we can access Activity
     CoroutineScope(Dispatchers.Main).launch {
       try {
-        val permissions = setOf(
-          HealthPermission.getReadPermission(StepsRecord::class),
-          HealthPermission.getReadPermission(DistanceRecord::class),
-          HealthPermission.getReadPermission(HeartRateRecord::class),
-        )
+        // Create HealthPermission objects - explicitly cast to help type inference
+        val stepPerm = HealthPermission.getReadPermission(StepsRecord::class) as? HealthPermission
+        val distancePerm = HealthPermission.getReadPermission(DistanceRecord::class) as? HealthPermission
+        val heartRatePerm = HealthPermission.getReadPermission(HeartRateRecord::class) as? HealthPermission
+        
+        if (stepPerm == null || distancePerm == null || heartRatePerm == null) {
+          promise.reject("PERMISSION_ERROR", "Failed to create HealthPermission objects")
+          return@launch
+        }
+        
+        val permissions = setOf(stepPerm, distancePerm, heartRatePerm)
 
         // Check if permissions are already granted
         val grantedPermissionStrings = withContext(Dispatchers.IO) {
@@ -93,16 +99,17 @@ class HealthConnectManagerModule(reactContext: ReactApplicationContext) :
         val permissionStrings = permissions.map { it.toString() }.toSet()
         val grantedPermissionSet = grantedPermissionStrings.toSet()
         
-        // Find permissions that need to be requested
-        val permissionsToRequest = permissions.filter { it.toString() !in grantedPermissionSet }.toSet()
-        
+        // Find permissions that need to be requested - explicitly type as Set<HealthPermission>
+        val permissionsToRequest: Set<HealthPermission> = permissions.filter { perm: HealthPermission -> 
+          perm.toString() !in grantedPermissionSet 
+        }.toSet()
+
         if (permissionsToRequest.isEmpty()) {
           promise.resolve(true)
           return@launch
         }
 
         // Request permissions using MainActivity's permission launcher
-        // This will show the Health Connect permission dialog
         try {
           val mainActivity = activity as com.christianleovido.Moxito.MainActivity
           mainActivity.requestHealthConnectPermissions(permissionsToRequest) { grantedPermissionsResult ->

@@ -19,8 +19,9 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate
 import expo.modules.ReactActivityDelegateWrapper
 
 class MainActivity : ReactActivity() {
-  private var healthConnectPermissionLauncher: ActivityResultLauncher<Set<HealthPermission>>? = null
+  private var healthConnectPermissionLauncher: ActivityResultLauncher<Set<String>>? = null
   private var permissionCallback: ((Set<HealthPermission>) -> Unit)? = null
+  private var requestedPermissions: Set<HealthPermission>? = null
   
   override fun onCreate(savedInstanceState: Bundle?) {
     // Set the theme to AppTheme BEFORE onCreate to support
@@ -39,18 +40,22 @@ class MainActivity : ReactActivity() {
   
   fun requestHealthConnectPermissions(permissions: Set<HealthPermission>, callback: (Set<HealthPermission>) -> Unit) {
     permissionCallback = callback
+    requestedPermissions = permissions
     
     // Initialize launcher if not already initialized
     if (healthConnectPermissionLauncher == null) {
       try {
-        val client = HealthConnectClient.getOrCreate(this)
-        val permissionController = client.permissionController
-        // The method createRequestPermissionsResultContract() should exist in Health Connect API
-        // If compilation fails, the Health Connect library version might need to be updated
-        val contract = permissionController.createRequestPermissionsResultContract()
-        healthConnectPermissionLauncher = registerForActivityResult(contract) { grantedPermissions ->
+        // Use static method from PermissionController to create the contract
+        // The contract works with Set<String> (permission strings)
+        val contract = PermissionController.createRequestPermissionResultContract()
+        healthConnectPermissionLauncher = registerForActivityResult(contract) { grantedPermissionStrings: Set<String> ->
+          // Convert the granted permission strings back to HealthPermission objects
+          // by matching them with the originally requested permissions
+          val requested = requestedPermissions ?: emptySet()
+          val grantedPermissions = requested.filter { it.toString() in grantedPermissionStrings }.toSet()
           permissionCallback?.invoke(grantedPermissions)
           permissionCallback = null
+          requestedPermissions = null
           Log.d("MainActivity", "Health Connect permissions granted: ${grantedPermissions.size}")
         }
       } catch (e: Exception) {
@@ -60,7 +65,9 @@ class MainActivity : ReactActivity() {
       }
     }
     
-    healthConnectPermissionLauncher?.launch(permissions) ?: run {
+    // Convert HealthPermission objects to strings for the launcher
+    val permissionStrings = permissions.map { it.toString() }.toSet()
+    healthConnectPermissionLauncher?.launch(permissionStrings) ?: run {
       Log.e("MainActivity", "Health Connect permission launcher is null")
       callback(emptySet())
     }
