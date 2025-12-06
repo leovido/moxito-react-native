@@ -112,11 +112,11 @@ class HealthConnectManagerModule(reactContext: ReactApplicationContext) :
         // Request permissions using MainActivity's permission launcher
         try {
           val mainActivity = activity as com.christianleovido.Moxito.MainActivity
-          mainActivity.requestHealthConnectPermissions(permissionsToRequest) { grantedPermissionsResult ->
+          mainActivity.requestHealthConnectPermissions(permissionsToRequest) { grantedPermissionsResult: Set<HealthPermission> ->
             // This callback is called when user responds to the permission dialog
             CoroutineScope(Dispatchers.Main).launch {
-              val grantedPermissionStringsResult = grantedPermissionsResult.map { it.toString() }.toSet()
-              val allGranted = permissionsToRequest.all { it.toString() in grantedPermissionStringsResult }
+              val grantedPermissionStringsResult = grantedPermissionsResult.map { perm: HealthPermission -> perm.toString() }.toSet()
+              val allGranted = permissionsToRequest.all { perm: HealthPermission -> perm.toString() in grantedPermissionStringsResult }
               promise.resolve(allGranted)
             }
           }

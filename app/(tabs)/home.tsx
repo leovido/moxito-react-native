@@ -13,6 +13,7 @@ export default function HomeScreen() {
       // Request Health Connect permissions when starting workout
       if (healthDataService.platform === 'android') {
         try {
+          console.log('indee here');
           const authorized = await healthDataService.requestAuthorization();
           if (!authorized) {
             // If permissions weren't granted, try opening Health Connect settings
