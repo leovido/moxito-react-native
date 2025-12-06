@@ -87,6 +87,16 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace 'com.christianleovido.Moxito'
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    
     defaultConfig {
         applicationId 'com.christianleovido.Moxito'
         minSdkVersion rootProject.ext.minSdkVersion
@@ -173,4 +183,16 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+        // Health Connect dependencies
+        // Note: Health Connect requires minSdk 26+ and is available from Google Maven
+        implementation("androidx.health.connect:connect-client:1.1.0-alpha07")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+        
+        // Activity KTX for ActivityResultLauncher support
+        implementation("androidx.activity:activity-ktx:1.8.2")
+        
+        // AppCompat for OnboardingActivity
+        implementation("androidx.appcompat:appcompat:1.6.1")
 }

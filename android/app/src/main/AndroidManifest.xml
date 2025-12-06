@@ -4,15 +4,28 @@
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  
+  <!-- Health Connect permissions -->
+  <uses-permission android:name="android.permission.health.READ_STEPS"/>
+  <uses-permission android:name="android.permission.health.WRITE_STEPS"/>
+  <uses-permission android:name="android.permission.health.READ_DISTANCE"/>
+  <uses-permission android:name="android.permission.health.WRITE_DISTANCE"/>
+  <uses-permission android:name="android.permission.health.READ_HEART_RATE"/>
+  <uses-permission android:name="android.permission.health.WRITE_HEART_RATE"/>
+  <uses-permission android:name="android.permission.health.READ_HEALTH_DATA_HISTORY"/>
+  
   <queries>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
       <category android:name="android.intent.category.BROWSABLE"/>
       <data android:scheme="https"/>
     </intent>
+    <!-- Health Connect package query -->
+    <package android:name="com.google.android.apps.healthdata"/>
   </queries>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true">
-    <meta-data android:name="expo.modules.updates.ENABLED" android:value="true"/>
+    <!-- Temporarily disable expo-updates to fix KSP build issues -->
+    <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
     <meta-data android:name="expo.modules.updates.EXPO_RUNTIME_VERSION" android:value="@string/expo_runtime_version"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
@@ -30,5 +43,25 @@
         <data android:scheme="com.christianleovido.Moxito"/>
       </intent-filter>
     </activity>
+    
+    <!-- Health Connect Onboarding Activity -->
+    <activity
+      android:name=".OnboardingActivity"
+      android:exported="true"
+      android:permission="com.google.android.apps.healthdata.permission.START_ONBOARDING">
+      <intent-filter>
+        <action android:name="androidx.health.ACTION_SHOW_ONBOARDING"/>
+      </intent-filter>
+    </activity>
+    <!-- Required to support Android 14+ devices with platform Health Connect -->
+    <activity-alias
+      android:name="UAndAboveOnboardingActivity"
+      android:exported="true"
+      android:targetActivity=".OnboardingActivity"
+      android:permission="android.permission.health.START_ONBOARDING">
+      <intent-filter>
+        <action android:name="android.health.connect.action.SHOW_ONBOARDING" />
+      </intent-filter>
+    </activity-alias>
   </application>
 </manifest>

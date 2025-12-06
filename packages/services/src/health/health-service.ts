@@ -5,17 +5,16 @@ import { healthKitService } from '@/components/HealthKitService';
 import type { HealthDailySummary, HealthIntegration, HealthSource } from './types';
 
 type HealthConnectModule = {
-  isAvailable?: () => boolean;
+  isAvailable?: () => Promise<boolean>;
   requestAuthorization?: () => Promise<boolean>;
+  openHealthConnectSettings?: () => Promise<boolean>;
   getDailySteps?: (dateIso: string) => Promise<number>;
   getDailyDistanceKilometers?: (dateIso: string) => Promise<number>;
   getDailyDistanceMeters?: (dateIso: string) => Promise<number>;
   getAverageHeartRate?: (dateIso: string) => Promise<number>;
 };
 
-const { HealthConnectManager } = NativeModules as {
-  HealthConnectManager?: HealthConnectModule;
-};
+// Don't access NativeModules at module level - use lazy getter instead
 
 function getDayRange(date: Date) {
   const start = new Date(date);
@@ -101,32 +100,57 @@ const iosProvider: HealthIntegration = {
 
 const androidProvider: HealthIntegration = {
   platform: 'android',
-  canUse: () => Platform.OS === 'android' && (HealthConnectManager?.isAvailable?.() ?? true),
+  canUse: () => {
+    if (Platform.OS !== 'android') {
+      return false;
+    }
+    // Don't check HealthConnectManager here to avoid module initialization
+    // Just return true if we're on Android - actual check happens in requestAuthorization
+    return true;
+  },
   requestAuthorization: async () => {
-    if (!HealthConnectManager?.requestAuthorization) {
-      return true;
+    const manager = getHealthConnectManager();
+    if (!manager?.requestAuthorization) {
+      // Module not available, return false to indicate Health Connect is not set up
+      return false;
     }
 
     try {
-      return await HealthConnectManager.requestAuthorization();
+      // First check if Health Connect is available
+      const isAvailable = await manager.isAvailable?.().catch(() => false);
+      if (!isAvailable) {
+        console.warn('Health Connect is not available on this device');
+        return false;
+      }
+
+      return await manager.requestAuthorization();
     } catch (error) {
       console.warn('Health Connect authorization failed, continuing with mock data', error);
       return false;
     }
   },
   getDailySummary: async (date: Date) => {
-    if (!HealthConnectManager) {
+    const manager = getHealthConnectManager();
+    if (!manager) {
       return createMockSummary(date, 'android');
     }
 
     const dateIso = date.toISOString();
 
     try {
+      // Check availability first
+      const isAvailable = await manager.isAvailable?.().catch(() => false);
+      if (!isAvailable) {
+        console.warn('Health Connect is not available, serving mock stats');
+        return createMockSummary(date, 'android');
+      }
+
       const [steps, distanceValue, heartRate] = await Promise.all([
-        HealthConnectManager.getDailySteps?.(dateIso),
-        HealthConnectManager.getDailyDistanceKilometers?.(dateIso) ??
-          HealthConnectManager.getDailyDistanceMeters?.(dateIso),
-        HealthConnectManager.getAverageHeartRate?.(dateIso),
+        manager.getDailySteps?.(dateIso) ?? Promise.resolve(0),
+        manager.getDailyDistanceKilometers?.(dateIso) ??
+          manager.getDailyDistanceMeters?.(dateIso) ??
+          Promise.resolve(0),
+        manager.getAverageHeartRate?.(dateIso) ?? Promise.resolve(0),
       ]);
 
       return {
@@ -157,11 +181,37 @@ const activeProvider =
     default: fallbackProvider,
   }) ?? fallbackProvider;
 
+// Lazy getter for HealthConnectManager to avoid module initialization on import
+function getHealthConnectManager(): HealthConnectModule | undefined {
+  try {
+    return (NativeModules as { HealthConnectManager?: HealthConnectModule }).HealthConnectManager;
+  } catch {
+    return undefined;
+  }
+}
+
 export const healthDataService = {
-  platform: activeProvider.platform,
+  get platform() {
+    return activeProvider.platform;
+  },
   canUse: () => activeProvider.canUse(),
   requestAuthorization: () => activeProvider.requestAuthorization(),
   getDailySummary: (date = new Date()) => activeProvider.getDailySummary(date),
+  openHealthConnectSettings: async () => {
+    if (Platform.OS !== 'android') {
+      return false;
+    }
+    const manager = getHealthConnectManager();
+    if (!manager?.openHealthConnectSettings) {
+      return false;
+    }
+    try {
+      return await manager.openHealthConnectSettings();
+    } catch (error) {
+      console.warn('Failed to open Health Connect settings', error);
+      return false;
+    }
+  },
 };
 
 export type HealthDataService = typeof healthDataService;

@@ -74,6 +74,59 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Health Connect Integration
+
+This app integrates with Android Health Connect and iOS HealthKit to display health and fitness data.
+
+### Android Health Connect Setup
+
+1. **Install Health Connect**: Ensure Health Connect is installed on your Android device (API 28+). You can install it from the [Google Play Store](https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata).
+
+2. **Grant Permissions**: When you first open the Fitness tab, the app will request Health Connect permissions. You can also grant permissions by:
+   - Opening the Health Connect app
+   - Going to "Apps and devices"
+   - Finding "Moxito" and granting the required permissions
+
+3. **Required Permissions**: The app requests read access to:
+   - Steps
+   - Distance
+   - Heart Rate
+
+4. **Play Console Declaration**: Before publishing to Google Play, you must declare Health Connect data types in the Play Console:
+   - Go to your app's Play Console
+   - Navigate to "Policy" → "App content" → "Health Connect data types"
+   - Declare all data types your app reads/writes
+   - See [Health Connect documentation](https://developer.android.com/health-and-fitness/health-connect/get-started) for details
+
+### iOS HealthKit Setup
+
+1. **Enable HealthKit**: HealthKit is available on iOS devices by default.
+
+2. **Grant Permissions**: When you first open the Fitness tab, iOS will prompt you to grant HealthKit permissions.
+
+3. **Required Capabilities**: The app requests read access to:
+   - Steps
+   - Distance
+   - Heart Rate
+
+### Testing Health Connect
+
+To test the Health Connect integration:
+
+1. **Health Connect Toolbox**: Use the [Health Connect Toolbox](https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata.toolbox) app to insert test data.
+
+2. **Manual Testing**:
+   - Open the Fitness tab
+   - Verify that steps, distance, and heart rate data are displayed
+   - Check that the date is correctly formatted
+   - Verify the source label shows "Health Connect" on Android or "Apple Health" on iOS
+
+3. **Permission Testing**:
+   - Revoke permissions in Health Connect/HealthKit settings
+   - Reopen the Fitness tab
+   - Verify that the app handles permission denial gracefully
+   - Re-grant permissions and verify data syncs correctly
+
 ## Get a fresh project
 
 When you're ready, run:

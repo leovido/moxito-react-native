@@ -3,11 +3,14 @@
 buildscript {
     ext {
         buildToolsVersion = findProperty('android.buildToolsVersion') ?: '35.0.0'
-        minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
+        minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '26')
         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '34')
-        kotlinVersion = findProperty('android.kotlinVersion') ?: '1.9.25'
+        kotlinVersion = findProperty('android.kotlinVersion') ?: '2.0.21'
 
+        // Using NDK 26.1.10909125 - required for C++20 features (std::regular, std::identity, concepts)
+        // React Native 0.81.5 requires C++20 which needs NDK 26+
+        // Note: std::format issue exists but may be resolved by clearing Gradle cache
         ndkVersion = "26.1.10909125"
     }
     repositories {
@@ -17,13 +20,62 @@ buildscript {
     dependencies {
         classpath('com.android.tools.build:gradle')
         classpath('com.facebook.react:react-native-gradle-plugin')
-        classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        // Add KSP plugin to buildscript to ensure it's available for all subprojects
+        // Using version compatible with Kotlin 2.0.21
+        // KSP 2.0.21-1.0.26 is a stable version
+        classpath("com.google.devtools.ksp:symbol-processing-gradle-plugin:2.0.21-1.0.26")
     }
 }
 
 apply plugin: "com.facebook.react.rootproject"
 
+// Workaround for KSP compatibility issue with expo-updates
+// Force all subprojects to use the same KSP version
+subprojects { project ->
+    // Configure KSP version resolution before evaluation
+    project.configurations.all { configuration ->
+        if (configuration.name.contains('ksp')) {
+            configuration.resolutionStrategy {
+                force("com.google.devtools.ksp:symbol-processing:2.0.21-1.0.26")
+                force("com.google.devtools.ksp:symbol-processing-api:2.0.21-1.0.26")
+            }
+        }
+    }
+}
+
+// Ensure KSP plugin version is set before any project applies it
+gradle.beforeProject { project ->
+    if (project.name == 'expo-updates') {
+        project.ext.kspVersion = '2.0.21-1.0.26'
+    }
+}
+
 allprojects {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
+    }
+    
+    // Force KSP and Kotlin version resolution for all projects to match
+    configurations.all {
+        resolutionStrategy {
+            eachDependency { details ->
+                if (details.requested.group == 'com.google.devtools.ksp') {
+                    // Use KSP version compatible with Kotlin 2.0.21
+                    details.useVersion('2.0.21-1.0.26')
+                }
+                // Also force Kotlin stdlib to match our Kotlin version
+                if (details.requested.group == 'org.jetbrains.kotlin' && 
+                    details.requested.name.startsWith('kotlin-stdlib')) {
+                    details.useVersion('2.0.21')
+                }
+            }
+        }
+    }
+    
+    
     repositories {
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm

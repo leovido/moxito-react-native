@@ -5,9 +5,45 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function HomeScreen() {
   const [workoutStarted, setWorkoutStarted] = useState(false);
 
-  const handleStartWorkout = () => {
-    setWorkoutStarted(true);
-    console.log('Start Workout');
+  const handleStartWorkout = async () => {
+    try {
+      // Lazy import to prevent Health Connect module initialization on screen load
+      const { healthDataService } = await import('@moxito/services');
+
+      // Request Health Connect permissions when starting workout
+      if (healthDataService.platform === 'android') {
+        try {
+          const authorized = await healthDataService.requestAuthorization();
+          if (!authorized) {
+            // If permissions weren't granted, try opening Health Connect settings
+            // But still allow the workout to start - user can grant permissions later
+            console.log('Health Connect permissions not granted, opening settings...');
+            try {
+              await healthDataService.openHealthConnectSettings();
+            } catch (settingsError) {
+              console.warn('Failed to open Health Connect settings', settingsError);
+            }
+            // Continue with workout anyway - permissions can be granted later
+          }
+        } catch (error) {
+          console.warn('Failed to request Health Connect permissions', error);
+          // Continue anyway - user can grant permissions later
+        }
+      } else if (healthDataService.platform === 'ios') {
+        try {
+          await healthDataService.requestAuthorization();
+        } catch (error) {
+          console.warn('Failed to request HealthKit permissions', error);
+        }
+      }
+
+      setWorkoutStarted(true);
+      console.log('Start Workout');
+    } catch (error) {
+      console.error('Error starting workout:', error);
+      // Still allow workout to start even if there's an error
+      setWorkoutStarted(true);
+    }
   };
 
   const handleViewStats = () => {
