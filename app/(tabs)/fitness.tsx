@@ -29,7 +29,7 @@ export default function FitnessScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Wallet and contract state
-  const { isConnected, address, isOnScrollSepolia, connectExternalWallet, user, walletProvider } =
+  const { isConnected, address, isOnScrollSepolia, connectExternalWallet, walletProvider } =
     usePrivyWallet();
   const [checkInCount, setCheckInCount] = useState<bigint | null>(null);
   const [steps10KCount, setSteps10KCount] = useState<bigint | null>(null);
@@ -174,36 +174,15 @@ export default function FitnessScreen() {
       return;
     }
 
+    if (!walletProvider) {
+      Alert.alert('Wallet Not Ready', 'Please reconnect your wallet and try again.');
+      return;
+    }
+
     try {
       setTransactionLoading('checkIn');
 
-      // Get wallet provider from Privy user
-      // Note: This may need adjustment based on Privy Expo SDK's actual API
-      const typedUser = user as {
-        linked_accounts?: Array<{
-          type: string;
-          address?: string;
-          chainId?: number;
-          walletClientType?: string;
-          provider?: unknown;
-        }>;
-      } | null;
-
-      const walletAccount = typedUser?.linked_accounts?.find(
-        (account: { type: string }) => account.type === 'wallet'
-      );
-
-      if (!walletAccount || !('address' in walletAccount)) {
-        throw new Error('Wallet account not found');
-      }
-
-      // Create wallet client - this may need adjustment based on Privy's provider API
-      // For now, we'll need to get the provider from Privy's wallet object
-      // This is a placeholder - actual implementation depends on Privy Expo SDK
-      const walletClient = createPrivyWalletClient(
-        (walletAccount as { provider?: unknown }).provider,
-        address as Address
-      );
+      const walletClient = createPrivyWalletClient(walletProvider, address as Address);
 
       const result = await contractService.recordCheckIn(walletClient);
 
@@ -259,31 +238,15 @@ export default function FitnessScreen() {
       return;
     }
 
+    if (!walletProvider) {
+      Alert.alert('Wallet Not Ready', 'Please reconnect your wallet and try again.');
+      return;
+    }
+
     try {
       setTransactionLoading('steps');
 
-      const typedUser = user as {
-        linked_accounts?: Array<{
-          type: string;
-          address?: string;
-          chainId?: number;
-          walletClientType?: string;
-          provider?: unknown;
-        }>;
-      } | null;
-
-      const walletAccount = typedUser?.linked_accounts?.find(
-        (account: { type: string }) => account.type === 'wallet'
-      );
-
-      if (!walletAccount || !('address' in walletAccount)) {
-        throw new Error('Wallet account not found');
-      }
-
-      const walletClient = createPrivyWalletClient(
-        (walletAccount as { provider?: unknown }).provider,
-        address as Address
-      );
+      const walletClient = createPrivyWalletClient(walletProvider, address as Address);
 
       const result = await contractService.recordSteps(walletClient, BigInt(summary.steps));
 
