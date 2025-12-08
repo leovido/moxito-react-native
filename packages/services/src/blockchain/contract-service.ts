@@ -1,8 +1,8 @@
 import type { Address, WalletClient } from 'viem';
 import {
-  MOXITO_CONTRACT_ADDRESS,
-  MOXITO_CONTRACT_ABI,
   createPublicClientForContract,
+  MOXITO_CONTRACT_ABI,
+  MOXITO_CONTRACT_ADDRESS,
   scrollSepolia,
 } from './moxito-contract';
 import type { Achievement, ContractResponse, UserAchievementData } from './types';

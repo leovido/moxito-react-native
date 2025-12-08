@@ -1,4 +1,4 @@
-import { createPublicClient, http, type Chain, type PublicClient } from 'viem';
+import { type Chain, createPublicClient, http, type PublicClient } from 'viem';
 
 // Scroll Sepolia chain configuration
 export const scrollSepolia: Chain = {

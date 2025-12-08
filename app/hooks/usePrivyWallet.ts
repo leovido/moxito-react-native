@@ -49,7 +49,8 @@ export function usePrivyWallet() {
     // Privy Expo SDK may not expose chainId directly, so we'll need to check via provider
     // For now, we'll assume the wallet needs to be checked separately
     const chainId = (walletAccount as { chainId?: number }).chainId ?? null;
-    const walletType = (walletAccount as { walletClientType?: string }).walletClientType ?? 'unknown';
+    const walletType =
+      (walletAccount as { walletClientType?: string }).walletClientType ?? 'unknown';
     const isOnScrollSepolia = chainId === SCROLL_SEPOLIA_CHAIN_ID;
 
     return {
@@ -66,7 +67,9 @@ export function usePrivyWallet() {
   const connectExternalWallet = async () => {
     // Privy Expo SDK wallet connection is typically handled through their UI components
     // or through the useLoginWithWallet hook if available
-    console.warn('connectExternalWallet: Wallet connection should be handled through Privy UI or login flow');
+    console.warn(
+      'connectExternalWallet: Wallet connection should be handled through Privy UI or login flow'
+    );
     throw new Error('Wallet connection not yet implemented - use Privy login flow');
   };
 
