@@ -68,6 +68,7 @@ function TabsWithHeader() {
     const wallet = user.linked_accounts?.find(
       (account: { type: string }) => account.type === 'wallet'
     );
+    console.log(`Wallet here ${wallet}`);
     if (wallet && 'address' in wallet && typeof wallet.address === 'string') {
       return `${wallet.address.slice(0, 6)}...${wallet.address.slice(-4)}`;
     }
@@ -81,7 +82,7 @@ function TabsWithHeader() {
   };
 
   const handleSettings = () => {
-    router.push('/(tabs)/profile');
+    router.push('/(tabs)/settings');
   };
 
   return (
@@ -133,6 +134,13 @@ function TabsWithHeader() {
           options={{
             title: 'Profile',
             tabBarAccessibilityLabel: 'Profile tab',
+          }}
+        />
+        <Tabs.Screen
+          name="settings"
+          options={{
+            title: 'Settings',
+            href: null, // hidden from tab bar; navigated via header gear
           }}
         />
       </Tabs>

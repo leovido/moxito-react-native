@@ -6,7 +6,7 @@ export {
   MOXITO_CONTRACT_ADDRESS,
   scrollSepolia,
 } from './blockchain/moxito-contract';
-export { createPrivyWalletClient } from './blockchain/privy-wallet-adapter';
+export { createPrivyWalletClient, switchToScrollSepolia } from './blockchain/privy-wallet-adapter';
 export type { Achievement, ContractResponse, UserAchievementData } from './blockchain/types';
 export type { HealthDataService } from './health/health-service';
 export { healthDataService } from './health/health-service';

@@ -1,84 +1,177 @@
-import { usePrivy } from '@privy-io/expo';
-import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useLoginWithFarcaster, usePrivy } from '@privy-io/expo';
+import * as Linking from 'expo-linking';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect } from 'react';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+
+const styles = StyleSheet.create({
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  content: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: 20,
+    padding: 24,
+    borderRadius: 24,
+    backgroundColor: '#fff',
+    gap: 16,
+  },
+  title: {
+    fontFamily: 'Lato_700Bold',
+    fontSize: 24,
+    textAlign: 'center',
+  },
+  subtitle: {
+    textAlign: 'center',
+    color: '#333',
+  },
+  signInButtonText: {
+    color: '#fff',
+    fontFamily: 'Lato_700Bold',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  signInButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    backgroundColor: '#A87AFF',
+    width: '100%',
+  },
+  signInButtonDisabled: {
+    opacity: 0.6,
+  },
+  skipButton: {
+    width: '100%',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    backgroundColor: '#f1f1f1',
+  },
+  errorText: {
+    color: '#FF4444',
+    textAlign: 'center',
+    fontFamily: 'Lato_400Regular',
+  },
+  skipButtonText: {
+    color: '#000',
+    fontWeight: '700',
+  },
+});
 
 export default function Index() {
   const router = useRouter();
   const { user, isReady } = usePrivy();
 
-  // If user is authenticated, redirect to tabs (handles Farcaster login redirect)
   useEffect(() => {
     if (isReady && user) {
       router.replace('/(tabs)/fitness');
     }
   }, [isReady, user, router]);
 
-  const handleGoToAuth = () => {
-    console.log('Navigating to auth...');
-    router.push('/(auth)');
+  const { loginWithFarcaster, state } = useLoginWithFarcaster({
+    onSuccess: (user) => {
+      console.log('Farcaster login successful:', user);
+      router.replace('/(tabs)/fitness');
+    },
+    onError: (error) => {
+      console.error('Farcaster login error:', error);
+    },
+  });
+
+  const handleLogin = async () => {
+    try {
+      // Use auth route path - iOS requires exact route matching
+      // The onSuccess callback will handle navigation to tabs
+      const redirectUrl = Linking.createURL('/(auth)');
+      console.log('Redirect URL:', redirectUrl);
+      await loginWithFarcaster({
+        redirectUrl,
+        relyingParty: process.env.EXPO_PUBLIC_RELYING_PARTY,
+      });
+    } catch (error) {
+      console.error('Farcaster login error:', error);
+    }
   };
 
-  const handleGoToTabs = () => {
-    console.log('Navigating to tabs...');
-    router.push('/(tabs)/home');
-  };
+  // Handle deep link redirects from Farcaster login
+  // Privy will automatically process the deep link, but we listen for it to log
+  useFocusEffect(
+    useCallback(() => {
+      const handleDeepLink = async () => {
+        const url = await Linking.getInitialURL();
+        if (url) {
+          console.log('Deep link received on auth screen:', url);
+          // Privy will process this automatically
+          // We'll wait for the user state to update via the useEffect above
+        }
+      };
+      handleDeepLink();
 
-  console.log('Index component rendering...');
+      // Listen for incoming links while app is running
+      const subscription = Linking.addEventListener('url', (event) => {
+        console.log('Incoming deep link on auth screen:', event.url);
+        // Privy will process this automatically
+        // The onSuccess callback or user state update will handle navigation
+      });
+
+      return () => {
+        subscription.remove();
+      };
+    }, [])
+  );
+
+  // Wait for Privy to process authentication after deep link redirect
+  useEffect(() => {
+    console.log(`Auth state - isReady: ${isReady}, user:`, user ? 'exists' : 'null');
+
+    // Give Privy time to process the authentication token from the deep link
+    if (isReady && user) {
+      console.log('User authenticated, redirecting to tabs');
+      // Small delay to ensure state is fully updated
+      const timer = setTimeout(() => {
+        router.replace('/(tabs)/fitness');
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isReady, user, router]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Moxito Fitness</Text>
-      <Text style={styles.subtitle}>Welcome to your fitness app!</Text>
-
-      <View style={styles.buttonContainer}>
-        <Pressable style={styles.button} onPress={handleGoToAuth}>
-          <Text style={styles.buttonText}>Go to Auth</Text>
-        </Pressable>
-
-        <Pressable style={styles.button} onPress={handleGoToTabs}>
-          <Text style={styles.buttonText}>Go to Tabs</Text>
-        </Pressable>
+    <>
+      <Image source={require('../assets/images/login.png')} style={styles.backgroundImage} />
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <Text style={styles.title}>Sign in to Moxito with Farcaster</Text>
+          {state.status === 'error' && state.error && (
+            <Text style={styles.errorText}>{state.error.message}</Text>
+          )}
+          <Text style={styles.subtitle}>
+            Sign in to the apps to display your profile or skip this step.
+          </Text>
+          <Pressable style={[styles.signInButton]} onPress={handleLogin}>
+            <Text style={styles.signInButtonText}>Sign in with Farcaster</Text>
+          </Pressable>
+          <Pressable style={styles.skipButton} onPress={() => router.replace('/(tabs)/fitness')}>
+            <Text style={styles.skipButtonText}>Skip this step</Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#CCCCCC',
-    marginBottom: 40,
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    gap: 20,
-  },
-  button: {
-    backgroundColor: '#9747FF',
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-    minWidth: 200,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-});

@@ -10,6 +10,7 @@ export interface WalletState {
   chainId: number | null;
   walletType: string | null;
   isOnScrollSepolia: boolean;
+  walletProvider?: unknown;
 }
 
 /**
@@ -17,7 +18,20 @@ export interface WalletState {
  * Extracts wallet information from Privy's user object
  */
 export function usePrivyWallet() {
-  const { user, isReady } = usePrivy();
+  const privy = usePrivy() as { login?: () => Promise<void>; user?: unknown; isReady?: boolean };
+  const { user, isReady } = privy;
+  const typedUser =
+    (user as {
+      linked_accounts?: Array<{
+        type: string;
+        address?: string;
+        chainId?: number;
+        walletClientType?: string;
+        provider?: unknown;
+        wallet?: { provider?: unknown };
+        embedded_wallet?: { provider?: unknown };
+      }>;
+    }) ?? null;
 
   const walletState = useMemo<WalletState>(() => {
     if (!isReady || !user) {
@@ -31,7 +45,7 @@ export function usePrivyWallet() {
     }
 
     // Get wallet from linked accounts
-    const walletAccount = user.linked_accounts?.find(
+    const walletAccount = typedUser?.linked_accounts?.find(
       (account: { type: string }) => account.type === 'wallet'
     );
 
@@ -52,6 +66,11 @@ export function usePrivyWallet() {
     const walletType =
       (walletAccount as { walletClientType?: string }).walletClientType ?? 'unknown';
     const isOnScrollSepolia = chainId === SCROLL_SEPOLIA_CHAIN_ID;
+    const walletProvider =
+      (walletAccount as { provider?: unknown }).provider ??
+      (walletAccount as { wallet?: { provider?: unknown } }).wallet?.provider ??
+      (walletAccount as { embedded_wallet?: { provider?: unknown } }).embedded_wallet?.provider ??
+      null;
 
     return {
       isConnected: true,
@@ -59,18 +78,31 @@ export function usePrivyWallet() {
       chainId,
       walletType,
       isOnScrollSepolia,
+      walletProvider,
     };
-  }, [user, isReady]);
+  }, [typedUser, isReady, user]);
 
-  // Note: Privy Expo SDK may handle wallet connections differently
-  // This function may need to be implemented based on actual SDK capabilities
   const connectExternalWallet = async () => {
-    // Privy Expo SDK wallet connection is typically handled through their UI components
-    // or through the useLoginWithWallet hook if available
-    console.warn(
-      'connectExternalWallet: Wallet connection should be handled through Privy UI or login flow'
-    );
-    throw new Error('Wallet connection not yet implemented - use Privy login flow');
+    // Trigger Privy login flow; once authenticated, linked wallet will appear in user.linked_accounts
+    if (!isReady) {
+      throw new Error('Privy is not ready. Please try again in a moment.');
+    }
+
+    // If already connected with a wallet, no-op
+    const hasWalletLinked =
+      typedUser?.linked_accounts?.some((account: { type: string }) => account.type === 'wallet') ??
+      false;
+    if (hasWalletLinked) {
+      return;
+    }
+
+    const login = privy.login;
+    if (!login) {
+      throw new Error(
+        'Privy login is not available in this build. Please integrate the Privy login flow.'
+      );
+    }
+    await login();
   };
 
   return {

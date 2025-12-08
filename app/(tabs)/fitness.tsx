@@ -3,6 +3,7 @@ import {
   createPrivyWalletClient,
   type HealthDailySummary,
   healthDataService,
+  switchToScrollSepolia,
 } from '@moxito/services';
 import { theme } from '@moxito/theme';
 import { useEffect, useMemo, useState } from 'react';
@@ -28,7 +29,8 @@ export default function FitnessScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Wallet and contract state
-  const { isConnected, address, isOnScrollSepolia, connectExternalWallet, user } = usePrivyWallet();
+  const { isConnected, address, isOnScrollSepolia, connectExternalWallet, user, walletProvider } =
+    usePrivyWallet();
   const [checkInCount, setCheckInCount] = useState<bigint | null>(null);
   const [steps10KCount, setSteps10KCount] = useState<bigint | null>(null);
   const [contractLoading, setContractLoading] = useState(false);
@@ -177,7 +179,17 @@ export default function FitnessScreen() {
 
       // Get wallet provider from Privy user
       // Note: This may need adjustment based on Privy Expo SDK's actual API
-      const walletAccount = user?.linked_accounts?.find(
+      const typedUser = user as {
+        linked_accounts?: Array<{
+          type: string;
+          address?: string;
+          chainId?: number;
+          walletClientType?: string;
+          provider?: unknown;
+        }>;
+      } | null;
+
+      const walletAccount = typedUser?.linked_accounts?.find(
         (account: { type: string }) => account.type === 'wallet'
       );
 
@@ -212,6 +224,25 @@ export default function FitnessScreen() {
     }
   };
 
+  const handleSwitchNetwork = async () => {
+    if (!walletProvider) {
+      Alert.alert(
+        'Wallet Not Ready',
+        'Please connect your wallet via Privy, then try switching again.'
+      );
+      return;
+    }
+
+    try {
+      await switchToScrollSepolia(walletProvider);
+    } catch (error) {
+      Alert.alert(
+        'Network Switch Failed',
+        error instanceof Error ? error.message : 'Unable to switch network.'
+      );
+    }
+  };
+
   const handleRecordSteps = async () => {
     if (!isConnected || !address) {
       Alert.alert('Wallet Not Connected', 'Please connect your wallet first.');
@@ -231,7 +262,17 @@ export default function FitnessScreen() {
     try {
       setTransactionLoading('steps');
 
-      const walletAccount = user?.linked_accounts?.find(
+      const typedUser = user as {
+        linked_accounts?: Array<{
+          type: string;
+          address?: string;
+          chainId?: number;
+          walletClientType?: string;
+          provider?: unknown;
+        }>;
+      } | null;
+
+      const walletAccount = typedUser?.linked_accounts?.find(
         (account: { type: string }) => account.type === 'wallet'
       );
 
@@ -283,20 +324,21 @@ export default function FitnessScreen() {
         <View style={styles.walletSection}>
           <Text style={styles.sectionTitle}>Blockchain Achievements</Text>
           {!isConnected ? (
-            <Pressable
-              style={styles.connectButton}
-              onPress={connectExternalWallet}
-              disabled={!user}
-            >
+            <Pressable style={styles.connectButton} onPress={connectExternalWallet}>
               <Text style={styles.connectButtonText}>Connect Wallet</Text>
             </Pressable>
           ) : (
             <View style={styles.walletInfo}>
               <Text style={styles.walletAddress}>Wallet: {formatAddress(address)}</Text>
               {!isOnScrollSepolia && (
-                <Text style={styles.networkWarning}>
-                  ⚠️ Please switch to Scroll Sepolia (Chain ID: 534351)
-                </Text>
+                <View style={styles.networkWarningContainer}>
+                  <Text style={styles.networkWarning}>
+                    ⚠️ Please switch to Scroll Sepolia (Chain ID: 534351)
+                  </Text>
+                  <Pressable style={styles.switchButton} onPress={handleSwitchNetwork}>
+                    <Text style={styles.switchButtonText}>Switch Network</Text>
+                  </Pressable>
+                </View>
               )}
               {contractLoading ? (
                 <ActivityIndicator size="small" color={theme.colors.primary[100]} />
@@ -480,10 +522,25 @@ const styles = StyleSheet.create({
     color: theme.colors.black[100],
     fontFamily: 'Lato_400Regular',
   },
+  networkWarningContainer: {
+    gap: theme.spacing[1],
+  },
   networkWarning: {
     fontSize: 12,
     color: theme.colors.red[100] || '#FF4444',
     fontFamily: 'Lato_400Regular',
+  },
+  switchButton: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: theme.colors.primary[100] || '#9747FF',
+  },
+  switchButtonText: {
+    color: theme.colors.black[100] || '#0B0B0F',
+    fontWeight: '700',
+    fontFamily: 'Lato_700Bold',
   },
   achievementStats: {
     gap: theme.spacing[1],
