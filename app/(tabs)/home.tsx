@@ -1,8 +1,10 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [workoutStarted, setWorkoutStarted] = useState(false);
 
   const handleStartWorkout = () => {
@@ -27,6 +29,18 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <Text style={styles.title}>Workout Dashboard</Text>
           <Text style={styles.subtitle}>Ready to crush your fitness goals?</Text>
+          <Pressable
+            style={{
+              marginTop: 20,
+              backgroundColor: '#9747FF',
+              padding: 10,
+              borderRadius: 8,
+              alignItems: 'center',
+            }}
+            onPress={() => router.push('/design_preview')}
+          >
+            <Text style={{ color: '#FFF', fontWeight: 'bold' }}>PREVIEW NEW DESIGN</Text>
+          </Pressable>
         </View>
 
         {/* Quick Actions */}

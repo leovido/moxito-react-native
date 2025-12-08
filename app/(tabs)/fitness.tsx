@@ -1,24 +1,24 @@
 import {
-  type HealthDailySummary,
-  healthDataService,
   contractService,
   createPrivyWalletClient,
+  type HealthDailySummary,
+  healthDataService,
 } from '@moxito/services';
 import { theme } from '@moxito/theme';
 import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import type { Address } from 'viem';
 import { StatsCard } from '@/components/StatsCard';
 import { usePrivyWallet } from '../hooks/usePrivyWallet';
-import type { Address } from 'viem';
 
 type LoadState = 'loading' | 'ready' | 'error';
 
@@ -28,14 +28,7 @@ export default function FitnessScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Wallet and contract state
-  const {
-    isConnected,
-    address,
-    chainId,
-    isOnScrollSepolia,
-    connectExternalWallet,
-    user,
-  } = usePrivyWallet();
+  const { isConnected, address, isOnScrollSepolia, connectExternalWallet, user } = usePrivyWallet();
   const [checkInCount, setCheckInCount] = useState<bigint | null>(null);
   const [steps10KCount, setSteps10KCount] = useState<bigint | null>(null);
   const [contractLoading, setContractLoading] = useState(false);
@@ -93,6 +86,9 @@ export default function FitnessScreen() {
       setContractError(null);
 
       try {
+        if (!address) {
+          return;
+        }
         const [checkInResult, stepsResult] = await Promise.all([
           contractService.getUserCheckInCount(address),
           contractService.getUserSteps10KCount(address),
@@ -172,10 +168,7 @@ export default function FitnessScreen() {
     }
 
     if (!isOnScrollSepolia) {
-      Alert.alert(
-        'Wrong Network',
-        'Please switch to Scroll Sepolia network to record check-ins.'
-      );
+      Alert.alert('Wrong Network', 'Please switch to Scroll Sepolia network to record check-ins.');
       return;
     }
 
@@ -213,10 +206,7 @@ export default function FitnessScreen() {
         }
       }
     } catch (error) {
-      Alert.alert(
-        'Error',
-        error instanceof Error ? error.message : 'Failed to record check-in'
-      );
+      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to record check-in');
     } finally {
       setTransactionLoading(null);
     }
@@ -229,10 +219,7 @@ export default function FitnessScreen() {
     }
 
     if (!isOnScrollSepolia) {
-      Alert.alert(
-        'Wrong Network',
-        'Please switch to Scroll Sepolia network to record steps.'
-      );
+      Alert.alert('Wrong Network', 'Please switch to Scroll Sepolia network to record steps.');
       return;
     }
 
@@ -270,17 +257,16 @@ export default function FitnessScreen() {
         }
       }
     } catch (error) {
-      Alert.alert(
-        'Error',
-        error instanceof Error ? error.message : 'Failed to record steps'
-      );
+      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to record steps');
     } finally {
       setTransactionLoading(null);
     }
   };
 
   const formatAddress = (addr: Address | null) => {
-    if (!addr) return '';
+    if (!addr) {
+      return '';
+    }
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
   };
 
@@ -350,9 +336,7 @@ export default function FitnessScreen() {
             <Pressable
               style={[
                 styles.actionButton,
-                (transactionLoading === 'steps' ||
-                  !summary ||
-                  summary.steps < 10000) &&
+                (transactionLoading === 'steps' || !summary || summary.steps < 10000) &&
                   styles.actionButtonDisabled,
               ]}
               onPress={handleRecordSteps}
