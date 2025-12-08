@@ -263,7 +263,8 @@ dependencies {
 
         // Health Connect dependencies
         // Note: Health Connect requires minSdk 26+ and is available from Google Maven
-        implementation("androidx.health.connect:connect-client:1.1.0-alpha07")
+        // Updated to alpha11 for features API support
+        implementation("androidx.health.connect:connect-client:1.1.0-alpha11")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
         

@@ -11,6 +11,8 @@ import androidx.health.connect.client.permission.HealthPermission
 import androidx.health.connect.client.records.*
 import androidx.health.connect.client.request.ReadRecordsRequest
 import androidx.health.connect.client.time.TimeRangeFilter
+// Note: Features API may not be available in all SDK versions
+// Using reflection to check if available
 import com.facebook.react.bridge.*
 import kotlinx.coroutines.*
 import java.time.Instant
@@ -60,6 +62,39 @@ class HealthConnectManagerModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
+  fun isBackgroundDataReadAvailable(promise: Promise) {
+    // Note: Features API is not available in SDK version 1.1.0-alpha07/alpha11
+    // This method is implemented for future compatibility when the API becomes available
+    // For now, we return false as the feature check is not possible
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val client = initializeClientIfNeeded()
+        if (client == null) {
+          promise.resolve(false)
+          return@launch
+        }
+
+        // TODO: Implement feature check when HealthConnectFeatures API is available in SDK
+        // The features API requires a newer SDK version that includes:
+        // - androidx.health.connect.client.features.HealthConnectFeatures
+        // - HealthConnectClient.features.getFeatureStatus()
+        // 
+        // Example implementation (when API is available):
+        // val featureStatus = client.features.getFeatureStatus(
+        //   HealthConnectFeatures.FEATURE_READ_HEALTH_DATA_IN_BACKGROUND
+        // )
+        // val isAvailable = featureStatus == HealthConnectFeatures.FEATURE_STATUS_AVAILABLE
+        
+        Log.d(TAG, "Background data read feature check not available in current SDK version")
+        promise.resolve(false)
+      } catch (e: Exception) {
+        Log.e(TAG, "Error checking background data read feature", e)
+        promise.reject("FEATURE_CHECK_ERROR", "Failed to check feature availability: ${e.message}", e)
+      }
+    }
+  }
+
+  @ReactMethod
   fun requestAuthorization(promise: Promise) {
     val activity = reactApplicationContext.currentActivity
     if (activity == null || activity !is com.christianleovido.Moxito.MainActivity) {
@@ -76,17 +111,13 @@ class HealthConnectManagerModule(reactContext: ReactApplicationContext) :
     // Use Main thread to ensure we can access Activity
     CoroutineScope(Dispatchers.Main).launch {
       try {
-        // Create HealthPermission objects - explicitly cast to help type inference
-        val stepPerm = HealthPermission.getReadPermission(StepsRecord::class) as? HealthPermission
-        val distancePerm = HealthPermission.getReadPermission(DistanceRecord::class) as? HealthPermission
-        val heartRatePerm = HealthPermission.getReadPermission(HeartRateRecord::class) as? HealthPermission
+        // Create HealthPermission objects as per Health Connect documentation
+        // https://developer.android.com/health-and-fitness/health-connect/get-started
+        val stepPerm: HealthPermission = HealthPermission.getReadPermission(StepsRecord::class) as HealthPermission
+        val distancePerm: HealthPermission = HealthPermission.getReadPermission(DistanceRecord::class) as HealthPermission
+        val heartRatePerm: HealthPermission = HealthPermission.getReadPermission(HeartRateRecord::class) as HealthPermission
         
-        if (stepPerm == null || distancePerm == null || heartRatePerm == null) {
-          promise.reject("PERMISSION_ERROR", "Failed to create HealthPermission objects")
-          return@launch
-        }
-        
-        val permissions = setOf(stepPerm, distancePerm, heartRatePerm)
+        val permissions: Set<HealthPermission> = setOf(stepPerm, distancePerm, heartRatePerm)
 
         // Check if permissions are already granted
         val grantedPermissionStrings = withContext(Dispatchers.IO) {
@@ -99,8 +130,9 @@ class HealthConnectManagerModule(reactContext: ReactApplicationContext) :
         val permissionStrings = permissions.map { it.toString() }.toSet()
         val grantedPermissionSet = grantedPermissionStrings.toSet()
         
-        // Find permissions that need to be requested - explicitly type as Set<HealthPermission>
-        val permissionsToRequest: Set<HealthPermission> = permissions.filter { perm: HealthPermission -> 
+        // Find permissions that need to be requested
+        // Filter by comparing permission strings
+        val permissionsToRequest = permissions.filter { perm: HealthPermission -> 
           perm.toString() !in grantedPermissionSet 
         }.toSet()
 
@@ -112,11 +144,12 @@ class HealthConnectManagerModule(reactContext: ReactApplicationContext) :
         // Request permissions using MainActivity's permission launcher
         try {
           val mainActivity = activity as com.christianleovido.Moxito.MainActivity
-          mainActivity.requestHealthConnectPermissions(permissionsToRequest) { grantedPermissionsResult: Set<HealthPermission> ->
+          mainActivity.requestHealthConnectPermissions(permissionsToRequest) { grantedPermissionsResult ->
             // This callback is called when user responds to the permission dialog
+            // grantedPermissionsResult is Set<HealthPermission>
             CoroutineScope(Dispatchers.Main).launch {
-              val grantedPermissionStringsResult = grantedPermissionsResult.map { perm: HealthPermission -> perm.toString() }.toSet()
-              val allGranted = permissionsToRequest.all { perm: HealthPermission -> perm.toString() in grantedPermissionStringsResult }
+              val grantedPermissionStringsResult = grantedPermissionsResult.map { it.toString() }.toSet()
+              val allGranted = permissionsToRequest.all { perm -> perm.toString() in grantedPermissionStringsResult }
               promise.resolve(allGranted)
             }
           }

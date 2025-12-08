@@ -8,6 +8,7 @@ type HealthConnectModule = {
   isAvailable?: () => Promise<boolean>;
   requestAuthorization?: () => Promise<boolean>;
   openHealthConnectSettings?: () => Promise<boolean>;
+  isBackgroundDataReadAvailable?: () => Promise<boolean>;
   getDailySteps?: (dateIso: string) => Promise<number>;
   getDailyDistanceKilometers?: (dateIso: string) => Promise<number>;
   getDailyDistanceMeters?: (dateIso: string) => Promise<number>;
@@ -209,6 +210,21 @@ export const healthDataService = {
       return await manager.openHealthConnectSettings();
     } catch (error) {
       console.warn('Failed to open Health Connect settings', error);
+      return false;
+    }
+  },
+  isBackgroundDataReadAvailable: async () => {
+    if (Platform.OS !== 'android') {
+      return false;
+    }
+    const manager = getHealthConnectManager();
+    if (!manager?.isBackgroundDataReadAvailable) {
+      return false;
+    }
+    try {
+      return await manager.isBackgroundDataReadAvailable();
+    } catch (error) {
+      console.warn('Failed to check background data read availability', error);
       return false;
     }
   },
