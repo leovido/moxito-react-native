@@ -1,6 +1,6 @@
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { type Router, useRouter } from 'expo-router';
-import { useAuth } from '../../../Context/AuthProvider';
+import { useAuth } from '../../Context/AuthProvider';
 import AuthScreen from '../index';
 
 jest.mock('../..Context/AuthProvider', () => ({

@@ -164,6 +164,7 @@ export default function Index() {
           <Text style={styles.subtitle}>
             Sign in to the apps to display your profile or skip this step.
           </Text>
+
           <Pressable style={[styles.signInButton]} onPress={handleLogin}>
             <Text style={styles.signInButtonText}>Sign in with Farcaster</Text>
           </Pressable>
