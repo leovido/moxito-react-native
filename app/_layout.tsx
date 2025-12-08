@@ -54,7 +54,17 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <AuthProvider>
-        <PrivyProvider appId={privyAppId} clientId={privyClientId}>
+        <PrivyProvider
+          appId={privyAppId}
+          clientId={privyClientId}
+          config={{
+            embedded: {
+              ethereum: {
+                createOnLogin: 'users-without-wallets',
+              },
+            },
+          }}
+        >
           <PrivyElements />
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="index" />
