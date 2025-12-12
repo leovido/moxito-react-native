@@ -1,0 +1,496 @@
+---
+alwaysApply: true
+---
+
+# React Native Mastery Plan - MVP Focused
+**Goal:** Ship Moxito MVP (Farcaster login + fitness metrics) by January 31, 2025
+**Time:** 5 hours/day, Mon-Sat (with holiday flexibility) = ~240 hours total
+**MVP Scope:** Reown/Farcaster authentication + HealthKit/HealthConnect metrics display
+
+---
+
+## Your Current Situation
+
+### ✅ What You Already Have
+- React Native Expo bare workflow project (https://github.com/leovido/moxito-react-native)
+- iOS/Swift/SwiftUI expert (9 years)
+- Expo Router + TypeScript setup
+- Redux configured (we'll migrate to Zustand)
+- Biome linting/formatting
+- EAS Build configured
+- Jest testing setup
+- `/packages` folder structure started
+
+### 🎯 What You Need to Learn
+- **Android fundamentals** (self-rated "practically zero") - HealthConnect fails
+- **Expo bare workflow mastery** - random build failures
+- **Turborepo** - proper monorepo setup
+- **Zustand + TanStack Query** - modern state management
+- **Reown SDK** - Farcaster authentication
+- **HealthConnect** - Android fitness data (you have HealthKit on iOS)
+
+### 🚀 MVP Features (ONLY These Two)
+1. **Farcaster Login via Reown** - authenticate users with Farcaster
+2. **Fitness Metrics Display** - show steps, active calories, distance from HealthKit/HealthConnect
+
+**Everything else is out of scope for MVP.**
+
+---
+
+## The Plan: 3 Focused Phases (Dec 16 - Jan 31)
+
+### **PHASE 1: Foundation - Android + Expo Stability** (Weeks 1-2, Dec 16-29)
+*Fix the build issues that have been blocking you*
+
+#### Week 1: Android Deep Dive (Dec 16-22)
+
+**Day 1 (Dec 16): Android Build System Mastery**
+- **Theory (1.5h):** Gradle in-depth (build.gradle, settings.gradle, dependency resolution)
+- **Theory (1h):** AndroidManifest.xml, permissions model, application lifecycle
+- **Practice (1.5h):** Debug 3 broken Gradle builds (I'll provide)
+- **Apply (1h):** Audit your Moxito Android setup, document issues
+- **Outcome:** You can read Android build errors and fix them in minutes
+
+**Day 2 (Dec 17): Android Permissions + HealthConnect Prep**
+- **Theory (1h):** Android runtime permissions, permission groups, edge cases
+- **Theory (1h):** Health Connect API overview, permissions, data types
+- **Practice (2h):** Build permission request flow that handles all scenarios
+- **Apply (1h):** Plan Moxito's permission architecture
+- **Outcome:** Understand permission patterns before implementing HealthConnect
+
+**Day 3 (Dec 18): Expo Bare Workflow Deep Dive**
+- **Theory (1h):** Managed vs Bare vs Custom Dev Clients
+- **Theory (1h):** Prebuild system, app.json/app.config.ts, config plugins
+- **Practice (2h):** Modify native Android code, rebuild, understand the flow
+- **Apply (1h):** Review your current Moxito expo config, optimize it
+- **Outcome:** Confident navigating iOS/Android folders in bare workflow
+
+**Day 4 (Dec 19): HealthConnect Integration (The Right Way)**
+- **Theory (1h):** Why your builds were failing (dependency conflicts, gradle versions)
+- **Theory (30min):** HealthConnect data models, read permissions, sync strategies
+- **Practice (2.5h):** Build stable HealthConnect integration from scratch
+- **Apply (1h):** Replace your broken HealthConnect code with working version
+- **Outcome:** Stable HealthConnect that builds every time
+
+**Day 5 (Dec 20): Android Debugging + Native Modules**
+- **Theory (1h):** Android Studio debugging, Logcat, native breakpoints
+- **Theory (30min):** Common RN + Android issues (ProGuard, multidex, R8)
+- **Practice (2h):** Debug 5 common Android RN crashes
+- **Apply (1.5h):** Set up Moxito debugging workflow, add crash reporting
+- **Outcome:** Debug Android issues quickly, not wasting full days
+
+**Day 6 (Dec 21): Build Pipeline + CI/CD**
+- **Theory (1h):** EAS Build profiles, credentials, caching
+- **Theory (30min):** GitHub Actions for Expo, caching strategies
+- **Practice (2h):** Set up rock-solid CI/CD pipeline
+- **Apply (1.5h):** Configure Moxito's automated builds
+- **Outcome:** Builds run automatically and reliably
+
+**Day 7 (Dec 22): Review + Buffer**
+- **Practice (3h):** Build a small Android + RN app from scratch to test knowledge
+- **Apply (2h):** Fix any lingering Android issues in Moxito
+- **Outcome:** Android knowledge solidified
+
+**Days 8-9 (Dec 23-24): Holiday Buffer**
+- Light study or off
+- Optional: Read about Turborepo and Zustand
+
+#### Week 2: Architecture + State Management (Dec 26-29)
+
+**Day 10 (Dec 26): Turborepo Setup**
+- **Theory (1h):** Monorepo benefits, Turborepo caching, pipelines
+- **Theory (1h):** Package linking, turbo.json configuration
+- **Practice (2h):** Set up Turborepo monorepo with Expo
+- **Apply (1h):** Convert Moxito to Turborepo structure
+- **Outcome:** Monorepo with proper caching and builds
+
+**Day 11 (Dec 27): Module Structure Design**
+- **Theory (1h):** Feature modules, shared packages, boundaries
+- **Practice (2h):** Design Moxito's package structure:
+  - `@moxito/ui` - shared components
+  - `@moxito/auth` - Reown/Farcaster login
+  - `@moxito/health` - HealthKit/HealthConnect
+  - `@moxito/api` - TanStack Query hooks
+- **Apply (2h):** Create package folders and setup
+- **Outcome:** Clean modular structure
+
+**Day 12 (Dec 28): Zustand + TanStack Query**
+- **Theory (1h):** Zustand stores, actions, middleware
+- **Theory (1h):** TanStack Query queries, mutations, caching
+- **Practice (2h):** Build auth + data fetching with Zustand + TanStack Query
+- **Apply (1h):** Migrate Moxito from Redux to Zustand + TanStack Query
+- **Outcome:** Modern, simple state management
+
+**Day 13 (Dec 29): UI Component Library**
+- **Theory (30min):** Design tokens, component API design
+- **Practice (3h):** Build `@moxito/ui` package:
+  - Button, Card, Input components
+  - Typography system
+  - Layout components
+- **Apply (1.5h):** Use shared components in Moxito screens
+- **Outcome:** Reusable UI components
+
+**CHECKPOINT:** You have stable Android builds, monorepo structure, and modern state management.
+
+**Days 14-16 (Dec 30 - Jan 1): Holiday Buffer / Integration**
+- Dec 30: Light work or off
+- Dec 31: New Year's Eve (off)
+- Jan 1: New Year's Day (off)
+- **Optional work:** Integrate everything from Weeks 1-2
+
+---
+
+### **PHASE 2: MVP Features - Reown Auth + Health Metrics** (Weeks 3-4, Jan 2-15)
+
+#### Week 3: Farcaster Authentication (Jan 2-8)
+
+**Day 17 (Jan 2): Reown SDK Deep Dive**
+- **Theory (1.5h):** Reown/WalletConnect architecture, Farcaster integration
+- **Theory (1h):** Sign-In with Farcaster (SIWE), session management
+- **Practice (1.5h):** Implement Reown authentication in test project
+- **Apply (1h):** Plan Moxito's auth flow
+- **Outcome:** Understand Reown + Farcaster auth patterns
+
+**Day 18 (Jan 3): Build @moxito/auth Package**
+- **Theory (30min):** Secure token storage (expo-secure-store)
+- **Practice (3h):** Build complete auth package:
+  - Reown SDK initialization
+  - Farcaster login flow
+  - Session persistence
+  - Logout
+- **Apply (1.5h):** Integrate auth package into Moxito
+- **Outcome:** Working Farcaster login
+
+**Day 19 (Jan 4): Auth UI + Navigation**
+- **Theory (30min):** Protected routes in Expo Router
+- **Practice (2.5h):** Build auth screens:
+  - Login screen with Reown
+  - Loading states
+  - Error handling
+  - Session restoration
+- **Apply (2h):** Add auth navigation to Moxito
+- **Outcome:** Complete auth UX
+
+**Day 20 (Jan 5): Auth Polish + Testing**
+- **Practice (3h):** Add biometric authentication option
+- **Apply (2h):** Write tests for auth flows
+- **Outcome:** Production-ready auth
+
+**Day 21 (Jan 6): Farcaster Profile Integration**
+- **Theory (1h):** Farcaster API, profile data, casts
+- **Practice (2h):** Fetch and display Farcaster profile
+- **Apply (2h):** Add profile screen to Moxito
+- **Outcome:** User sees their Farcaster identity
+
+**Days 22-23 (Jan 7-8): Buffer / Auth Debugging**
+- Fix any auth issues
+- Polish UX
+- Test edge cases
+
+#### Week 4: Health Metrics Display (Jan 9-15)
+
+**Day 24 (Jan 9): HealthKit (iOS) Review**
+- **Theory (1h):** HealthKit data types, queries, permissions
+- **Practice (2h):** Build HealthKit wrapper (you probably know this already)
+- **Apply (2h):** Implement HealthKit in `@moxito/health` package
+- **Outcome:** iOS health data working
+
+**Day 25 (Jan 10): HealthConnect (Android) Implementation**
+- **Theory (1h):** HealthConnect vs HealthKit differences
+- **Practice (3h):** Build HealthConnect wrapper matching HealthKit API
+- **Apply (1h):** Integrate HealthConnect in `@moxito/health`
+- **Outcome:** Android health data working
+
+**Day 26 (Jan 11): Unified Health API**
+- **Theory (30min):** Platform abstraction patterns
+- **Practice (2.5h):** Create unified health API:
+  ```typescript
+  // Same API for iOS and Android
+  const { steps, calories, distance } = useHealthMetrics()
+  ```
+- **Apply (2h):** Use unified API in Moxito
+- **Outcome:** Cross-platform health data
+
+**Day 27 (Jan 12): Health Metrics UI**
+- **Theory (30min):** Data visualization for health metrics
+- **Practice (3h):** Build health dashboard:
+  - Step counter card
+  - Calories burned chart
+  - Distance traveled
+  - Daily/Weekly/Monthly views
+- **Apply (1.5h):** Integrate dashboard into Moxito
+- **Outcome:** Beautiful health metrics display
+
+**Day 28 (Jan 13): Health Data Syncing**
+- **Theory (1h):** Background sync, data refresh strategies
+- **Practice (2h):** Implement data refresh logic with TanStack Query
+- **Apply (2h):** Add pull-to-refresh, auto-refresh
+- **Outcome:** Health data stays current
+
+**Days 29-30 (Jan 14-15): Health Feature Polish**
+- Add loading skeletons
+- Error states for missing permissions
+- Empty states for no data
+- Test on both platforms
+
+**CHECKPOINT:** MVP features complete - Farcaster auth + health metrics working!
+
+---
+
+### **PHASE 3: Polish, Testing & Deployment** (Weeks 5-6, Jan 16-31)
+
+#### Week 5: Testing + Performance (Jan 16-22)
+
+**Day 31 (Jan 16): Testing Strategy**
+- **Theory (1h):** Unit vs Integration vs E2E testing
+- **Practice (3h):** Write tests for:
+  - Auth flows (@moxito/auth)
+  - Health data fetching (@moxito/health)
+  - UI components (@moxito/ui)
+- **Apply (1h):** Set up test CI pipeline
+- **Outcome:** Critical paths tested
+
+**Day 32 (Jan 17): E2E Testing**
+- **Theory (1h):** Maestro for React Native
+- **Practice (3h):** Write E2E tests:
+  - Login flow
+  - Health permission request
+  - View health metrics
+- **Apply (1h):** Add E2E to CI
+- **Outcome:** E2E coverage for happy path
+
+**Day 33 (Jan 18): Performance Optimization**
+- **Practice (3h):** Profile Moxito:
+  - Optimize list rendering
+  - Reduce bundle size
+  - Lazy load screens
+- **Apply (2h):** Fix performance issues
+- **Outcome:** Smooth 60fps on mid-range devices
+
+**Day 34 (Jan 19): Error Handling + Monitoring**
+- **Theory (1h):** Error boundaries, Sentry setup
+- **Practice (2h):** Add comprehensive error handling
+- **Apply (2h):** Set up Sentry, add error boundaries
+- **Outcome:** Production-grade error handling
+
+**Day 35 (Jan 20): Analytics Setup**
+- **Theory (1h):** Privacy-first analytics for Web3
+- **Practice (2h):** Implement analytics (PostHog or Mixpanel)
+- **Apply (2h):** Add event tracking:
+  - Login success/failure
+  - Health permission granted/denied
+  - Metrics viewed
+- **Outcome:** User behavior visibility
+
+**Days 36-37 (Jan 21-22): Polish Week**
+- UI polish (animations, micro-interactions)
+- Loading states everywhere
+- Empty states
+- Dark mode support
+- Accessibility (VoiceOver/TalkBack)
+
+#### Week 6: Deployment (Jan 23-31)
+
+**Day 38 (Jan 23): App Store Preparation**
+- **Theory (1h):** App Store requirements for health + social apps
+- **Practice (3h):** Create:
+  - Screenshots (both platforms)
+  - App icon
+  - Privacy policy (Farcaster data, health data)
+  - App description
+- **Apply (1h):** Set up App Store Connect
+- **Outcome:** iOS submission ready
+
+**Day 39 (Jan 24): Play Store Preparation**
+- **Theory (1h):** Play Store requirements, health data policy
+- **Practice (3h):** Create Play Store assets
+- **Apply (1h):** Set up Google Play Console
+- **Outcome:** Android submission ready
+
+**Day 40 (Jan 25): TestFlight Beta**
+- **Practice (3h):** Build and submit to TestFlight
+- **Apply (2h):** Invite 100+ users to test
+- **Outcome:** iOS beta live
+
+**Day 41 (Jan 26): Play Store Beta**
+- **Practice (3h):** Build and submit to Play Store internal testing
+- **Apply (2h):** Invite testers
+- **Outcome:** Android beta live
+
+**Days 42-43 (Jan 27-28): Beta Feedback Week**
+- Monitor crashes
+- Gather feedback
+- Fix critical bugs
+- Iterate on UX
+
+**Day 44 (Jan 29): Final Builds**
+- Build production versions
+- Final testing
+- Prepare release notes
+
+**Day 45 (Jan 30): App Store Submissions**
+- Submit iOS to App Store
+- Submit Android to Play Store
+- Monitor review status
+
+**Day 46 (Jan 31): LAUNCH DAY** 🚀
+- Apps go live (or in review)
+- Marketing push on Farcaster
+- Monitor analytics
+- Celebrate!
+
+---
+
+## Daily Session Structure (5 hours)
+
+**Flexible based on topic:**
+
+### Standard Day:
+- **Hour 1:** Theory (I explain, you ask questions)
+- **Hours 2-3:** Practice (build, experiment)
+- **Hour 4:** Apply to Moxito (real implementation)
+- **Hour 5:** Review + quiz
+
+### Heavy Implementation Day:
+- **30min:** Quick theory
+- **Hours 1-4:** Deep coding session
+- **30min:** Review
+
+---
+
+## Success Metrics (Jan 31)
+
+### Must Have ✅
+- Farcaster login via Reown working on iOS + Android
+- HealthKit integration showing steps, calories, distance (iOS)
+- HealthConnect integration showing steps, calories, distance (Android)
+- Clean monorepo structure with Turborepo
+- Modern state management (Zustand + TanStack Query)
+- Builds work reliably every time
+- On TestFlight (iOS) + Play Store beta (Android)
+- 100+ beta testers
+
+### Nice to Have 🎯
+- Dark mode
+- Biometric login
+- Weekly/monthly health views
+- App approved (not just submitted)
+- 200+ TestFlight users
+- Featured on Product Hunt
+
+---
+
+## Your Existing Repo Structure
+
+We'll evolve your current structure to:
+
+```
+moxito-react-native/
+├── apps/
+│   └── mobile/                 # Your existing app/ folder
+├── packages/
+│   ├── ui/                     # Shared components (@moxito/ui)
+│   ├── auth/                   # Reown/Farcaster (@moxito/auth)
+│   ├── health/                 # HealthKit/Connect (@moxito/health)
+│   └── api/                    # TanStack Query hooks (@moxito/api)
+├── turbo.json
+├── package.json
+└── ... (your existing config files stay)
+```
+
+---
+
+## Tech Stack (Finalized)
+
+**Core:**
+- React Native (Expo bare workflow)
+- TypeScript
+- Expo Router (file-based routing)
+
+**State Management:**
+- Zustand (local state)
+- TanStack Query (server/API state)
+
+**Build System:**
+- Turborepo (monorepo)
+- EAS Build (CI/CD)
+- GitHub Actions
+
+**Key Dependencies:**
+- Reown SDK (Farcaster auth)
+- expo-secure-store (token storage)
+- react-native-health (HealthKit - iOS)
+- react-native-health-connect (HealthConnect - Android)
+
+**Quality:**
+- Biome (linting/formatting) - you already have this
+- Jest (testing)
+- Maestro (E2E testing)
+- Sentry (crash reporting)
+
+---
+
+## What You'll Learn vs What You'll Skip
+
+### You'll Learn:
+✅ Android fundamentals (Gradle, permissions, debugging)
+✅ Expo bare workflow mastery
+✅ Turborepo monorepo setup
+✅ Zustand + TanStack Query
+✅ Reown SDK integration
+✅ HealthConnect (Android health API)
+✅ Cross-platform health abstraction
+
+### You'll Skip (Not Needed for MVP):
+❌ New RN Architecture (Fabric/TurboModules) - not critical yet
+❌ Advanced animations (beyond basics)
+❌ Blockchain integration - not in MVP
+❌ Rewards system - not in MVP
+❌ Complex gesture handling
+❌ Web version
+
+**Focus = Speed**. We can add fancy stuff in v1.1 after launch.
+
+---
+
+## Emergency Protocols
+
+**If Stuck:**
+- < 30 min: I guide with questions
+- 30-60 min: I provide hints
+- \> 60 min: I provide solution (no time to waste)
+
+**If Ahead:**
+- Add nice-to-haves (dark mode, animations)
+- Polish UX
+- Write more tests
+
+**If Behind:**
+- Cut nice-to-haves
+- Focus on core: auth + health display
+- Ship minimal MVP, iterate post-launch
+
+---
+
+## Next Steps
+
+**Ready to start Monday, Dec 16?**
+
+### Before Day 1 (This Weekend):
+1. **Share current issues**: What specific errors do you get with HealthConnect?
+2. **Document blockers**: Any other build issues I should know about?
+3. **Set up Sentry account** (free tier)
+4. **Clone your repo** to a fresh branch: `git checkout -b mvp-rebuild`
+
+### Day 1 Preview (Monday, Dec 16):
+- **Android Build System Mastery**
+- I'll explain exactly why HealthConnect builds randomly fail
+- You'll debug broken Gradle projects
+- By end of day: you can fix Android build errors in minutes
+
+**Questions?**
+- Want to adjust the plan?
+- Specific fears about HealthConnect Android issues?
+- Any Reown experience already?
+
+Let's ship Moxito! 🚀
