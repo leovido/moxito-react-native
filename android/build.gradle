@@ -4,7 +4,7 @@ buildscript {
     ext {
         // Align with React Native 0.81 catalog (see node_modules/react-native/gradle/libs.versions.toml)
         buildToolsVersion = findProperty('android.buildToolsVersion') ?: '36.0.0'
-        minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
+        minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '26')
         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '36')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '36')
         kotlinVersion = '2.1.20'
