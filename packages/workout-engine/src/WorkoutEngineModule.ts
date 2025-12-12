@@ -38,7 +38,7 @@ export class WorkoutEngineModule implements IWorkoutEngine {
   private eventEmitter = new SimpleEventEmitter();
   private isWorkoutActive = false;
   private lastUpdate: WorkoutUpdate | null = null;
-  private mockInterval: NodeJS.Timeout | null = null;
+  private mockInterval: number | null = null;
 
   constructor() {
     // Initialize mock data for development
@@ -163,7 +163,7 @@ export class WorkoutEngineModule implements IWorkoutEngine {
 
       this.lastUpdate = update;
       this.eventEmitter.emit('workoutUpdate', update);
-    }, 1000); // Update every second
+    }, 1000) as unknown as number; // Update every second
   }
 
   private generateMockLocation() {

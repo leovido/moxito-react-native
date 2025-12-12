@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Android Build Quiz - Day 1</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+        max-width: 820px;
+        margin: 32px auto;
+        padding: 0 16px 48px;
+        line-height: 1.5;
+      }
+      h1 {
+        margin-bottom: 8px;
+      }
+      .meta {
+        color: #888;
+        font-size: 0.9rem;
+      }
+      .card {
+        border: 1px solid #4444;
+        border-radius: 12px;
+        padding: 16px;
+        margin: 16px 0;
+        background: #00000008;
+      }
+      button {
+        margin-top: 12px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #4444;
+        background: #4b7bec;
+        color: white;
+        cursor: pointer;
+        font-size: 0.95rem;
+      }
+      button:hover {
+        filter: brightness(1.05);
+      }
+      .result {
+        margin-top: 8px;
+        font-weight: 600;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      .summary {
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Android Build Quiz — Day 1</h1>
+    <div class="meta">React Native 0.81 / Expo bare</div>
+
+    <p>Select the correct option for each question, then click “Check”.</p>
+
+    <div id="quiz"></div>
+    <div class="card summary" id="summary"></div>
+
+    <script>
+      const questions = [
+        {
+          q: "Which Kotlin version should the root classpath use so expo-updates picks a matching KSP?",
+          options: ["1.9.25", "2.1.20", "2.0.21", "Latest available"],
+          answer: 1,
+        },
+        {
+          q: "What NDK version aligns with RN 0.81 to provide libc++ with std::format?",
+          options: ["26.1.10909125", "27.1.12297006", "25.2.9519653", "Any NDK works"],
+          answer: 1,
+        },
+        {
+          q: "Why did Reanimated fail before enabling new architecture?",
+          options: [
+            "Hermes was off",
+            "Fabric/TurboModules were disabled (newArchEnabled=false)",
+            "Wrong appId",
+            "Missing JitPack repo",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Which Java version should be active for AGP 8.x and RN 0.81?",
+          options: ["11", "17", "21", "23"],
+          answer: 1,
+        },
+        {
+          q: "What are the correct SDK/build tools for RN 0.81 (per its version catalog)?",
+          options: [
+            "compileSdk/targetSdk 33, buildTools 33.0.2",
+            "compileSdk/targetSdk 34, buildTools 34.0.0",
+            "compileSdk/targetSdk 36, buildTools 36.0.0",
+            "Any as long as minSdk matches",
+          ],
+          answer: 2,
+        },
+        {
+          q: "How do you capture a stacktrace to a file while seeing output live?",
+          options: [
+            "./gradlew :app:assembleDebug --stacktrace > out.txt",
+            "./gradlew :app:assembleDebug --stacktrace | tee android/gradle-stacktrace.txt",
+            "./gradlew :app:assembleDebug",
+            "./gradlew :app:dependencies",
+          ],
+          answer: 1,
+        },
+        {
+          q: "Where are shared build versions (compileSdk, ndkVersion, kotlinVersion) defined?",
+          options: [
+            "android/app/build.gradle",
+            "android/settings.gradle",
+            "android/build.gradle ext block",
+            "package.json",
+          ],
+          answer: 2,
+        },
+      ];
+
+      const quizEl = document.getElementById("quiz");
+      const summaryEl = document.getElementById("summary");
+
+      function render() {
+        quizEl.innerHTML = "";
+        questions.forEach((item, idx) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <div><strong>Q${idx + 1}.</strong> ${item.q}</div>
+            <ul>
+              ${item.options
+                .map(
+                  (opt, i) => `
+                    <li>
+                      <label>
+                        <input type="radio" name="q${idx}" value="${i}" />
+                        ${opt}
+                      </label>
+                    </li>
+                  `
+                )
+                .join("")}
+            </ul>
+            <button data-idx="${idx}">Check</button>
+            <div class="result" id="result-${idx}"></div>
+          `;
+          quizEl.appendChild(card);
+        });
+      }
+
+      function handleCheck(e) {
+        if (e.target.tagName !== "BUTTON") return;
+        const idx = Number(e.target.dataset.idx);
+        const selected = document.querySelector(`input[name="q${idx}"]:checked`);
+        const result = document.getElementById(`result-${idx}`);
+        if (!selected) {
+          result.textContent = "Pick an option.";
+          result.style.color = "#d97706";
+          return;
+        }
+        const correct = Number(selected.value) === questions[idx].answer;
+        result.textContent = correct ? "Correct 🎉" : "Not quite. Try again.";
+        result.style.color = correct ? "#16a34a" : "#dc2626";
+        updateSummary();
+      }
+
+      function updateSummary() {
+        const total = questions.length;
+        const correct = questions.reduce((acc, _, idx) => {
+          const selected = document.querySelector(`input[name="q${idx}"]:checked`);
+          return acc + (selected && Number(selected.value) === questions[idx].answer ? 1 : 0);
+        }, 0);
+        summaryEl.textContent = `Score: ${correct}/${total} answered correctly.`;
+      }
+
+      quizEl.addEventListener("click", handleCheck);
+      quizEl.addEventListener("change", updateSummary);
+
+      render();
+      updateSummary();
+    </script>
+  </body>
+</html>
+
