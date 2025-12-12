@@ -7984,7 +7984,7 @@ react-native-health-connect@^1.0.2:
   resolved "https://registry.yarnpkg.com/react-native-health-connect/-/react-native-health-connect-1.2.3.tgz#39e57a58f8a4c345eb42a621a9d7ec20db1c97eb"
   integrity sha512-6FR4KNZvooQVQjcYpsBhGU+nwibO3SP0X+bw1JTMmBzkvcSt+Eo3jgmXH81s7iWRz6qfX/M7ttdnOwae+/YREw==
 
-"react-native-health@patch:react-native-health@npm%3A1.19.0#./.yarn/patches/react-native-health-npm-1.19.0-8b07baa40c.patch":
+react-native-health@1.19.0:
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/react-native-health/-/react-native-health-1.19.0.tgz#4271bbf10f3ad28b2eff643532224b12c9572348"
   integrity sha512-IeF/YYWDKBkx3R89uk/zdF3Sql9Jj+okZBXTAC62FHE+Ef3CMN+ArL6D1SzFk/dc0qK+Q7mnZrmFDbTsftszxw==
