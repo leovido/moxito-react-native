@@ -93,7 +93,7 @@ export const WorkoutScreen = () => {
         setWorkoutData(update);
         return newDistance;
       });
-    }, 1000);
+    }, 1000) as unknown as number;
 
     setWorkoutInterval(interval);
   };
