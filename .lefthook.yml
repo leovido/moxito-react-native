@@ -6,6 +6,7 @@ pre-commit:
       stage_fixed: true
 
 pre-push:
+  parallel: true
   commands:
     biome_full:
       run: npx biome check .
