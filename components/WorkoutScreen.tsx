@@ -25,7 +25,7 @@ export const WorkoutScreen = () => {
   const [workoutData, setWorkoutData] = useState<WorkoutUpdate | null>(null);
   const [stepCount, setStepCount] = useState(0);
   const [distance, setDistance] = useState(0);
-  const [workoutInterval, setWorkoutInterval] = useState<NodeJS.Timeout | null>(null);
+  const [workoutInterval, setWorkoutInterval] = useState<number | undefined>();
   const [pulseAnim] = useState(new Animated.Value(1));
   const [fadeAnim] = useState(new Animated.Value(0));
   // Use refs to track current values for use in interval callback
@@ -102,7 +102,7 @@ export const WorkoutScreen = () => {
     setIsWorkoutActive(false);
     if (workoutInterval) {
       clearInterval(workoutInterval);
-      setWorkoutInterval(null);
+      setWorkoutInterval(undefined);
     }
 
     // Stop pulse animation
