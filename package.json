@@ -108,5 +108,17 @@
     "prettier": "^3.4.2",
     "react-test-renderer": "19.1.0",
     "typescript": "^5.3.3"
+  },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-health",
+          "@privy-io/expo-native-extensions",
+          "react-native-passkeys"
+        ],
+        "listUnknownPackages": false
+      }
+    }
   }
 }
