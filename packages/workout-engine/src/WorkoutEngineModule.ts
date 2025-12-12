@@ -163,7 +163,7 @@ export class WorkoutEngineModule implements IWorkoutEngine {
 
       this.lastUpdate = update;
       this.eventEmitter.emit('workoutUpdate', update);
-    }, 1000); // Update every second
+    }, 1000) as unknown as number; // Update every second
   }
 
   private generateMockLocation() {
